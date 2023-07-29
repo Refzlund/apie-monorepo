@@ -8,10 +8,10 @@ import { type UserConfig, mergeConfig } from 'vite'
 import libConfig from '../configs/vite-configs/vite.config.lib'
 
 const config = mergeConfig(
-	libConfig('<repo>'),
+	libConfig('api-kit'),
 	{
 		// Custom configuration here
-		
+
 
 	} satisfies UserConfig
 )

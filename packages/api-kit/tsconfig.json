@@ -6,8 +6,8 @@
 		"baseUrl": ".",
 		"paths": {
 			// Library
-			"<repo>": [".dist"],
-			"<repo>/*": [".dist/*"],
+			"api-kit": [".dist"],
+			"api-kit/*": [".dist/*"],
 			// ...
 			"$": ["src"],
 			"$/*": ["src/*"]

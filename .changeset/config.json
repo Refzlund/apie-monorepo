@@ -1,6 +1,6 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config@2.3.1/schema.json",
-	"changelog": ["@svitejs/changesets-changelog-github-compact", { "repo": "<owner/repo>" }],
+	"changelog": ["@svitejs/changesets-changelog-github-compact", { "repo": "refzlund/api-kit" }],
 	"commit": false,
 	"fixed": [],
 	"linked": [],

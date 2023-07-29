@@ -17,7 +17,7 @@ Build your project (`pnpm build`) and test it in another project by linking it t
 	...
 	"pnpm": {
 		"overrides": {
-			"<repo>": "link: .../local/path/to/repo"
+			"api-kit": "link: .../local/path/to/repo"
 		}
 	}
 }
