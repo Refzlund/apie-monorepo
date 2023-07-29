@@ -48,6 +48,8 @@ importers:
         specifier: ^0.33.0
         version: 0.33.0
 
+  packages/api-kit: {}
+
   packages/configs/eslint-configs:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
@@ -66,8 +68,6 @@ importers:
   packages/configs/ts-configs: {}
 
   packages/configs/vite-configs: {}
-
-  packages/template: {}
 
 packages:
 
