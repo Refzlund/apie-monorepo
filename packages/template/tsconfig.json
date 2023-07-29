@@ -1,0 +1,17 @@
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+
+		/* Paths */
+		"baseUrl": ".",
+		"paths": {
+			// Library
+			"<repo>": [".dist"],
+			"<repo>/*": [".dist/*"],
+			// ...
+			"$": ["src"],
+			"$/*": ["src/*"]
+		}
+		
+	}
+}
