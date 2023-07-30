@@ -1,6 +1,6 @@
 {
 	"name": "api-kit",
-	"version": "0.1.1",
+	"version": "0.0.1",
 	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
@@ -33,8 +33,9 @@
 	"files": [
 		".dist"
 	],
-	"dependencies": {},
-	"devDependencies": {},
+	"devDependencies": {
+		"@sveltejs/kit": "^1.22.3"
+	},
 	"packageManager": "pnpm@8.6.7",
 	"engines": {
 		"pnpm": "^8.0.0"

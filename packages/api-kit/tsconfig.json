@@ -6,12 +6,20 @@
 		"baseUrl": ".",
 		"paths": {
 			// Library
-			"api-kit": [".dist"],
-			"api-kit/*": [".dist/*"],
+			"api-kit": ["./.dist"],
+			"api-kit/*": ["./.dist/*"],
 			// ...
-			"$": ["src"],
-			"$/*": ["src/*"]
+			"$": ["./src"],
+			"$/*": ["./src/*"],
+
+			"$types": ["./types"],
+			"$types/*": ["./types/*"]
 		}
 		
-	}
+	},
+	"include": [
+		"src",
+		"types",
+		".dist"
+	],
 }
