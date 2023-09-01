@@ -5,6 +5,7 @@ import type { RequestEvent } from '@sveltejs/kit'
 import { KitResponse } from './http'
 import { BadRequest, Ok } from './response'
 import { Created } from './response/types'
+import { ToJSON } from './types/json'
 
 type Test = Simplify<RequestEvent>
 
@@ -50,10 +51,10 @@ type KitEvent<Input extends KitRequestInput = {}> = {
 
 type Locals<L extends Record<string | number | symbol, unknown> = {}> = { locals: L }
 
-type EndpointFunction<
-	E extends KitEvent,
-	L extends Locals,
-	R extends EndpointFunctionResponse<unknown>
+type EndpointFn<
+	E extends KitEvent = KitEvent,
+	L extends Locals = Locals,
+	R extends EndpointFunctionResponse<unknown> = EndpointFunctionResponse<unknown>
 > = (event: E & L) => R
 
 type EndpointFunctionResponse<T> =
@@ -78,22 +79,25 @@ function endpoint<Input extends KitRequestInput = {}>(
 	type G<R extends EndpointFunctionResponse<unknown>[]> = GetLocals<R>
 
 	return function <
-		const E0 extends E,  const R0 extends R, L0 extends Locals,
-		const E1 extends E0, const R1 extends R, L1 extends Locals<G<[R0]>>,
-		const E2 extends E1, const R2 extends R, L2 extends Locals<G<[R0, R1]>>, 
-		const E3 extends E2, const R3 extends R, L3 extends Locals<G<[R0, R1, R2]>>
+		L0 extends Locals,
+		L1 extends Locals<G<[R0]>>,
+		L2 extends Locals<G<[R0, R1]>>, 
+		L3 extends Locals<G<[R0, R1, R2]>>,
+		
+		const R0 extends R = never, const R1 extends R = never,
+		const R2 extends R = never, const R3 extends R = never,
 	>(
-		a0: EndpointFunction<E0, L0, R0>,
-		a1?: EndpointFunction<E1, L1, R1>,
-		a2?: EndpointFunction<E2, L2, R2>,
-		a3?: EndpointFunction<E3, L3, R3>,
+		a0: EndpointFn<E, L0, R0>,
+		a1?: EndpointFn<E, L1, R1>,
+		a2?: EndpointFn<E, L2, R2>,
+		a3?: EndpointFn<E, L3, R3>,
 	) {
 
-		type Responses = Endpoint<Simplify<Input>, 
-			| Extract<R3, KitResponse>
-			| Extract<R2, KitResponse>
-			| Extract<R1, KitResponse>
+		type Responses = Endpoint<ToJSON<Input>, 
 			| Extract<R0, KitResponse>
+			| Extract<R1, KitResponse>
+			| Extract<R2, KitResponse>
+			| Extract<R3, KitResponse>
 		>
 		
 		type EndpointReturn = Responses
@@ -119,7 +123,12 @@ interface Post {
 	}
 }
 
-function test(event: KitEvent & Locals<{ yas?: 'heehee' }>) {
+class User {
+	name: string
+	user: User
+}
+
+function test(event: KitEvent & Locals<{ yas: 'heehee' }>) {
 	// * Make requirements using Locals<{ key?: value }>
 	return {
 		test: 1 as const
@@ -142,7 +151,7 @@ export const POST = endpoint<Post>()(
 	},
 	test,
 	(event) => {
-		event.locals.test
+		// event.locals.test
 		// ^?
 
 		return {
@@ -150,7 +159,10 @@ export const POST = endpoint<Post>()(
 		}
 	},
 	(event) => {
-		return Ok()
+		return Ok({
+			/** @type User */
+			user: {} as User
+		})
 	}
 )
 
