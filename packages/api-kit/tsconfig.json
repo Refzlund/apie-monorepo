@@ -1,7 +1,6 @@
 {
 	"extends": "ts-configs/tsconfig.def.json",
 	"compilerOptions": {
-
 		/* Paths */
 		"baseUrl": ".",
 		"paths": {
@@ -12,14 +11,9 @@
 			"$": ["./src"],
 			"$/*": ["./src/*"],
 
-			"$types": ["./types"],
-			"$types/*": ["./types/*"]
+			"$types": ["src/types"],
+			"$types/*": ["src/types/*"]
 		}
-		
 	},
-	"include": [
-		"src",
-		"types",
-		".dist"
-	],
+	"include": ["src", "src/types", ".dist"]
 }

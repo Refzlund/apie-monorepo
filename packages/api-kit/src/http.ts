@@ -1,4 +1,4 @@
-import { UnknownRecord } from '$types/utility'
+import { UnknownRecord } from './types/utility'
 
 export const kitResponseSymbol = Symbol('kitresponse')
 

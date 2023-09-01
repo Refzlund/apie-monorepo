@@ -1,4 +1,4 @@
-import { DeepWriteable } from '$types/utility'
+import { DeepWriteable } from '../types/utility'
 import { KitResponseOptions, response } from '../http'
 import type * as T from './types'
 

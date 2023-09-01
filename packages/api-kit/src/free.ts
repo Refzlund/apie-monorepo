@@ -1,6 +1,6 @@
 // Testing some syntaxes.
 
-import type { DeepWriteable, Simplify, Intersect, UnknownRecord, Flatten, Flat } from '../types/utility'
+import type { DeepWriteable, Simplify, Intersect, UnknownRecord, Flatten, Flat } from './types/utility'
 import type { RequestEvent } from '@sveltejs/kit'
 import { KitResponse } from './http'
 import { BadRequest, Ok } from './response'

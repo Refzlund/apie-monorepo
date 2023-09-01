@@ -2,7 +2,7 @@
 // * -- 1xx Informational
 // *
 
-import { KitResponse } from '$/http'
+import { KitResponse } from '../http'
 
 /** 
 	[100 Continue](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/100) 
