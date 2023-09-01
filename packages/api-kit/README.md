@@ -20,3 +20,102 @@ This is a pre-release version. Any update may be breaking.<br>
 See [CHANGELOG](./CHANGELOG.md) if your house is on fire.
 
 </blockquote>
+
+
+
+```ts
+
+// * Server
+import { sequence } from '...'
+import { kitApi } from 'kitapi'
+
+export const hooks = sequence(
+	kitApi(
+		defaults: {
+			404: () => NotFound({ 
+				error: { 
+					type: 'not-found', 
+					message: 'Resource not found.'
+				}
+			}),
+			500: () => InternalServerError({
+				error: { 
+					type: 'internal-error',
+					message: 'Unexpected error on the server.'
+				}
+			})
+		}
+	),
+	(event) => {
+		...
+	}
+)
+
+
+
+
+// T extends (event: ...) ? ReturnType<T>
+
+const pipeFn = (event: KitEvent<{ }> & In<{  }>) => {
+
+	if(...) {
+		return BadRequest({
+			error: {
+				type: 'some-error',
+				message: 'My message',
+				/** @example 123 */
+				arbitaryValue: someVal
+			}
+		})
+	}
+	
+	// Returning a response
+	return Ok({
+		/** @example 'This is an example message' */
+		message: someStr
+	})
+
+	// Forwarding locals
+	return {
+		someLocalValue: 123
+	}
+}
+
+
+const nestedPipeline = (event: ...) => {
+	return pipeline(
+		...
+	)
+}
+
+// Using Typia
+interface Post {
+	body: {
+		/** @min 3 */
+		name: string
+	},
+	query: {...}
+}
+
+export const POST = endpoint<Post>(
+	...
+)
+
+
+// * Browser
+
+// Response
+const response = await api.some.route.POST({ body: { ... } })
+	 
+// Return value
+const [error, success, ...] = await api.some.route.POST({ body: { ... } }).$
+	.Error(({ body }) => body.error)
+	.Success(({ body }) => body.documents)
+	...
+
+// Stream example
+await api.some.route.POST({ eventSource: true, query: { ... } })
+
+
+```
+
