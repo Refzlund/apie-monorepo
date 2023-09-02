@@ -13,4 +13,4 @@ type Jsonify<T> =
 		-readonly [K in keyof T as Jsonify<T[K]> extends never ? never : K]: Jsonify<T[K]>
 	} : never
 
-export type ToJSON<T extends object> = Jsonify<T>
+export type ToJSON<T extends object | undefined | unknown> = Jsonify<T>

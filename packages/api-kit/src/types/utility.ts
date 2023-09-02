@@ -27,10 +27,12 @@ type DistributiveKeyOf<T> = T extends T ? keyof T : never
 
 export type Flat<T> = {
 	[K in DistributiveKeyOf<T>]:
-	//distribute over T to support keys that are only present in one of its union members
-	T extends T
-	? K extends keyof T ? T[K] : never
-	: never
+		//distribute over T to support keys that are only present in one of its union members
+		T extends T ?
+		K extends keyof T ?
+		T[K] : 
+		never :
+		never
 }
 
 export type UnknownRecord = Record<string | number | symbol, unknown>
@@ -38,6 +40,8 @@ export type UnknownRecord = Record<string | number | symbol, unknown>
 export type DeepWriteable<T> = Simplify<{
 	-readonly [P in keyof T]: T[P] extends object ? DeepWriteable<T[P]> : T[P]
 }>
+
+export type MaybePromise<T> = T | Promise<T>
 
 export type Intersect<T> =
 	(T extends unknown ? (x: T) => unknown : never) extends
