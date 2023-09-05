@@ -7,10 +7,25 @@ import { BadRequest, Ok } from './response'
 import { Created } from './response/types'
 import { ToJSON } from './types/json'
 
+type ReqInit = Omit<RequestInit, 'body'>
+
+type EndpointRequestInput<
+	Body extends KitRequestInput['body'],
+	Query extends KitRequestInput['query']
+> = Extract<Body, undefined> extends never ?
+	Extract<Query, undefined> extends never ?
+	[body: Body, opts: ReqInit & { query: Query }]
+	: [body: Body, opts?: ReqInit & { query?: Query }]
+	: [body?: Body, opts?: ReqInit & { query?: Query }]
 
 type Endpoint<
 	Input extends KitRequestInput = {},
 	Responses extends KitResponse<number, boolean> | unknown = unknown,
+> = (...args: EndpointRequestInput<Input['body'], Input['query']>) =>
+	EndpointResponse<Responses>
+
+type EndpointResponse
+	<Responses extends KitResponse<number, boolean> | unknown = unknown
 > = {}
 
 interface KitRequestInput {
@@ -26,7 +41,7 @@ type _KitEvent<Input extends KitRequestInput = {}> = Omit<RequestEvent, 'request
 		 	This value IS `undefined` and is used to infer types for `KitEvent`.
 		 	@usage `InferKitEvent<E>` where `E extends KitEvent`
 		*/
-		TKitEventInput: ToJSON<Input> | undefined
+		TKitEventInput: Input | undefined
 	}
 	request: {
 		json: () => Promise<ToJSON<Input['body']>>
@@ -59,12 +74,9 @@ type KitEvent<Input extends KitRequestInput = any> = {
 	}
 	```
 */
-type InferKitEvent<T extends KitEvent & Locals> = 
-	{
-		body: NonNullable<T['fetch']['TKitEventInput']>['body'],
-		locals: Simplify<T['locals']>
-		query: NonNullable<T['fetch']['TKitEventInput']>['query']
-	}
+type InferKitEvent<T extends KitEvent & Locals, JSON extends boolean = true, Local extends boolean = true> = 
+	(JSON extends true ? ToJSON<NonNullable<T['fetch']['TKitEventInput']>> : NonNullable<T['fetch']['TKitEventInput']>) &
+	(Local extends true ? { locals: Simplify<T['locals']> } : {})
 
 
 type Locals<L extends Record<string | number | symbol, unknown> = {}> = { locals: L }
@@ -101,13 +113,6 @@ function endpoint<Input extends KitRequestInput = {}>(
 		L4 extends G<[R0, R1, R2, R3]>,
 		L5 extends G<[R0, R1, R2, R3, R4]>,
 
-		E0 extends E,
-		E1 extends E,
-		E2 extends E,
-		E3 extends E,
-		E4 extends E,
-		E5 extends E,
-		
 		const R0 extends R = never, const R1 extends R = never,
 		const R2 extends R = never, const R3 extends R = never,
 		const R4 extends R = never, const R5 extends R = never,
@@ -120,7 +125,7 @@ function endpoint<Input extends KitRequestInput = {}>(
 		a5?: EndpointFn<Input, L5, R5>,
 	) {
 
-		type Responses = Endpoint<ToJSON<Input>, 
+		type Responses = Endpoint<ToJSON<Input>,
 			| Extract<R0, KitResponse>
 			| Extract<R1, KitResponse>
 			| Extract<R2, KitResponse>
@@ -128,7 +133,7 @@ function endpoint<Input extends KitRequestInput = {}>(
 			| Extract<R4, KitResponse>
 			| Extract<R5, KitResponse>
 		>
-		
+
 		type EndpointReturn = Responses
 
 		const fn = function(event: KitEvent) {
@@ -143,7 +148,7 @@ function endpoint<Input extends KitRequestInput = {}>(
 }
 
 interface Post {
-	query: {
+	query?: {
 		seasonId: number
 	}
 	body: {
@@ -189,12 +194,43 @@ export const POST = endpoint<Post>()(
 	},
 	example1,
 	(event) => {
-		// event.locals.test
-		// ^?
+		type T = InferKitEvent<typeof event>
 
-		return {
-			another: 'one'
-		}
+		// eslint-disable-next-line prefer-const
+		let str: string = event.locals.yas
+
+		return Ok({
+			no: str,
+			another: str as T['locals']['yas'],
+			user: new User()
+		})
 	}
 )
 
+const res = POST({ name: 'yas', date: '' })
+
+const PUT = <T extends Post>(e: KitEvent<T>) => endpoint(e)(
+	parseJSON,
+	(event) => {
+		return Ok({
+			content: event.locals.json
+		}) 
+	}
+)
+
+type GenericEndpoint = (event: KitEvent) => Endpoint
+type InferGenericEndpoint<T extends GenericEndpoint> =
+	InferKitEvent<Parameters<T>[0], false, false>
+type InferBody<T extends GenericEndpoint> = InferGenericEndpoint<T>['body']
+type InferQuery<T extends GenericEndpoint> = InferGenericEndpoint<T>['query']
+
+
+type R0 = <
+	const B extends InferBody<typeof PUT>,
+	const Q extends InferQuery<typeof PUT>
+>(...args: EndpointRequestInput<B, Q>) =>
+	ReturnType<ReturnType<typeof PUT<{ body: B, query: Q }>>>
+
+const x = {} as R0
+
+const val = x({ name: 'yas', date: new Date() } as const, { query: { seasonId: 123 } })
