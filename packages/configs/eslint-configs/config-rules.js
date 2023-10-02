@@ -6,7 +6,7 @@ const config = mergeConfigs({
 		'semi': ['error', 'never'],
 		'indent': ['error', 'tab'],
 		'no-extra-boolean-cast': 'off',
-		'@typescript-eslint/no-unused-vars': 'off',
+		'@typescript-eslint/no-unused-vars': ['warn', { args: 'none', vars: 'all' }],
 		'@typescript-eslint/no-var-requires': 'off',
 		'@typescript-eslint/ban-types': 'off',
 		'quotes': [
