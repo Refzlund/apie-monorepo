@@ -47,14 +47,3 @@ export type MaybePromise<T> = T | Promise<T>
 export type Intersect<T> =
 	(T extends unknown ? (x: T) => unknown : never) extends
 	(x: infer R) => unknown ? R : never
-
-
-type T0 = Flat<{
-	asd: 123
-	yas: undefined
-} | {
-	yas: 'heehee'
-	asd: undefined
-}>
-
-type T1 = Intersect<T0>
