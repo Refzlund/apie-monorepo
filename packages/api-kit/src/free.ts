@@ -1,10 +1,9 @@
 // Testing some syntaxes.
 
-import type { DeepWriteable, Simplify, Intersect, UnknownRecord, Flatten, Flat, MaybePromise } from './types/utility'
+import type { Simplify, UnknownRecord, Flat, MaybePromise, brand } from './types/utility'
 import type { RequestEvent } from '@sveltejs/kit'
-import { KitResponse } from './http'
-import { BadRequest, Ok } from './response'
-import { Created } from './response/types'
+import { ExtractKitResponse, InferKitResposneFn, KitResponse, UnknownKitResponse } from './response/kitresponse'
+import { BadRequest, OK } from './response'
 import { ToJSON } from './types/json'
 
 type ReqInit = Omit<RequestInit, 'body'>
@@ -14,19 +13,42 @@ type EndpointRequestInput<
 	Query extends KitRequestInput['query']
 > = Extract<Body, undefined> extends never ?
 	Extract<Query, undefined> extends never ?
-	[body: Body, opts: ReqInit & { query: Query }]
-	: [body: Body, opts?: ReqInit & { query?: Query }]
-	: [body?: Body, opts?: ReqInit & { query?: Query }]
+	[body: Readonly<Body>, opts: ReqInit & { query: Query }]
+	: [body: Readonly<Body>, opts?: ReqInit & { query?: Query }]
+	: [body?: Readonly<Body>, opts?: ReqInit & { query?: Query }]
 
 type Endpoint<
 	Input extends KitRequestInput = {},
-	Responses extends KitResponse<number, boolean> | unknown = unknown,
-> = (...args: EndpointRequestInput<Input['body'], Input['query']>) =>
-	EndpointResponse<Responses>
+	Responses extends KitResponse<number, boolean> = UnknownKitResponse,
+> = Responses & { [brand]: Input }
 
-type EndpointResponse
-	<Responses extends KitResponse<number, boolean> | unknown = unknown
-> = {}
+
+
+// type Endpoint<
+// 	Input extends KitRequestInput = {},
+// 	Responses extends KitResponse<number, boolean> = UnknownKitResponse,
+// > = (...args: EndpointRequestInput<Input['body'], Input['query']>) =>
+// 		EndpointPromise<Responses>
+
+type EndpointPromise<
+	Responses extends KitResponse<number, boolean, unknown, string> = UnknownKitResponse
+> = {
+		[Key in InferKitResposneFn<Responses>]: (
+			callback: (
+				response: ExtractKitResponse<Responses, Key>
+			) => void
+		) => EndpointPromise<Responses>
+} & {
+	/** returns a store */
+	$(): void
+} & {
+	/** Returns the value of the given callback */	
+	$: {
+		[Key in InferKitResposneFn<Responses>]: () => void
+	}
+}
+
+
 
 interface KitRequestInput {
 	query?: UnknownRecord
@@ -34,15 +56,8 @@ interface KitRequestInput {
 }
 
 /** KitEvent simplifies the _KitEvent by hiding the intenral type for intellisense */
-type _KitEvent<Input extends KitRequestInput = {}> = Omit<RequestEvent, 'request'> & {
-	fetch: {
-		/**
-		  	KitEvent\<infer K> does not work for standalone endpoint functions.
-		 	This value IS `undefined` and is used to infer types for `KitEvent`.
-		 	@usage `InferKitEvent<E>` where `E extends KitEvent`
-		*/
-		TKitEventInput: Input | undefined
-	}
+type _KitEvent<Input extends KitRequestInput> = Omit<RequestEvent, 'request'> & {
+	[brand]: Input 
 	request: {
 		json: () => Promise<ToJSON<Input['body']>>
 	} & Omit<RequestEvent['request'], 'json'>
@@ -56,8 +71,8 @@ type _KitEvent<Input extends KitRequestInput = {}> = Omit<RequestEvent, 'request
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type KitEvent<Input extends KitRequestInput = any> = { 
-	[Key in keyof _KitEvent]: _KitEvent<Input>[Key]
+type KitEvent<Input extends KitRequestInput = any> = {
+	[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
 }
 
 /**
@@ -74,9 +89,15 @@ type KitEvent<Input extends KitRequestInput = any> = {
 	}
 	```
 */
-type InferKitEvent<T extends KitEvent & Locals, JSON extends boolean = true, Local extends boolean = true> = 
-	(JSON extends true ? ToJSON<NonNullable<T['fetch']['TKitEventInput']>> : NonNullable<T['fetch']['TKitEventInput']>) &
-	(Local extends true ? { locals: Simplify<T['locals']> } : {})
+type InferKitEvent<
+	T extends KitEvent,
+	JSON extends boolean = true,
+	Local extends boolean = true
+> = T extends KitEvent<infer K> ?
+	(JSON extends true
+		? ToJSON<NonNullable<K>>
+		: NonNullable<K>
+	) & (Local extends true ? { locals: Simplify<T['locals']> } : {}) : never
 
 
 type Locals<L extends Record<string | number | symbol, unknown> = {}> = { locals: L }
@@ -103,9 +124,8 @@ function endpoint<Input extends KitRequestInput = {}>(
 	event?: KitEvent<Input>
 ) {
 	type R<T = unknown> = EndpointFunctionResponse<T>
-	type E = KitEvent<Input>
 	type G<R extends EndpointFunctionResponse<unknown>[]> = Simplify<GetLocals<R>>
-
+	
 	return function <
 		L1 extends G<[R0]>,
 		L2 extends G<[R0, R1]>, 
@@ -124,14 +144,17 @@ function endpoint<Input extends KitRequestInput = {}>(
 		a4?: EndpointFn<Input, L4, R4>,
 		a5?: EndpointFn<Input, L5, R5>,
 	) {
-
+		type K =
+			| KitResponse<number, boolean, unknown, string>
+			| KitResponse<number, boolean, undefined, string>
+		
 		type Responses = Endpoint<ToJSON<Input>,
-			| Extract<R0, KitResponse>
-			| Extract<R1, KitResponse>
-			| Extract<R2, KitResponse>
-			| Extract<R3, KitResponse>
-			| Extract<R4, KitResponse>
-			| Extract<R5, KitResponse>
+			| Extract<R0, K>
+			| Extract<R1, K>
+			| Extract<R2, K>
+			| Extract<R3, K>
+			| Extract<R4, K>
+			| Extract<R5, K>
 		>
 
 		type EndpointReturn = Responses
@@ -158,8 +181,8 @@ interface Post {
 }
 
 class User {
-	name: string
-	user: User
+	name: string = ''
+	// user: User = new User()
 }
 
 function example1(event: KitEvent & Locals<{ yas: 'heehee' }>) {
@@ -171,9 +194,9 @@ function example1(event: KitEvent & Locals<{ yas: 'heehee' }>) {
 }
 
 async function parseJSON<E extends KitEvent>(event: E) {
-	type T = InferKitEvent<E>
+	type Input = InferKitEvent<E>
 	return {
-		json: await event.request.json() as T['body'],
+		json: await event.request.json() as Input['body'],
 	}
 }
 
@@ -196,41 +219,46 @@ export const POST = endpoint<Post>()(
 	(event) => {
 		type T = InferKitEvent<typeof event>
 
-		// eslint-disable-next-line prefer-const
-		let str: string = event.locals.yas
+		const str: string = event.locals.yas
 
-		return Ok({
-			no: str,
-			another: str as T['locals']['yas'],
+		return OK({
+			no: str as T['body']['name'],
+			another: str,
 			user: new User()
 		})
-	}
+	},
+	() => OK()
 )
 
-const res = POST({ name: 'yas', date: '' })
+// const res = POST({ name: 'yas', date: '' })
 
 const PUT = <T extends Post>(e: KitEvent<T>) => endpoint(e)(
 	parseJSON,
 	(event) => {
-		return Ok({
-			content: event.locals.json
+		return OK({
+			b: event.locals.json,
+			q: {} as T['query']
 		}) 
 	}
 )
 
-type GenericEndpoint = (event: KitEvent) => Endpoint
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GenericEndpoint = (event: KitEvent) => Endpoint<any, any>
+
 type InferGenericEndpoint<T extends GenericEndpoint> =
 	InferKitEvent<Parameters<T>[0], false, false>
 type InferBody<T extends GenericEndpoint> = InferGenericEndpoint<T>['body']
 type InferQuery<T extends GenericEndpoint> = InferGenericEndpoint<T>['query']
 
 
-type R0 = <
-	const B extends InferBody<typeof PUT>,
-	const Q extends InferQuery<typeof PUT>
->(...args: EndpointRequestInput<B, Q>) =>
-	ReturnType<ReturnType<typeof PUT<{ body: B, query: Q }>>>
+// type R0 = <
+// 	const B extends InferBody<typeof PUT>,
+// 	const Q extends InferQuery<typeof PUT>
+// >(...args: EndpointRequestInput<B, Q>) =>
+// 	ReturnType<ReturnType<typeof PUT<{ body: B, query: Q }>>>
 
-const x = {} as R0
+// const x = {} as R0
 
-const val = x({ name: 'yas', date: new Date() } as const, { query: { seasonId: 123 } })
+// const val = x({ name: 'Bob', date: new Date() }, { query: { seasonId: 123 } })
+// val
+

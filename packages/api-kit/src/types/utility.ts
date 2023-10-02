@@ -1,3 +1,4 @@
+export declare const brand: unique symbol
 
 interface SimplifyOptions {
 	/**
