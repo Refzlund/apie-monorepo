@@ -58,7 +58,7 @@ type OpenAI = {
 const api = {} as OpenAI
 
 api.v1.chat.completions.POST({
-	model: 'gpt-4',
+	model: 'gpt-3.5-turbo',
 	messages: [
 		{
 			role: 'user',
