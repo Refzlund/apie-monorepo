@@ -1,19 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { endpoint } from '$/endpoint'
-import { EndpointRequestInput as RQ } from '$/endpoint/callback'
-import { KitEvent } from '$/endpoint/event'
+import { EndpointRequestInput as RQ, RequestOptions } from '$/endpoint/callback'
+import { KitEvent, KitRequestInput } from '$/endpoint/event'
 import { parseJSON } from '$/endpoint/functions'
-import { InferGenericEndpoint as I } from '$/endpoint/generic'
-import { OK } from '$/response'
-import { APIKit } from '$/apikit'
+import { InferGenericEndpoint as I, InferBody, InferOptions } from '$/endpoint/generic'
+import { OK, BadRequest } from '$/response'
+import { APIKit, GenericAPIKit } from '$/apikit'
+import { ToJSON } from '$/types/json'
 
 /*
 	Unfortunately, generic endpoints has types that are not
 	easily readable, unless T has been defined.
 */
 
-interface PUT {
+
+// * Notice it extends ToJSON
+interface Put extends ToJSON<{
 	body: {
 		name: string
 		date?: Date
@@ -21,22 +24,39 @@ interface PUT {
 	query: {
 		seasonId: number
 	}
-}
+}> {}
 
-const PUT = <T extends PUT>(e: KitEvent<T>) => endpoint(e)(
+// * Notice it passes the event to endpoints first parameter
+const PUT = <T extends Put>(e: KitEvent<T>) => endpoint(e)(
 	parseJSON,
 	(event) => {
 		return OK({
 			b: event.locals.json,
 			q: {} as T['query']
 		})
-	}
+	},
+	() => BadRequest({ error: 'End of pipe' })
 )
 
-
+// * Notice it uses `GenericAPIKit` instead of `APIKit
 const x = {} as {
-	PUT: <const IN extends I<typeof PUT>>
-		(...args: RQ<IN>) => APIKit<ReturnType<typeof PUT<IN>>>
+	PUT: <
+		const B extends InferBody<typeof PUT>,
+		const O extends InferOptions<typeof PUT> & RequestOptions
+	>(body: B, options: O) => GenericAPIKit<typeof PUT<{ body: B } & O>>
 }
 
-const response = x.PUT({ name: 'Bob', date: new Date().toJSON() }, { query: { seasonId: 123 } })
+const [response] = await x.PUT({ name: 'Bob', date: new Date().toJSON() }, { query: { seasonId: 123 }, cache: 'default' }).$.OK(res => {
+	return res.json()
+})
+
+// Will show error if response returns invalid value:
+const testType: {
+	b: {
+		name: 'Bob'
+		date: string
+	}
+	q: {
+		seasonId: 123
+	}
+} | undefined = response
