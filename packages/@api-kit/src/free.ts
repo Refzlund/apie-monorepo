@@ -5,15 +5,20 @@ import { endpoint } from './endpoint'
 import { BadRequest, OK } from './response'
 import { APIKit } from './apikit'
 
+class User {
+	name: string = ''
+}
+
 interface Post {
 	body: {
 		name: string
+		user: User
 	}
 }
 
 const POST = endpoint<Post>()(
 	() => OK({ test: 123 }),
-	() => BadRequest({ error: 'message' })
+	() => BadRequest({ error: 'message', noUser: new User() })
 )
 
 const api = {} as {
@@ -22,7 +27,7 @@ const api = {} as {
 	}
 }
 
-const v = api.test.POST({ name: 'Helloo' }).BadRequest(res => {
+const v = api.test.POST({ name: 'Helloo', user: { name: 'asd' } }).BadRequest(res => {
 	
 })
 
