@@ -1,0 +1,39 @@
+{
+	"name": "@api/kit",
+	"version": "0.0.1",
+	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
+	"keywords": [],
+	"author": "Arthur Refslund @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/@apitkit",
+	"homepage": "https://github.com/refzlund/@apitkit",
+	"bugs": {
+		"url": "https://github.com/refzlund/@apitkit/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"lint": "eslint **/*.{js,ts,cjs}",
+		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"test": "vitest",
+		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
+		"build": "vite build"
+	},
+	"type": "module",
+	"main": "./.dist/index.js",
+	"module": "./.dist/index.js",
+	"types": "./.dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./.dist/index.js",
+			"require": "./.dist/index.umd.cjs"
+		}
+	},
+	"files": [
+		".dist"
+	],
+	"devDependencies": {
+		"@sveltejs/kit": "^1.22.3"
+	}
+}
