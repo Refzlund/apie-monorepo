@@ -18,7 +18,7 @@ export type EndpointRequestInput<
 		[RequiredKeys<O<I>>] extends [never] ?
 		false : true : false
 	) extends true ?
-		[body: Readonly<ToJSON<I['body']>>, opts: Simplify<O<I>> & RequestOptions]
+		[body: Readonly<ToJSON<I['body']>>, options: Simplify<O<I>> & RequestOptions]
 	: (
 		// if has body
 		[I['body']] extends [KitRequestInput['body']] ?
@@ -26,5 +26,5 @@ export type EndpointRequestInput<
 		[Extract<I['body'], undefined>] extends [never] ?
 		true : false : false
 	) extends true ?
-		[body: I['body'] extends KitRequestInput['body'] ? Readonly<ToJSON<I['body']>> : null, opts?: O<I> extends RequestOptions ? Simplify<O<I>> & RequestOptions : RequestOptions]
-	:  [body?: I['body'] extends KitRequestInput['body'] ? Readonly<ToJSON<I['body']>> : null, opts?: O<I> extends RequestOptions ? Simplify<O<I>> & RequestOptions : RequestOptions]
+		[body: I['body'] extends KitRequestInput['body'] ? Readonly<ToJSON<I['body']>> : null, options?: O<I> extends RequestOptions ? Simplify<O<I>> & RequestOptions : RequestOptions]
+	:  [body?: I['body'] extends KitRequestInput['body'] ? Readonly<ToJSON<I['body']>> : null, options?: O<I> extends RequestOptions ? Simplify<O<I>> & RequestOptions : RequestOptions]

@@ -1,3 +1,4 @@
+export declare const locals: unique symbol
 export declare const input: unique symbol
 export declare const brand: unique symbol
 
@@ -43,6 +44,7 @@ export type DeepWriteable<T> = Simplify<{
 }>
 
 export type MaybePromise<T> = T | Promise<T>
+export type MaybeAwaited<T> = T extends MaybePromise<infer U> ? U : T
 
 export type RequiredKeys<T> = {
 	[K in keyof T]-?: {} extends Pick<T, K> ? never : K

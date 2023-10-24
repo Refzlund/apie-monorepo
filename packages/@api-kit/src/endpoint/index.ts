@@ -1,67 +1,66 @@
 import { KitResponse } from '$/response/kitresponse'
-import { OK } from '$/response/types'
-import { ToJSON } from '$/types/json'
-import { Flat, MaybePromise, Simplify, brand, input } from '$/types/utility'
+import { DeepWriteable, Flat, Intersect, MaybePromise, Simplify, UnknownRecord, input, locals } from '$/types/utility'
 import { KitEvent, KitRequestInput, Locals } from './event'
 
 
 
 export type Endpoint<
 	Input extends KitRequestInput = KitRequestInput,
-	Responses extends KitResponse<number, boolean> = KitResponse
-> = Responses & { [input]: Input }
+	Responses extends KitResponse = KitResponse,
+	InL extends UnknownRecord = {},
+	OutL extends UnknownRecord = {}
+> =
+	(e: KitEvent<Input> & Locals<InL>) => MaybePromise<Responses | OutL>
 
 type EndpointFn<
 	Input extends KitRequestInput = {},
-	L extends Record<string | number | symbol, unknown> = {},
-	R extends EndpointFunctionResponse<unknown> = EndpointFunctionResponse<unknown>
-> = (event: KitEvent<Input> & Locals<L>) => MaybePromise<R>
+	L extends UnknownRecord = {},
+	R extends EndpointFnResult = EndpointFnResult
+> =
+	(event: KitEvent<Input> & Locals<L>) => MaybePromise<R>
 
-type EndpointFunctionResponse<T> =
+type EndpointFnResult<T = unknown> =
 	| KitResponse
 	| Record<string | number | symbol, T>
-	| ((...args: unknown[]) => EndpointFunctionResponse<T>)
 	| void
 
+type ExtractLocals<R extends EndpointFnResult<unknown>> =
+	[R] extends [never] | [void] ? {}
+	: Exclude<R, Function | KitResponse | undefined | void> & {}
 
-/** GetLocals */
-type GetLocals<
-	R extends EndpointFunctionResponse<unknown>[]
-> = Flat<Exclude<R[number], Function | KitResponse | undefined>> & {}
-
-export function endpoint<Input extends KitRequestInput = {}>(
-	event?: KitEvent<Input>
+export function endpoint<
+	Input extends KitRequestInput = {},
+	L extends UnknownRecord = {}
+>(
+	event?: KitEvent<Input> & Locals<L>
 ) {
-	type R<T = unknown> = EndpointFunctionResponse<T>
-	type G<R extends EndpointFunctionResponse<unknown>[]> = Simplify<GetLocals<R>>
+	type R = EndpointFnResult
+	type G<R extends EndpointFnResult<unknown>, L extends UnknownRecord = {}> =
+		Simplify<DeepWriteable<Intersect<ExtractLocals<R>> & L>>
+
+	type P = Simplify<L & App.Locals> & {}
+	type K = KitResponse
 
 	return function <
-		L1 extends G<[R0]>,
-		L2 extends G<[R0, R1]>,
-		L3 extends G<[R0, R1, R2]>,
-		L4 extends G<[R0, R1, R2, R3]>,
-		L5 extends G<[R0, R1, R2, R3, R4]>,
-
-		const R0 extends R = never, const R1 extends R = never,
-		const R2 extends R = never, const R3 extends R = never,
-		const R4 extends R = never, const R5 extends R = never,
+		const R0 extends R, const R1 extends R,
+		const R2 extends R, const R3 extends R,
+		const R4 extends R, const R5 extends R,
 	>(
-		a0: EndpointFn<Input, {}, R0>,
-		a1?: EndpointFn<Input, L1, R1>,
-		a2?: EndpointFn<Input, L2, R2>,
-		a3?: EndpointFn<Input, L3, R3>,
-		a4?: EndpointFn<Input, L4, R4>,
-		a5?: EndpointFn<Input, L5, R5>,
-	) {
-		type K = KitResponse
-
+		a0: EndpointFn<Input, P, R0>,
+		a1?: EndpointFn<Input, G<R0, P>, R1>,
+		a2?: EndpointFn<Input, G<R0 | R1, P>, R2>,
+		a3?: EndpointFn<Input, G<R0 | R1 | R2, P>, R3>,
+		a4?: EndpointFn<Input, G<R0 | R1 | R2 | R3, P>, R4>,
+		a5?: EndpointFn<Input, G<R0 | R1 | R2 | R3 | R4, P>, R5>,
+	) {	
 		type Responses = Endpoint<Simplify<Input>,
-			| Extract<R0, K>
-			| Extract<R1, K>
-			| Extract<R2, K>
-			| Extract<R3, K>
-			| Extract<R4, K>
-			| Extract<R5, K>
+			Extract<
+				| Extract<R0, K>
+				| Extract<R1, K>
+				,
+			K>,
+			Simplify<L>,
+			Simplify<G<R0 | R1 | R2 | R3 | R4 | R5, P>>
 		>
 
 		type EndpointReturn = Responses
@@ -72,6 +71,6 @@ export function endpoint<Input extends KitRequestInput = {}>(
 
 		if (event)
 			return fn(event) as unknown as EndpointReturn
-		return fn as unknown as EndpointReturn
+		return fn as unknown as EndpointReturn 
 	}
 }

@@ -5,26 +5,30 @@ type AsyncStream = ReadableStream<Uint8Array> & {
 }
 
 export type ResponseBody<Body> = {
-	body: [Body] extends [undefined | void | null]
+	body:
+		Body extends null & 1 ? any : 
+		[Body] extends [undefined | void | null]
 		? undefined
 		: [Extract<Body, void | undefined | null>] extends [never]
 		? AsyncStream
 		: (AsyncStream | undefined)
 	text(): Promise<string>
-} & (Body extends UnknownRecord | unknown[] ? {
-	json(): Promise<Body>
-} : Body extends FormData ? {
-	formData(): Promise<FormData>
-} : Body extends Blob ? {
-	blob(): Promise<Blob>
-	arrayBuffer(): Promise<ArrayBuffer>
-} : {})
+} & (
+	& (Body extends UnknownRecord | unknown[] ? { json(): Promise<Body> } : {})
+	& (Body extends FormData ? { formData(): Promise<FormData> } : {})
+	& (Body extends Blob ? {
+		blob(): Promise<Blob>
+		arrayBuffer(): Promise<ArrayBuffer>
+	} : {})
+)
 
 export type KitResponse<
-	Status extends number = number,
-	Ok extends boolean = boolean,
-	Body = unknown,
-	Fn extends string = string
+	/* eslint-disable @typescript-eslint/no-explicit-any */
+	Status extends number = any,
+	Ok extends boolean = any,
+	Body = any,
+	Fn extends string = any
+	/* eslint-enable @typescript-eslint/no-explicit-any */
 > = {
 	status: Status
 	ok: Ok
@@ -35,6 +39,10 @@ export type KitResponse<
 	url: string
 	[brand]: Fn
 } & ResponseBody<Body>
+
+export function isKitResponse(res: unknown): res is KitResponse {
+	return res[brand] !== undefined
+}
 
 // * -- Infer
 

@@ -12,7 +12,9 @@ export interface KitRequestInput extends RequestOptions {
 type GetQuery<I extends KitRequestInput> = I extends { query: infer Q } ? Q : {}
 
 /** KitEvent simplifies the _KitEvent by hiding the intenral type for intellisense */
-type _KitEvent<Input extends KitRequestInput> = Omit<RequestEvent, 'request'> & {
+type _KitEvent<
+	Input extends KitRequestInput, 
+> = Omit<RequestEvent, 'request'> & {
 	[brand]: Input
 	request: {
 		json: () => Promise<ToJSON<Input['body']>>
@@ -26,13 +28,19 @@ type _KitEvent<Input extends KitRequestInput> = Omit<RequestEvent, 'request'> & 
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type KitEvent<Input extends KitRequestInput = any> = {
+export type KitEvent<
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	Input extends KitRequestInput = any
+> = {
 	[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
 }
 
+export function asKitEvent<T>(value: T) {
+	return value as unknown as (T extends KitEvent ? T : KitEvent) & { Type: InferKitEvent<T> }
+}
+
 export type InferKitEvent<
-	T extends KitEvent,
+	T,
 	JSON extends boolean = true,
 	Local extends boolean = true
 > = T extends KitEvent<infer K> ?

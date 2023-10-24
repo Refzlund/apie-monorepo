@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { endpoint } from '$/endpoint'
+import { Endpoint, endpoint } from '$/endpoint'
 import { InferKitEvent, KitEvent, Locals } from '$/endpoint/event'
 import { parseJSON } from '$/endpoint/functions'
 import { BadRequest, OK } from '$/response'
+import { isKitResponse } from '$/response/kitresponse'
+import { MaybeAwaited } from '$/types/utility'
 
 interface Post {
 	query?: {
@@ -28,8 +30,35 @@ function example1(event: KitEvent & Locals<{ yas: 'heehee' }>) {
 	}
 }
 
+const nested = endpoint<Post, { yas: 'heehee' }>()(
+	(event) => {
+		if(event)
+			return {
+				yasNested: `yasNested: ${event.locals.yas}`,
+			}
+		return BadRequest()
+	},
+	(e) => {
+		return OK({ message: 'It\'s ok!'})
+	}
+)
+
 export const POST = endpoint<Post>()(
+	nested,
+	(e) => {
+		return {
+			a: true
+		}
+	},
+	(e: KitEvent & Locals<{ a: true }>) => {
+
+	},
 	parseJSON,
+	e => {
+		e.locals.json
+		return BadRequest()
+	}
+/*
 	(event) => {
 		let value = 0
 		value += 2
@@ -43,6 +72,7 @@ export const POST = endpoint<Post>()(
 			yas: 'heehee'
 		}
 	},
+	// nested,
 	example1,
 	(event) => {
 		type T = InferKitEvent<typeof event>
@@ -50,6 +80,7 @@ export const POST = endpoint<Post>()(
 		const str: string = event.locals.yas
 
 		return OK({
+			yas: event.locals.yas,
 			no: str as T['body']['name'],
 			another: str,
 			user: new User()
@@ -59,4 +90,5 @@ export const POST = endpoint<Post>()(
 
 		return OK()
 	}
+*/
 )
