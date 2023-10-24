@@ -1,5 +1,5 @@
 import { KitResponse } from '$/response/kitresponse'
-import { DeepWriteable, Flat, Intersect, MaybePromise, Simplify, UnknownRecord, input, locals } from '$/types/utility'
+import { DeepWriteable, Intersect, MaybePromise, Simplify, UnknownRecord, apikit } from '$/types/utility'
 import { KitEvent, KitRequestInput, Locals } from './event'
 
 
@@ -37,14 +37,14 @@ export function endpoint<
 	type R = EndpointFnResult
 	type G<R extends EndpointFnResult<unknown>, L extends UnknownRecord = {}> =
 		Simplify<DeepWriteable<Intersect<ExtractLocals<R>> & L>>
-
-	type P = Simplify<L & App.Locals> & {}
-	type K = KitResponse
+		
+		type P = Simplify<L & App.Locals>
+		type K = KitResponse
 
 	return function <
-		const R0 extends R, const R1 extends R,
-		const R2 extends R, const R3 extends R,
-		const R4 extends R, const R5 extends R,
+		const R0 extends R = {}, const R1 extends R = {},
+		const R2 extends R = {}, const R3 extends R = {},
+		const R4 extends R = {}, const R5 extends R = {},
 	>(
 		a0: EndpointFn<Input, P, R0>,
 		a1?: EndpointFn<Input, G<R0, P>, R1>,

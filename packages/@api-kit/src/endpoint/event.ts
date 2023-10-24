@@ -1,5 +1,5 @@
 import { ToJSON } from '$/types/json'
-import { Simplify, UnknownRecord, brand } from '$/types/utility'
+import { Simplify, UnknownRecord, apikit, brand } from '$/types/utility'
 import { RequestEvent } from '@sveltejs/kit'
 import { RequestOptions } from './callback'
 

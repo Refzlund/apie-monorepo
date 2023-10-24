@@ -44,15 +44,15 @@ const nested = endpoint<Post, { yas: 'heehee' }>()(
 )
 
 export const POST = endpoint<Post>()(
-	nested,
+	nested, // <- Causes error on line 54, move it to line 54 and it works fine
 	(e) => {
 		return {
-			a: true
+			a: true,
+			yas: 'heehee'
 		}
 	},
-	(e: KitEvent & Locals<{ a: true }>) => {
-
-	},
+	(e: KitEvent & Locals<{ a: true }>) => {},
+	
 	parseJSON,
 	e => {
 		e.locals.json

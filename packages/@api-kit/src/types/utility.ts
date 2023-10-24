@@ -1,6 +1,6 @@
 export declare const locals: unique symbol
-export declare const input: unique symbol
 export declare const brand: unique symbol
+export declare const apikit: unique symbol
 
 interface SimplifyOptions {
 	/**
