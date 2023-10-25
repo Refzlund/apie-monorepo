@@ -1,3 +1,4 @@
+import { APIKit } from '$/apikit'
 import { KitResponse } from '$/response/kitresponse'
 import { DeepWriteable, Intersect, MaybePromise, Simplify, UnknownRecord, apikit } from '$/types/utility'
 import { KitEvent, KitRequestInput, Locals } from './event'
@@ -28,6 +29,12 @@ type ExtractLocals<R extends EndpointFnResult<unknown>> =
 	[R] extends [never] | [void] ? {}
 	: Exclude<R, Function | KitResponse | undefined | void> & {}
 
+declare namespace APIKit {
+	export interface Locals extends App.Locals {
+		[apikit]: unknown
+	}
+}
+
 export function endpoint<
 	Input extends KitRequestInput = {},
 	L extends UnknownRecord = {}
@@ -35,31 +42,34 @@ export function endpoint<
 	event?: KitEvent<Input> & Locals<L>
 ) {
 	type R = EndpointFnResult
+	
 	type G<R extends EndpointFnResult<unknown>, L extends UnknownRecord = {}> =
-		Simplify<DeepWriteable<Intersect<ExtractLocals<R>> & L>>
-		
-		type P = Simplify<L & App.Locals>
-		type K = KitResponse
+		Simplify<DeepWriteable<Intersect<ExtractLocals<R & { [apikit]: unknown }>> & L>>
+	
+	type P = Simplify<L> 
+	type K = KitResponse
 
 	return function <
-		const R0 extends R = {}, const R1 extends R = {},
-		const R2 extends R = {}, const R3 extends R = {},
-		const R4 extends R = {}, const R5 extends R = {},
+		const R0 extends R = never, const R1 extends R = never,
+		const R2 extends R = never, const R3 extends R = never,
+		const R4 extends R = never, const R5 extends R = never,
 	>(
-		a0: EndpointFn<Input, P, R0>,
+		a0: EndpointFn<Input, G<{} , P>, R0>,
 		a1?: EndpointFn<Input, G<R0, P>, R1>,
-		a2?: EndpointFn<Input, G<R0 | R1, P>, R2>,
+		a2?: EndpointFn<Input, G<R0 | R1, P> , R2>,
 		a3?: EndpointFn<Input, G<R0 | R1 | R2, P>, R3>,
 		a4?: EndpointFn<Input, G<R0 | R1 | R2 | R3, P>, R4>,
 		a5?: EndpointFn<Input, G<R0 | R1 | R2 | R3 | R4, P>, R5>,
 	) {	
-		type Responses = Endpoint<Simplify<Input>,
-			Extract<
-				| Extract<R0, K>
-				| Extract<R1, K>
-				,
-			K>,
-			Simplify<L>,
+		type Responses = Endpoint<
+			Simplify<Input>,
+			| Extract<R0, K>
+			| Extract<R1, K>
+			| Extract<R2, K>
+			| Extract<R3, K>
+			| Extract<R4, K>
+			| Extract<R5, K>
+			, Simplify<L>,
 			Simplify<G<R0 | R1 | R2 | R3 | R4 | R5, P>>
 		>
 

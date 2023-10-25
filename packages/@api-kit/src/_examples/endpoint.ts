@@ -5,7 +5,7 @@ import { InferKitEvent, KitEvent, Locals } from '$/endpoint/event'
 import { parseJSON } from '$/endpoint/functions'
 import { BadRequest, OK } from '$/response'
 import { isKitResponse } from '$/response/kitresponse'
-import { MaybeAwaited } from '$/types/utility'
+import { MaybeAwaited, apikit } from '$/types/utility'
 
 interface Post {
 	query?: {
@@ -30,7 +30,7 @@ function example1(event: KitEvent & Locals<{ yas: 'heehee' }>) {
 	}
 }
 
-const nested = endpoint<Post, { yas: 'heehee' }>()(
+const nested = endpoint<{}, { yas: 'heehee' }>()(
 	(event) => {
 		if(event)
 			return {
@@ -44,21 +44,24 @@ const nested = endpoint<Post, { yas: 'heehee' }>()(
 )
 
 export const POST = endpoint<Post>()(
-	nested, // <- Causes error on line 54, move it to line 54 and it works fine
 	(e) => {
 		return {
 			a: true,
 			yas: 'heehee'
 		}
 	},
+	(e: KitEvent & Locals<{ a: true }>) => {
+		return OK()
+	},
+	nested,
+	e => {}
+	/*
 	(e: KitEvent & Locals<{ a: true }>) => {},
-	
 	parseJSON,
 	e => {
 		e.locals.json
 		return BadRequest()
 	}
-/*
 	(event) => {
 		let value = 0
 		value += 2
