@@ -9,6 +9,7 @@ const config = mergeConfigs({
 		'@typescript-eslint/no-unused-vars': ['warn', { args: 'none', vars: 'all' }],
 		'@typescript-eslint/no-var-requires': 'off',
 		'@typescript-eslint/ban-types': 'off',
+		'@typescript-eslint/no-namespace': 'off',
 		'quotes': [
 			'error', 'single',
 			{ 'allowTemplateLiterals': true }

@@ -29,12 +29,7 @@ type ExtractLocals<R extends EndpointFnResult<unknown>> =
 	[R] extends [never] | [void] ? {}
 	: Exclude<R, Function | KitResponse | undefined | void> & {}
 
-declare namespace APIKit {
-	export interface Locals extends App.Locals {
-		[apikit]: unknown
-	}
-}
-
+	
 export function endpoint<
 	Input extends KitRequestInput = {},
 	L extends UnknownRecord = {}
