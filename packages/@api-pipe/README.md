@@ -8,7 +8,10 @@
 The pipe can return a response via `@api/responses`, and the pipe will end early.
 
 The goal of the `@api` is to handle REST api-like infrastructures with typesafety. This in my belief, does not limit you to use it outside of REST api-like infrastructures.
-This means responses will be typed. You can see what responses a certain pipeline might throw at you.
+
+This library keeps responses typed. You can see what responses a certain pipeline might throw at you, which I think is good for error handling.
+
+This library is inspired by SvelteKits backend that uses an `event` to distribute `locals` (dependency injection) and other request information. `@api/pipe` is designed to be used outside (and in conjunction with SvelteKit).
 
 #### **Example**
 
@@ -18,6 +21,7 @@ type SomeInput = { hello: 'world' | 'there' }
 const helloPipe = createEventPipe<SomeInput>()
 
 const myPipeline = helloPipe(
+	authGuard(), // Make sure user is logged in
 	(e, v: undefined) => {
 		return {
 			pipeValue: e.hello
