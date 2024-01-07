@@ -1,13 +1,13 @@
-# @api/pipe
+<h1 align='center'>@api/pipe</h1>
 
 > [!WARNING]  
 > Work in progress
 
-@api/pipe is a function that creates a pipe with a stateful object.
+`@api/pipe` creates a function that creates pipelines with requirements (aka dependency injection).
 
 The pipe can return a response via `@api/responses`, and the pipe will end early.
 
-The goal of the `@api` is to handled REST-api like structures with typesafety.
+The goal of the `@api` is to handle REST api-like infrastructures with typesafety. This in my belief, does not limit you to use it outside of REST api-like infrastructures.
 This means responses will be typed. You can see what responses a certain pipeline might throw at you.
 
 #### **Example**
