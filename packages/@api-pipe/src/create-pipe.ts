@@ -38,7 +38,7 @@ interface Options<T extends UnknownRecord> {
 	/** Functions to run after every pipeline (except if it trows) */
 	after?: ((event: T, result: unknown) => unknown)[]
 	/** Functions to always run after every pipeline */
-	finally?: ((event: T, result: unknown) => unknown)[]
+	finally?: ((event: T, result?: unknown, error?: unknown) => unknown)[]
 
 	catch?(event: T, error: unknown): APIResponse
 }
@@ -49,8 +49,20 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	type Fn<PreviousResult, Result extends NonFunction> = 
 		| PipeFn<T, GetPipeContent<PreviousResult>, Result>
 	
-	const errored =
-		(event: T, error: unknown) => options?.catch?.(event, error) || InternalServerError()
+	function errored(event: T, error: unknown) {
+		try {
+			options?.finally?.forEach(fn => fn(event, undefined, error))
+		} catch (err) {
+			error = err
+		}
+		try {
+			return options?.catch?.(event, error) || InternalServerError()
+		} catch (error) {
+			console.error(error)
+			return InternalServerError({ message: 'Pipeline: "catch"-stage has thrown an error.' })
+		}
+		
+	}
 	
 	function before(event: T) {
 		try {
@@ -63,6 +75,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	function after(event: T, result: unknown) {
 		try {
 			options?.after?.forEach(fn => fn(event, result))
+			options?.finally?.forEach(fn => fn(event, result, undefined))
 		} catch (error) {
 			return errored(event, error)
 		}
