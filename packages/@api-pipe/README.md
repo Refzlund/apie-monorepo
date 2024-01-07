@@ -1,23 +1,23 @@
 <h1 align='center'>@api/pipe</h1>
 <h3 align="center">
 
-	<a href='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg'>
-		<img src='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
-	</a>
+<a href='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg'>
+	<img src='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
+</a>
 
-	<a href='https://semver.org'>
-		<img src='https://img.shields.io/badge/Semantic_Versioning-v2-orange' alt='Semantic Versioning V2'/>
-	</a>
+<a href='https://semver.org'>
+	<img src='https://img.shields.io/badge/Semantic_Versioning-v2-orange' alt='Semantic Versioning V2'/>
+</a>
 
-	<a href='https://www.paypal.com/paypalme/refzlund'>
-		<img src='https://img.shields.io/badge/Donate-%40Refzlund-green?logo=paypal' alt='Donation Link'/>
-	</a>
+<a href='https://www.paypal.com/paypalme/refzlund'>
+	<img src='https://img.shields.io/badge/Donate-%40Refzlund-green?logo=paypal' alt='Donation Link'/>
+</a>
 
-	<br/>
+<br/>
 
-	<a href='https://www.npmjs.com/package/@api/pipe'>
-		<img src='https://img.shields.io/github/v/release/refzlund/api-kit?style=for-the-badge&label=PRE-RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
-	</a>
+<a href='https://www.npmjs.com/package/@api/pipe'>
+	<img src='https://img.shields.io/github/v/release/refzlund/api-kit?style=for-the-badge&label=PRE-RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
+</a>
 
 </h3>
 
@@ -47,10 +47,8 @@ The pipeline (result of using a pipe), will return early if the function returns
 ```ts
 
 type SomeInput = { hello: 'world' | 'there' }
-
-  
-
 const helloPipe = createEventPipe<SomeInput>({...})
+
 
 const myPipeline = helloPipe(
     authGuard(), // Make sure user is logged in
@@ -69,7 +67,7 @@ const myPipeline = helloPipe(
     }
 )
 
-  
+
 
 // Returns<string> which is `worldworld`
 const result1 = myPipeline({ hello: 'world' })
