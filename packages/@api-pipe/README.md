@@ -1,6 +1,6 @@
 # @api/pipe
 
-> [!WARNING] Work in progress
+> [!WARNING]  Work in progress
 
 @api/pipe is a function that creates a pipe with a stateful object.
 
