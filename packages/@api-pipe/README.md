@@ -1,9 +1,10 @@
-<h1 align='center'>
+<h1 align='center' vertical-align='baseline' >
 @api/pipe
-<br/>
-<a href='https://www.npmjs.com/package/@api/pipe'>
-	<img src='https://img.shields.io/github/v/release/refzlund/api-kit?style=for-the-badge&label=PRE-RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
+<small>
+<a href='https://www.npmjs.com/package/@api/pipe' vertical-align='bottom' >
+	<img src='https://img.shields.io/github/v/release/refzlund/api-kit?style=social&label=PRE-RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
 </a>
+</small>
 </h1>
 <h3 align="center">
 
