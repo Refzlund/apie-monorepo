@@ -1,0 +1,36 @@
+{
+  "name": "@api/responses",
+  "version": "0.0.1",
+  "description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
+  "keywords": [],
+  "author": "Arthur Refslund @Refzlund",
+  "license": "MIT",
+  "repository": "github:refzlund/@apitkit",
+  "homepage": "https://github.com/refzlund/@apitkit",
+  "bugs": {
+    "url": "https://github.com/refzlund/@apitkit/labels/bug"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./src/responses.ts",
+    "./types": "./src/types.ts"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+	"test": "bun test"
+  },
+  "dependencies": {
+    "utility": "workspace:*"
+  },
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "@api/responses": "workspace:*"
+  }
+}

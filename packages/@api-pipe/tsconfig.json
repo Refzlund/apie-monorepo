@@ -1,0 +1,20 @@
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+		/* Paths */
+		"baseUrl": ".",
+		"paths": {
+			// Library
+			"@api/responses": ["./dist"],
+			"@api/responses/*": ["./dist/*"],
+
+			// ...
+			"$": ["./src"],
+			"$/*": ["./src/*"],
+
+			"$types": ["src/types"],
+			"$types/*": ["src/types/*"]
+		}
+	},
+	"include": ["src"]
+}

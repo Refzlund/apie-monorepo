@@ -26,7 +26,8 @@ const config = mergeConfigs(
 			ecmaVersion: 'latest',
 			sourceType: 'module'
 		},
-		plugins: ['@typescript-eslint']
+		plugins: ['@typescript-eslint'],
+		ignorePatterns: ['**/dist/**']
 	}
 )
 

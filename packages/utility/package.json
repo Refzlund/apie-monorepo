@@ -1,0 +1,8 @@
+{
+	"name": "utility",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		"./types": "./src/types/index.ts"
+	}
+}
