@@ -1,5 +1,6 @@
 import type { MaybePromise, UnknownRecord, Writable } from 'utility/types'
 import { type APIResponse } from '@api/responses/types'
+import { InternalServerError } from '@api/responses'
 
 type NonFunction =
 	| string | number | bigint | boolean | symbol
@@ -30,10 +31,45 @@ type GetPipeContent<I> =
 	I extends PipeFn<infer _, infer _, infer R>
 		? WritableInput<Exclude<R, APIResponse>> : WritableInput<Exclude<I, APIResponse>>
 
-export function createEventPipe<T extends UnknownRecord = {}>() {
+interface Options<T extends UnknownRecord> {
+	/** Functions to run before every pipeline */
+	before?: ((event: T) => unknown)[]
+
+	/** Functions to run after every pipeline (except if it trows) */
+	after?: ((event: T, result: unknown) => unknown)[]
+	/** Functions to always run after every pipeline */
+	finally?: ((event: T, result: unknown) => unknown)[]
+
+	catch?(event: T, error: unknown): APIResponse
+}
+
+export function createEventPipe<T extends UnknownRecord = {}>(
+	options: Options<T> = {}
+) {
 	type Fn<PreviousResult, Result extends NonFunction> = 
 		| PipeFn<T, GetPipeContent<PreviousResult>, Result>
 	
+	const errored =
+		(event: T, error: unknown) => options?.catch?.(event, error) || InternalServerError()
+	
+	function before(event: T) {
+		try {
+			options?.before?.forEach(fn => fn(event))
+		} catch (error) {
+			return errored(event, error)
+		}
+	}
+
+	function after(event: T, result: unknown) {
+		try {
+			options?.after?.forEach(fn => fn(event, result))
+		} catch (error) {
+			return errored(event, error)
+		}
+	}
+	
+
+	//#region Pipe implementation
 	function pipe<
 		P0 extends Fn<(input: T) => void, R0>, const R0 extends NonFunction
 	>(
@@ -441,18 +477,37 @@ export function createEventPipe<T extends UnknownRecord = {}>() {
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18 | P19 | P20
 	>>
+	//#endregion
 	
 
-	function pipe(...functions: PipeFn<T, unknown, NonFunction>[]) {
+	function pipe(...params: Array<NonFunction | PipeFn<T, unknown, NonFunction>>) {
 		return async function pipedFunction(event: T) {
 			let previousResult: unknown = undefined
-			for (const fn of functions) {
-				if(typeof fn !== 'function')
-					throw new Error('Pipe functions must be functions')
-				previousResult = await fn(event, previousResult)
-				if(previousResult instanceof Response)
+			
+			let result = before(event)
+			if (result !== undefined) return result
+			
+			for (const pm of params) {
+				if (typeof pm !== 'function') {
+					previousResult = pm
+					continue
+				}
+
+				try {
+					previousResult = await pm(event, previousResult)
+				} catch (error) {
+					return errored(event, error)
+				}
+
+				if (previousResult instanceof Response) {
+					const result = after(event, previousResult)
+					if (result !== undefined) return result
 					return previousResult
+				}
 			}
+
+			result = after(event, previousResult)
+			if (result !== undefined) return result
 			return previousResult
 		}
 	}
