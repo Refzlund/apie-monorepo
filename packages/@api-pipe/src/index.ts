@@ -1,6 +1,7 @@
 import type { MaybePromise, UnknownRecord, Writable } from '@api/utility/types'
 import { type APIResponse } from '@api/responses/types'
 import { InternalServerError } from '@api/responses'
+import { MaybeArray } from '../../@api-utility/src/types'
 
 type NonFunction =
 	| string | number | bigint | boolean | symbol
@@ -30,10 +31,11 @@ type GetPipeContent<I> =
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
-	before?: ((event: T) => unknown)[]
+	before?: MaybeArray<((event: T) => unknown)>
 
 	/** Functions to run after every pipeline (except if it trows) */
-	after?: ((event: T, result: unknown) => unknown)[]
+	after?: MaybeArray<((event: T, result: unknown) => unknown)>
+
 	/** Functions to always run after every pipeline */
 	finally?: ((event: T, result?: unknown, error?: unknown) => unknown)[]
 
@@ -63,7 +65,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 
 	function before(event: T) {
 		try {
-			options?.before?.forEach(fn => fn(event))
+			if (Array.isArray(options?.before))
+				options?.before?.forEach(fn => fn(event))
+			else
+				options?.before?.(event)
 		} catch (error) {
 			return errored(event, error)
 		}
@@ -71,7 +76,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 
 	function after(event: T, result: unknown) {
 		try {
-			options?.after?.forEach(fn => fn(event, result))
+			if (Array.isArray(options?.after))
+				options?.after?.forEach(fn => fn(event, result))
+			else
+				options?.after?.(event, result)
 			options?.finally?.forEach(fn => fn(event, result, undefined))
 		} catch (error) {
 			return errored(event, error)
