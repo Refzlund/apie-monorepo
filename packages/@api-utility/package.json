@@ -1,6 +1,6 @@
 {
 	"name": "@api/utility",
-	"version": "1.0.0",
+	"version": "0.1.0",
 	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
@@ -21,7 +21,8 @@
 	],
 	"exports": {
 		"./types": {
-			"default": "./dist/types/index.ts",
+			"default": "./dist/types/index.mjs",
+			"require": "./dist/types/index.umd.js",
 			"types": "./dist/types/index.d.ts"
 		}
 	}
