@@ -17,18 +17,17 @@ export default async function build(options: BuildOptions, ...entries: string[])
 	const root = options.rootDir || './src'
 	const array: UserConfig[] = []
 
+	const plugins = [
+		...(options.vite?.plugins || []),
+		tsconfigPaths()
+	]
+
+	delete options.vite?.plugins
+
 	let init = true
 	for (const entry of entries) {
 		const filePath = path.resolve(root, entry)
 		const file = path.parse(filePath)
-
-		const plugins = [
-			tsconfigPaths()
-		]
-		if (init)
-			plugins.push(dts({
-				include: ['src']
-			}))
 
 		array.push(mergeConfig(
 			{
@@ -41,10 +40,12 @@ export default async function build(options: BuildOptions, ...entries: string[])
 						fileName: file.name
 					}
 				},
-				plugins,
+				plugins: init ? [...plugins, dts({
+					include: ['src']
+				})] : plugins,
 				test: {
 					typecheck: {
-						include: ['**/*.test.ts']
+						include: ['**/*.test.ts', './tests']
 					}
 				}
 			} satisfies UserConfig,
