@@ -15,9 +15,18 @@
 	},
 	"type": "module",
 	"types": "./dist/index.d.ts",
+	"scripts": {
+		"package": "bun run ./vite"
+	},
 	"exports": {
-		".": "./src/index.ts",
-		"./types": "./src/types.ts"
+		".": {
+			"default": "./dist/index.ts",
+			"types": "./dist/index.d.ts"
+		},
+		"./types": {
+			"default": "./dist/types.ts",
+			"types": "./dist/types.d.ts"
+		}
 	},
 	"files": [
 		"dist"

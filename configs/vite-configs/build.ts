@@ -17,13 +17,23 @@ export default async function build(options: BuildOptions, ...entries: string[])
 	const root = options.rootDir || './src'
 	const array: UserConfig[] = []
 
+	let init = true
 	for (const entry of entries) {
 		const filePath = path.resolve(root, entry)
 		const file = path.parse(filePath)
 
+		const plugins = [
+			tsconfigPaths()
+		]
+		if (init)
+			plugins.push(dts({
+				include: ['src']
+			}))
+
 		array.push(mergeConfig(
 			{
 				build: {
+					emptyOutDir: init,
 					outDir: options.outDir || './dist',
 					lib: {
 						entry: filePath,
@@ -31,12 +41,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 						fileName: file.name
 					}
 				},
-				plugins: [
-					tsconfigPaths(),
-					dts({
-						include: ['src']
-					})
-				],
+				plugins,
 				test: {
 					typecheck: {
 						include: ['**/*.test.ts']
@@ -45,6 +50,8 @@ export default async function build(options: BuildOptions, ...entries: string[])
 			} satisfies UserConfig,
 			options.vite || {}
 		))
+
+		init = false
 	}
 
 	const file = Bun.file(options.tsconfigPath)
@@ -60,9 +67,12 @@ export default async function build(options: BuildOptions, ...entries: string[])
 
 		await Bun.write(file, JSON.stringify(tsconfig))
 
-		for (const entry of array)
-			await viteBuild(entry)
+		const init = array.shift()
+		await viteBuild(init)
 
+		await Promise.all(
+			array.map(v => viteBuild(v))
+		)
 	} catch (error) {
 
 		console.error('Vite Build: An error occurred.')
