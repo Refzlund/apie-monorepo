@@ -1,4 +1,7 @@
 export * from './responses'
 export {
-	apiBrand
+	apiBrand,
+	getBody,
+	isResponse,
+	type APIResponse
 } from './api-response'

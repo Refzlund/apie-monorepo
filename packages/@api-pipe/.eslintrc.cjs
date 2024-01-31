@@ -3,4 +3,5 @@
 const { mergeConfigs, config } = require('eslint-configs')
 
 module.exports = mergeConfigs(config.ts, {
+	
 })

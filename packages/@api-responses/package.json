@@ -1,6 +1,6 @@
 {
-	"name": "@api/pipe",
-	"version": "0.0.1",
+	"name": "@api/responses",
+	"version": "next-1.0.0",
 	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
@@ -23,6 +23,9 @@
 		"dist"
 	],
 	"dependencies": {
-		"utility": "workspace:*"
+		"@api/utility": "*"
+	},
+	"devDependencies": {
+		"@api/utility": "workspace:*"
 	}
 }

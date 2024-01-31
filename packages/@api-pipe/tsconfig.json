@@ -3,10 +3,11 @@
 	"compilerOptions": {
 		/* Paths */
 		"baseUrl": ".",
+		"rootDir": "./src",
 		"paths": {
 			// Library
-			"@api/responses": ["./dist"],
-			"@api/responses/*": ["./dist/*"],
+			"@api/pipe": ["./dist"],
+			"@api/pipe/*": ["./dist/*"],
 
 			// ...
 			"$": ["./src"],
@@ -16,5 +17,6 @@
 			"$types/*": ["src/types/*"]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "tests"],
+	"exclude": ["dist"]
 }

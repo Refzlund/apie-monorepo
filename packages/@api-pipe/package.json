@@ -1,36 +1,44 @@
 {
-  "name": "@api/responses",
-  "version": "0.0.1",
-  "description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
-  "keywords": [],
-  "author": "Arthur Refslund @Refzlund",
-  "license": "MIT",
-  "repository": "github:refzlund/@apitkit",
-  "homepage": "https://github.com/refzlund/@apitkit",
-  "bugs": {
-    "url": "https://github.com/refzlund/@apitkit/labels/bug"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "type": "module",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": "./src/responses.ts",
-    "./types": "./src/types.ts"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-	"test": "bun test"
-  },
-  "dependencies": {
-    "utility": "workspace:*"
-  },
-  "devDependencies": {
-  },
-  "peerDependencies": {
-    "@api/responses": "workspace:*"
-  }
+	"name": "@api/pipe",
+	"version": "0.1.0",
+	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
+	"keywords": [],
+	"author": "Arthur Refslund @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/@apitkit",
+	"homepage": "https://github.com/refzlund/@apitkit",
+	"bugs": {
+		"url": "https://github.com/refzlund/@apitkit/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"lint": "eslint **/*.{js,ts,cjs}",
+		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"test": "bun test",
+		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
+		"package": "bun run ./vite"
+	},
+	"dependencies": {
+		"@api/utility": "*"
+	},
+	"devDependencies": {
+		"@api/utility": "workspace:*",
+		"@api/responses": "workspace:*"
+	},
+	"peerDependencies": {
+		"@api/responses": "*"
+	}
 }

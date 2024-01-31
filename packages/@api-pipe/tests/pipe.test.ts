@@ -1,30 +1,29 @@
 import { expect, test } from 'bun:test'
-import { createEventPipe } from './create-pipe'
+import { createEventPipe } from '$'
 import { OK } from '@api/responses'
-import { getBody, isResponse } from '../../@api-responses/src/api-response'
+import { getBody, isResponse } from '@api/responses'
 
 const pipe = createEventPipe<{ yas: 'true' | 'false' }>()
 
 const date = new Date()
-const example = pipe(
-	e => {
-		return {
-			v: 123
-		}
-	},
-	(e, v) => {
-		if(e.yas === 'true') {
-			return OK({ yas: e.yas, date })
-		}
-		return {
-			v: 123
-		}
-	},
-	(e) => {
-		return {
-			c: date
-		}
+
+const value123 = pipe(() => ({ v: 123 }))
+const returnYasTrue = pipe((e, v: { c: Date }) => {
+	if (e.yas === 'true') {
+		return OK({ yas: e.yas, date })
 	}
+	return {
+		v: 123,
+		d: v
+	}
+})
+
+const example = pipe(
+	value123,
+	{
+		c: date
+	},
+	returnYasTrue
 )
 
 test('Pipe and correct early response', async () => {
@@ -45,6 +44,5 @@ test('Pipe and correct no response', async () => {
 	const result = await example({ yas: 'false' })
 
 	expect(result).not.toBeInstanceOf(Response)
-	expect(result).not.toHaveProperty('v')
-	expect(result).toEqual({ c: date })
+	expect(result).toEqual({ v: 123, d: { c: date } })
 })

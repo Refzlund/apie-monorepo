@@ -7,6 +7,6 @@
 	"type": "module",
 	"private": true,
 	"exports": {
-		"./vite.config.lib": "./vite.config.lib.ts"
+		"./build": "./build.ts"
 	}
 }

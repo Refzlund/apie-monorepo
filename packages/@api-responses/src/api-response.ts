@@ -1,4 +1,4 @@
-import type { UnknownRecord } from 'utility/types'
+import type { UnknownRecord } from '../../@api-utility/src/types'
 
 export const apiBrand = Symbol('APIResponse')
 
