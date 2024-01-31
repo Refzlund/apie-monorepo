@@ -5,10 +5,10 @@
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
-	"repository": "github:refzlund/@apitkit",
-	"homepage": "https://github.com/refzlund/@apitkit",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo",
 	"bugs": {
-		"url": "https://github.com/refzlund/@apitkit/labels/bug"
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"

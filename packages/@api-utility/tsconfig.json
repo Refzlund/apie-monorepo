@@ -11,5 +11,5 @@
 			"$types/*": ["src/types/*"]
 		}
 	},
-	"include": ["src", "src/types", ".dist", "_examples"]
+	"include": ["src"]
 }

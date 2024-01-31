@@ -5,16 +5,15 @@
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
-	"repository": "github:refzlund/@apitkit",
-	"homepage": "https://github.com/refzlund/@apitkit",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-pipe",
 	"bugs": {
-		"url": "https://github.com/refzlund/@apitkit/labels/bug"
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"type": "module",
-	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"default": "./dist/index.js",
@@ -32,10 +31,10 @@
 		"package": "bun run ./vite"
 	},
 	"dependencies": {
-		"@api/utility": "*"
+		"@api/utility": "^1.0.0"
 	},
 	"devDependencies": {
-		"@api/utility": "workspace:*",
+		"@api/utility": "workspace:1.0.0",
 		"@api/responses": "workspace:*"
 	},
 	"peerDependencies": {

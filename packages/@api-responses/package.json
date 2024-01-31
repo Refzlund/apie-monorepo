@@ -1,20 +1,19 @@
 {
 	"name": "@api/responses",
-	"version": "next-1.0.0",
+	"version": "1.0.0",
 	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
-	"repository": "github:refzlund/@apitkit",
-	"homepage": "https://github.com/refzlund/@apitkit",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-responses",
 	"bugs": {
-		"url": "https://github.com/refzlund/@apitkit/labels/bug"
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"type": "module",
-	"types": "./dist/index.d.ts",
 	"scripts": {
 		"package": "bun run ./vite"
 	},
@@ -32,9 +31,9 @@
 		"dist"
 	],
 	"dependencies": {
-		"@api/utility": "*"
+		"@api/utility": "^1.0.0"
 	},
 	"devDependencies": {
-		"@api/utility": "workspace:*"
+		"@api/utility": "workspace:1.0.0"
 	}
 }

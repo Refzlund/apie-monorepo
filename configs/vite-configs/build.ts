@@ -28,6 +28,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 	for (const entry of entries) {
 		const filePath = path.resolve(root, entry)
 		const file = path.parse(filePath)
+		const fileNamePath = path.join(entry, `../${file.name}`)
 
 		array.push(mergeConfig(
 			{
@@ -37,8 +38,8 @@ export default async function build(options: BuildOptions, ...entries: string[])
 					lib: {
 						entry: filePath,
 						name: file.name,
-						fileName: file.name
-					}
+						fileName: fileNamePath
+					},
 				},
 				plugins: init ? [...plugins, dts({
 					include: ['src']
@@ -75,7 +76,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 			array.map(v => viteBuild(v))
 		)
 	} catch (error) {
-
+		
 		console.error('Vite Build: An error occurred.')
 		console.error(error)
 
