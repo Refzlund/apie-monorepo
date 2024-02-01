@@ -14,10 +14,10 @@
 		"test": "pnpm --stream -r test",
 		"precommit": "bun lint && bun typecheck && bun test && bun package",
 		"package": "pnpm -r package",
-		"publish": "pnpm package && changeset publish"
+		"publish": "bun package && changeset publish"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.26.2",
+		"@changesets/cli": "^2.27.1",
 		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
 		"@types/node": "20.4.2",
 		"bun-types": "^1.0.21",
@@ -31,9 +31,5 @@
 		"vite-plugin-dts": "^3.1.0",
 		"vite-tsconfig-paths": "^4.2.0",
 		"vitest": "^1.2.2"
-	},
-	"packageManager": "pnpm@8.6.7",
-	"engines": {
-		"pnpm": "^8.0.0"
 	}
 }
