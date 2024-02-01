@@ -21,26 +21,26 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup PNPM v8
+      - name: Setup PNPM
         uses: pnpm/action-setup@v2
-        with:
-          version: 8
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+            node-version: ${{ matrix.node-version }}
       
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
       
       # https://github.com/changesets/action#with-publishing
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm run publish
+            publish: bun run publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
