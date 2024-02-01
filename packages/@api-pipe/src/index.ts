@@ -36,7 +36,7 @@ interface Options<T extends UnknownRecord> {
 	after?: MaybeArray<((event: T, result: unknown) => unknown)>
 
 	/** Functions to always run after every pipeline */
-	finally?: ((event: T, result?: unknown, error?: unknown) => unknown)[]
+	finally?: MaybeArray<((event: T, result?: unknown, error?: unknown) => unknown)>
 
 	catch?(event: T, error: unknown): APIResponse
 }
@@ -49,7 +49,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 
 	function errored(event: T, error: unknown) {
 		try {
-			options?.finally?.forEach(fn => fn(event, undefined, error))
+			if (Array.isArray(options?.finally))
+				options?.finally?.forEach(fn => fn(event, undefined, error))
+			else
+				options?.finally?.(event, undefined, error)
 		} catch (err) {
 			error = err
 		}
@@ -79,7 +82,12 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 				options?.after?.forEach(fn => fn(event, result))
 			else
 				options?.after?.(event, result)
-			options?.finally?.forEach(fn => fn(event, result, undefined))
+
+			if (Array.isArray(options?.finally))
+				options?.finally?.forEach(fn => fn(event, result, undefined))
+			else
+				options?.finally?.(event, result, undefined)
+			
 		} catch (error) {
 			return errored(event, error)
 		}
