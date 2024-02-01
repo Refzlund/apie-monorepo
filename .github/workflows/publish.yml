@@ -5,7 +5,7 @@ on:
     branches:
       - main
     workflows: 
-      - Unit Testing & Linting
+      - Validate
     types:
       - completed
 
@@ -23,6 +23,8 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1

@@ -1,4 +1,4 @@
-name: Unit Testing & Linting
+name: Validate
 
 on:
   push:
@@ -19,6 +19,8 @@ jobs:
 
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
+        with:
+          version: 8
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
