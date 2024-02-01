@@ -1,8 +1,12 @@
 {
 	"name": "@api/pipe",
 	"version": "0.1.0",
-	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
-	"keywords": [],
+	"description": "A stateful pipe that pipes functions that has an object and the output from previous function",
+	"keywords": [
+		"pipe",
+		"functional programming",
+		"stateful"
+	],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
 	"repository": "github:refzlund/api-monorepo",
@@ -25,8 +29,8 @@
 		"dist"
 	],
 	"scripts": {
-		"lint": "eslint **/*.{js,ts,cjs}",
-		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"lint": "eslint ./**/*.{js,ts,cjs}",
+		"typecheck": "tsc --noEmit --checkJs false",
 		"test": "bun test",
 		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
 		"package": "bun run ./vite"

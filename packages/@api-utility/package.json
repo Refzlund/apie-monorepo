@@ -1,8 +1,12 @@
 {
 	"name": "@api/utility",
 	"version": "0.1.0",
-	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
-	"keywords": [],
+	"description": "A utility package used within the @api eco-system.",
+	"keywords": [
+		"utility types",
+		"utiltiy",
+		"typescript"
+	],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
 	"repository": "github:refzlund/api-monorepo",
@@ -14,6 +18,10 @@
 		"access": "public"
 	},
 	"scripts": {
+		"lint": "eslint **/*.{js,ts,cjs}",
+		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"test": "bun test",
+		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
 		"package": "bun run ./vite"
 	},
 	"files": [

@@ -15,6 +15,7 @@ interface BuildOptions {
 
 export default async function build(options: BuildOptions, ...entries: string[]) {
 	const root = options.rootDir || './src'
+	const outDir = options.outDir || './dist'
 	const array: UserConfig[] = []
 
 	const plugins = [
@@ -34,7 +35,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 			{
 				build: {
 					emptyOutDir: init,
-					outDir: options.outDir || './dist',
+					outDir,
 					lib: {
 						entry: filePath,
 						name: file.name,
@@ -43,12 +44,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 				},
 				plugins: init ? [...plugins, dts({
 					include: ['src']
-				})] : plugins,
-				test: {
-					typecheck: {
-						include: ['**/*.test.ts', './tests']
-					}
-				}
+				})] : plugins
 			} satisfies UserConfig,
 			options.vite || {}
 		))
@@ -66,6 +62,8 @@ export default async function build(options: BuildOptions, ...entries: string[])
 		const tsconfig = JSON.parse(text.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, ''))
 		tsconfig.compilerOptions ??= {}
 		tsconfig.compilerOptions.rootDir = root
+		tsconfig.exclude ??= []
+		tsconfig.exclude.push(outDir, '**/*.test.ts', '**/*.spec.ts')
 
 		await Bun.write(file, JSON.stringify(tsconfig))
 

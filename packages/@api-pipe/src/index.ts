@@ -1,7 +1,6 @@
-import type { MaybePromise, UnknownRecord, Writable } from '@api/utility/types'
+import type { MaybePromise, MaybeArray, UnknownRecord, Writable } from '@api/utility/types'
 import { type APIResponse } from '@api/responses/types'
 import { InternalServerError } from '@api/responses'
-import { MaybeArray } from '../../@api-utility/src/types'
 
 type NonFunction =
 	| string | number | bigint | boolean | symbol

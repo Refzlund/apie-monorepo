@@ -33,5 +33,6 @@
 		/* Decorators */
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true
-	}
+	},
+	"exclude": ["dist"]
 }
