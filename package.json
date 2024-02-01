@@ -9,8 +9,8 @@
 		"packages/*"
 	],
 	"scripts": {
-		"lint": "eslint ./**/*.{js,ts,cjs}",
-		"typecheck": "tsc --noEmit --checkJs false",
+		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",
+		"typecheck": "pnpm -r typecheck",
 		"test": "pnpm -r test",
 		"precommit": "pnpm -r precommit",
 		"build": "pnpm -r build",
