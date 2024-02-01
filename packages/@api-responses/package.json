@@ -38,6 +38,6 @@
 		"@api/utility": "^1.0.0"
 	},
 	"devDependencies": {
-		"@api/utility": "workspace:1.0.0"
+		"@api/utility": "workspace:*"
 	}
 }

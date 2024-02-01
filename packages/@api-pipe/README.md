@@ -2,14 +2,14 @@
 @api/pipe
 <small>
 <a href='https://www.npmjs.com/package/@api/pipe' vertical-align='bottom' >
-	<img src='https://img.shields.io/github/v/release/refzlund/api-kit?style=social&label=PRE-RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
+	<img src='https://img.shields.io/github/v/release/refzlund/api-monorepo?style=social&label=RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
 </a>
 </small>
 </h1>
 <h3 align="center">
 
-<a href='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg'>
-	<img src='https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
+<a href='https://github.com/refzlund/api-monorepo/actions/workflows/main.yml/badge.svg'>
+	<img src='https://github.com/refzlund/api-monorepo/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
 </a>
 
 <a href='https://semver.org'>
@@ -24,10 +24,6 @@
 
 </h3>
 
-> [!WARNING]
-> 
-> Work in progress. **Your house might catch on fire.**
-
 ### What is @api and @api/pipe?
 
 An eco-system for infrastructure around REST API. It's worth noting that it is designed so that it can be used in all applications besides a REST API.
@@ -39,9 +35,9 @@ That means, this is useful for any serverless-functions, such as AWS lambdas etc
 ### `createEventPipe<T>` options
 | Option | Description | Type |
 | ---- | ---- | ---- |
-| before? | Functions that will be run before the pipeline | Array<(event: T) => unknown> |
-| after? | Functions that will be run before the pipeline<br>(does not run if an exception is thrown) | Array<(event: T, result: unknown) => unknown> |
-| finally? | Functions that will be run before the pipeline | Array<(event: T, result?: unknown, error?: unknown) => unknown> |
+| before? | Functions that will be run before the pipeline | MaybeArray<(event: T) => unknown> |
+| after? | Functions that will be run before the pipeline<br>(does not run if an exception is thrown) | MaybeArray<(event: T, result: unknown) => unknown> |
+| finally? | Functions that will be run before the pipeline | MaybeArray<(event: T, result?: unknown, error?: unknown) => unknown> |
 | catch? | A function that returns a response in relation to an error being thrown<br>(default: ` InternalServerError()`) | catch?(event: T, error: unknown): APIResponse |
 
 ## Pipelines
@@ -49,45 +45,44 @@ The pipeline (result of using a pipe), will return early if the function returns
 ### Example
 
 ```ts
+import { createEventPipe } from '@api/pipe'
+import { OK } from '@api/responses'
+import { getBody, isResponse } from '@api/responses'
 
-type SomeInput = { hello: 'world' | 'there' }
-const helloPipe = createEventPipe<SomeInput>({...})
+import { authGuard } from '$pipeline'
 
+interface State {
+	value: number
+}
+
+const helloPipe = createEventPipe<State>({ /* options */ })
 
 const myPipeline = helloPipe(
     authGuard(), // Make sure user is logged in
     
-    (e, v: undefined) => {
-        return {
-            pipeValue: e.hello
-        }
+    (event) => {
+        return 200
     },
 
-    (e, v) => {
-        if(v.pipeValue === 'there')
-            return OK({ message: 'General Kenobi' })
-
-        return v.pipeValue + e.hello
+    (event, input: number) => {
+        if(event.value > input)
+            return OK('Above 200')
+		
+		return 'Less or equal than 200'
     }
 )
 
+const result1 = myPipeline({ value: 345 }) // => APIResponse: OK('Above 200')
+const result2 = myPipeline({ value: 123 }) // => string: 'Less or equal than 200'
 
-
-// Returns<string> which is `worldworld`
-const result1 = myPipeline({ hello: 'world' })
-
-// Returns<APIResponse>
-const result2 = myPipeline({ hello: 'there' })
-if(isResponse(result2)) {
-
-    const body = getBody(result2) // { message: 'General Kenobi' }
-    result2.body // string
+if(isResponse(result1)) {
+	/*
+		Note: `getBody` gets the raw body of the response.
+		This only works on the backend, as a RAW value of the body
+		is stored as `response._body`, which means you don't need
+		to retrieve the body using something like `await response.json()`
+	*/
+    const body = getBody(result1) // 'Above 200'
 }
-
-const secondPipeline(
-	myPipeline, // Use
-	...,
-	OK({ message: 'Everything went as expected' }) // 200, JSON
-)
 
 ```
