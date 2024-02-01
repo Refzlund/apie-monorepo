@@ -10,11 +10,11 @@
 	],
 	"scripts": {
 		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",
-		"typecheck": "pnpm -r typecheck",
-		"test": "pnpm -r test",
-		"precommit": "pnpm -r precommit",
-		"build": "pnpm -r build",
-		"publish": "pnpm build && changeset publish"
+		"typecheck": "pnpm --stream -r typecheck",
+		"test": "pnpm --stream -r test",
+		"precommit": "bun lint && bun typecheck && bun test && bun package",
+		"package": "pnpm -r package",
+		"publish": "pnpm package && changeset publish"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",

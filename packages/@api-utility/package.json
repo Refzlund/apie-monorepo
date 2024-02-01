@@ -18,11 +18,9 @@
 		"access": "public"
 	},
 	"scripts": {
-		"lint": "eslint **/*.{js,ts,cjs}",
-		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
 		"test": "bun test",
-		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
-		"package": "bun run ./vite"
+		"package": "bun run ./package --test"
 	},
 	"files": [
 		"dist"

@@ -1,1 +1,19 @@
-{"extends":"ts-configs/tsconfig.def.json","compilerOptions":{"baseUrl":".","paths":{"@api/responses":["./src/index.ts"],"@api/responses/*":["./src/*"],"$":["./src"],"$/*":["./src/*"],"$types":["./src/types"],"$types/*":["./src/types/*"]},"rootDir":"./src"},"include":["src"]}
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			// Library
+			"@api/responses": ["./src/index.ts"],
+			"@api/responses/*": ["./src/*"],
+
+			// ...
+			"$": ["./src"],
+			"$/*": ["./src/*"],
+
+			"$types": ["./src/types"],
+			"$types/*": ["./src/types/*"],
+		},
+	},
+	"include": ["src"],
+}

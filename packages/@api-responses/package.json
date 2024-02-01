@@ -15,7 +15,9 @@
 	},
 	"type": "module",
 	"scripts": {
-		"package": "bun run ./vite"
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package --test"
 	},
 	"exports": {
 		".": {

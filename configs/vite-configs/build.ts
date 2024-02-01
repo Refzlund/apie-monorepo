@@ -80,7 +80,17 @@ export default async function build(options: BuildOptions, ...entries: string[])
 
 	} finally {
 
-		Bun.write(file, text)
-
+		let written = false
+		while (!written) {
+			try {
+				await Bun.write(file, text)
+			} catch (error) {
+				console.error('An error occurred trying to restore tsconfig. Trying again...')
+				await new Promise(r => setTimeout(r, 250))
+				continue
+			}
+			written = true
+		}
+		
 	}
 }
