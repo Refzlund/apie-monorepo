@@ -1,0 +1,48 @@
+{
+	"name": "@api/responses",
+	"version": "0.1.0",
+	"description": "Typed HTTP responses",
+	"keywords": [
+		"typescript",
+		"typed",
+		"http"
+	],
+	"author": "Arthur @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-responses",
+	"bugs": {
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"scripts": {
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
+	},
+	"main": "./dist/index.js",
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/index.d.js"
+		},
+		"./types": {
+			"default": "./dist/types.js",
+			"require": "./dist/types.umd.cjs",
+			"types": "./dist/types.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@api/utility": "^1.0.0"
+	},
+	"devDependencies": {
+		"@api/utility": "workspace:*"
+	}
+}

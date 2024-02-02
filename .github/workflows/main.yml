@@ -1,4 +1,4 @@
-name: Unit Testing & Linting
+name: Validate
 
 on:
   push:
@@ -12,31 +12,36 @@ jobs:
     strategy:
       matrix:
         node-version: [18]
-        pnpm-version: [8]
     
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: Setup PNPM v8
+      - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: ${{ matrix.pnpm-version }}
+          version: 8
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
       
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
       
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Linting
-        run: pnpm run lint
-        
-      - name: Unit Testing
-        run: pnpm run test
+        run: bun install --frozen-lockfile
 
-      - name: Build
-        run: pnpm run build
+      # Packaging goes first, as there are workspace dependencies
+      - name: Packaging
+        run: bun run *:package
+
+      - name: Linting
+        run: bun run lint
+        
+      - name: Typechecking
+        run: bun run *:typecheck
+
+      - name: Unit Testing
+        run: bun run *:test

@@ -1,0 +1,35 @@
+{
+	"name": "@api/utility",
+	"version": "0.1.0",
+	"description": "A utility package used within the @api eco-system.",
+	"keywords": [
+		"utility types",
+		"utiltiy",
+		"typescript"
+	],
+	"author": "Arthur @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-utility",
+	"bugs": {
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
+	},
+	"files": [
+		"dist"
+	],
+	"exports": {
+		"./types": {
+			"default": "./dist/types/index.mjs",
+			"require": "./dist/types/index.umd.js",
+			"types": "./dist/types/index.d.ts"
+		}
+	}
+}

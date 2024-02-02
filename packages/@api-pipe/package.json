@@ -1,0 +1,46 @@
+{
+	"name": "@api/pipe",
+	"version": "0.1.0",
+	"description": "A stateful pipe that pipes functions that has an object and the output from previous function",
+	"keywords": [
+		"pipe",
+		"functional programming",
+		"stateful"
+	],
+	"author": "Arthur @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/api-monorepo",
+	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-pipe",
+	"bugs": {
+		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
+	},
+	"dependencies": {
+		"@api/utility": "^1.0.0"
+	},
+	"devDependencies": {
+		"@api/utility": "workspace:*",
+		"@api/responses": "workspace:*"
+	},
+	"peerDependencies": {
+		"@api/responses": "*"
+	}
+}

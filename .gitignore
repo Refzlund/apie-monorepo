@@ -30,4 +30,5 @@
 **/.env.local
 
 # Vite Build
-**/.dist
+**/dist
+**/tsconfig.tsbuildinfo

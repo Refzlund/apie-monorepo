@@ -1,0 +1,38 @@
+{
+	"compilerOptions": {
+		"target": "ESNext",
+		"useDefineForClassFields": true,
+		"module": "ESNext",
+		"lib": ["ESNext",  "DOM"],
+		"types": ["bun-types"],
+		"skipLibCheck": true,
+		"composite": true,
+		"esModuleInterop": true,
+		"checkJs": true,
+
+		/* Bundler mode */
+		"moduleResolution": "Bundler",
+		"moduleDetection": "force",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"downlevelIteration": true,
+		"allowJs": true,
+
+		/* Linting */
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"noFallthroughCasesInSwitch": true,
+		"noUncheckedIndexedAccess": true,
+		"forceConsistentCasingInFileNames": true,
+		"noImplicitAny": false, // handled by eslint
+
+		/* Decorators */
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
+	},
+	"exclude": ["dist"]
+}
