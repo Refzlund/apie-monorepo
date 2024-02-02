@@ -9,7 +9,11 @@
 	],
 	"author": "Arthur @Refzlund",
 	"license": "MIT",
-	"repository": "github:refzlund/api-monorepo",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/refzlund/api-monorepo",
+		"directory": "packages/@api-responses"
+	},
 	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-responses",
 	"bugs": {
 		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
