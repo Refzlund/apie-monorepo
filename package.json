@@ -14,7 +14,7 @@
 		"*:typecheck": "pnpm --stream -r typecheck",
 		"*:test": "pnpm --stream -r test",
 		"*:package": "pnpm -r package",
-		"publish": "bun package && changeset publish"
+		"publish": "bun *:package && changeset publish"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.27.1",
