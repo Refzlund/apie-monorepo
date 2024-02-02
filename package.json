@@ -1,7 +1,7 @@
 {
-	"name": "api-kit-monorepo",
+	"name": "apie-monorepo",
 	"version": "0.0.0",
-	"description": "A monorepo for api-kit.",
+	"description": "A monorepo for @apie.",
 	"private": true,
 	"type": "module",
 	"workspaces": [

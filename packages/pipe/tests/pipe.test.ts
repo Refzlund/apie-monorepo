@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test'
 import { createEventPipe } from '$'
-import { OK } from '@api/responses'
-import { getBody, isResponse } from '@api/responses'
+import { OK } from '@apie/responses'
+import { getBody, isResponse } from '@apie/responses'
 
 const pipe = createEventPipe<{ yas: 'true' | 'false' }>()
 

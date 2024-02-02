@@ -1,17 +1,17 @@
-# @api
+# @apie
 
-`@api` is a monorepo that contains several packages for handling a REST API in a functional programmatic manner.
+`@apie` is a monorepo that contains several packages for handling a REST API in a functional programmatic manner.
 
 However, it is also intended to generally provide typed error responses.
 
-- [`@api/pipe`](./packages/@api-pipe) is the driver of the functional programming structure
-- [`@api/responses`](./packages/@api-responses) contains branded responses and is used in conjunction with the other packages
-- [`@api/utilities`](./packages/@api-utility) contains utility types/functions that the other packages depend on
+- [`@apie/pipe`](./packages/pipe) is the driver of the functional programming structure
+- [`@apie/responses`](./packages/responses) contains branded responses and is used in conjunction with the other packages
+- [`@apie/utilities`](./packages/utility) contains utility types/functions that the other packages depend on
 
 > [!IMPORTANT]  
 > The following packages are work in progress. Find them in the `feat-api-kit` branch
 
-- [`@api/kit`](./packages/@api-kit) is a library for [SvelteKit](https://kit.svelte.dev) that provides type-safety between frontend and backend.<br><sup>(Formerly known as [`sveltekit-zero-api`](https://github.com/Refzlund/sveltekit-zero-api))<sup/>
+- [`@apie/kit`](./packages/kit) is a library for [SvelteKit](https://kit.svelte.dev) that provides type-safety between frontend and backend.<br><sup>(Formerly known as [`sveltekit-zero-api`](https://github.com/Refzlund/sveltekit-zero-api))<sup/>
 
 ## Example
 

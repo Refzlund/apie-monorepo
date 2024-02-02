@@ -1,5 +1,5 @@
 {
-	"name": "@api/responses",
+	"name": "@apie/responses",
 	"version": "1.0.0",
 	"description": "Typed HTTP responses",
 	"keywords": [
@@ -11,12 +11,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/refzlund/api-monorepo",
-		"directory": "packages/@api-responses"
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/responses"
 	},
-	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-responses",
+	"homepage": "https://github.com/refzlund/apie-monorepo/packages/@api-responses",
 	"bugs": {
-		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -44,9 +44,9 @@
 		"dist"
 	],
 	"dependencies": {
-		"@api/utility": "^1.0.0"
+		"@apie/utility": "^1.0.0"
 	},
 	"devDependencies": {
-		"@api/utility": "workspace:*"
+		"@apie/utility": "workspace:*"
 	}
 }
