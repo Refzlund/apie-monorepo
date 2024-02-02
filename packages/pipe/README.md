@@ -53,28 +53,28 @@ import { getBody, isResponse } from '@apie/responses'
 import { authGuard } from '$pipeline'
 
 interface State {
-	value: number
+    value: number
 }
 
-const helloPipe = createEventPipe<State>({ /* options */ })
+const valuePipe = createEventPipe<State>({ /* options */ })
 
-const myPipeline = helloPipe(
-    authGuard(), // Make sure user is logged in
-    
-    (event) => {
-        return 200
-    },
+const isValueAboveStateValue = valuePipe((event, input: number) => {
+    if(event.value > input)
+        return OK('Above 200')
+	
+    return 'Less than or equal to 200'
+})
 
-    (event, input: number) => {
-        if(event.value > input)
-            return OK('Above 200')
-		
-		return 'Less or equal than 200'
-    }
+const pipeline200 = valuePipe(
+	(event) => {
+		console.log(`Inline function. Event: ${event}`)
+	}
+    200,
+    isValueAboveStateValue
 )
 
-const result1 = myPipeline({ value: 345 }) // => APIResponse: OK('Above 200')
-const result2 = myPipeline({ value: 123 }) // => string: 'Less or equal than 200'
+const result1 = pipeline200({ value: 345 }) // => APIResponse: OK('Above 200')
+const result2 = pipeline200({ value: 123 }) // => string: 'Less than or equal to 200'
 
 if(isResponse(result1)) {
 	/*
