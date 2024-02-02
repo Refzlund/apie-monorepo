@@ -7,7 +7,7 @@
 		"utiltiy",
 		"typescript"
 	],
-	"author": "Arthur Refslund @Refzlund",
+	"author": "Arthur @Refzlund",
 	"license": "MIT",
 	"repository": "github:refzlund/api-monorepo",
 	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-utility",
@@ -20,7 +20,7 @@
 	"scripts": {
 		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
 		"test": "bun test",
-		"package": "bun run ./package --test"
+		"package": "bun run ./package"
 	},
 	"files": [
 		"dist"

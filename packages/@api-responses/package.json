@@ -1,9 +1,13 @@
 {
 	"name": "@api/responses",
 	"version": "0.1.0",
-	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
-	"keywords": [],
-	"author": "Arthur Refslund @Refzlund",
+	"description": "Typed HTTP responses",
+	"keywords": [
+		"typescript",
+		"typed",
+		"http"
+	],
+	"author": "Arthur @Refzlund",
 	"license": "MIT",
 	"repository": "github:refzlund/api-monorepo",
 	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-responses",
@@ -17,8 +21,9 @@
 	"scripts": {
 		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
 		"test": "bun test",
-		"package": "bun run ./package --test"
+		"package": "bun run ./package"
 	},
+	"main": "./dist/index.js",
 	"exports": {
 		".": {
 			"default": "./dist/index.js",

@@ -2,6 +2,7 @@ import path from 'path'
 import { type UserConfig, mergeConfig, build as viteBuild } from 'vite'
 import dts from 'vite-plugin-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { parse as json5 } from 'json5'
 
 interface BuildOptions {
 	tsconfigPath: string
@@ -59,7 +60,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 		// * We modify the tsconfig to have the 'rootDir' of the rootDir provided.
 		// * Ex. instead of `./dist/src/index.d.ts` we get `./dist/index.d.ts`
 
-		const tsconfig = JSON.parse(text.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, ''))
+		const tsconfig = json5(text)
 		tsconfig.compilerOptions ??= {}
 		tsconfig.compilerOptions.rootDir = root
 		tsconfig.exclude ??= []

@@ -10,10 +10,10 @@
 	],
 	"scripts": {
 		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",
-		"typecheck": "pnpm --stream -r typecheck",
-		"test": "pnpm --stream -r test",
-		"precommit": "bun lint && bun typecheck && bun test && bun package",
-		"package": "pnpm -r package",
+		"precommit": "bun *:package && bun lint && bun *:typecheck && bun *:test",
+		"*:typecheck": "pnpm --stream -r typecheck",
+		"*:test": "pnpm --stream -r test",
+		"*:package": "pnpm -r package",
 		"publish": "bun package && changeset publish"
 	},
 	"devDependencies": {

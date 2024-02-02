@@ -32,15 +32,16 @@ jobs:
       
       - name: Install Dependencies
         run: bun install --frozen-lockfile
-      
+
+      # Packaging goes first, as there are workspace dependencies
+      - name: Packaging
+        run: bun run *:package
+
       - name: Linting
         run: bun run lint
         
       - name: Typechecking
-        run: bun run typecheck
+        run: bun run *:typecheck
 
       - name: Unit Testing
-        run: bun run test
-
-      - name: Packaging
-        run: bun run package
+        run: bun run *:test
