@@ -1,7 +1,7 @@
 {
-	"name": "@api/utility",
+	"name": "@apie/utility",
 	"version": "1.0.0",
-	"description": "A utility package used within the @api eco-system.",
+	"description": "A utility package used within the @apie eco-system.",
 	"keywords": [
 		"utility types",
 		"utiltiy",
@@ -11,12 +11,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/refzlund/api-monorepo",
-		"directory": "packages/@api-utility"
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/utility"
 	},
-	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-utility",
+	"homepage": "https://github.com/refzlund/apie-monorepo",
 	"bugs": {
-		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"

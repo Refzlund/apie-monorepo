@@ -4,8 +4,8 @@
 		"baseUrl": ".",
 		"paths": {
 			// Library
-			"@api/responses": ["./src/index.ts"],
-			"@api/responses/*": ["./src/*"],
+			"@apie/responses": ["./src/index.ts"],
+			"@apie/responses/*": ["./src/*"],
 
 			// ...
 			"$": ["./src"],

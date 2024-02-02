@@ -1,4 +1,4 @@
-import type { UnknownRecord } from '@api/utility/types'
+import type { UnknownRecord } from '@apie/utility/types'
 
 export const apiBrand = Symbol('APIResponse')
 
@@ -25,7 +25,7 @@ export type APIResponse<
 	Ok extends boolean = any,
 	Body = any,
 	Fn extends string = any
-	/* eslint-enable @typescript-eslint/no-explicit-any */
+/* eslint-enable @typescript-eslint/no-explicit-any */
 > = {
 	status: Status
 	ok: Ok

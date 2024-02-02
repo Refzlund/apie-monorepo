@@ -1,15 +1,15 @@
 <h1 align='center' vertical-align='baseline' >
-@api/pipe
+@apie/pipe
 <small>
-<a href='https://www.npmjs.com/package/@api/pipe' vertical-align='bottom' >
-	<img src='https://img.shields.io/github/v/release/refzlund/api-monorepo?style=social&label=RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
+<a href='https://www.npmjs.com/package/@apie/pipe' vertical-align='bottom' >
+	<img src='https://img.shields.io/github/v/release/refzlund/apie-monorepo?style=social&label=RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
 </a>
 </small>
 </h1>
 <h3 align="center">
 
-<a href='https://github.com/refzlund/api-monorepo/actions/workflows/main.yml/badge.svg'>
-	<img src='https://github.com/refzlund/api-monorepo/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
+<a href='https://github.com/refzlund/apie-monorepo/actions/workflows/main.yml/badge.svg'>
+	<img src='https://github.com/refzlund/apie-monorepo/actions/workflows/main.yml/badge.svg' alt='Linting & Tests'/>
 </a>
 
 <a href='https://semver.org'>
@@ -24,11 +24,11 @@
 
 </h3>
 
-### What is @api and @api/pipe?
+### What is @apie and @apie/pipe?
 
 An eco-system for infrastructure around REST API. It's worth noting that it is designed so that it can be used in all applications besides a REST API.
 
-`@api/pipe` provides a way to create a pipe-function that has an event input. An event is considered a stateful object, that is passed through all functions, inspired by [SvelteKits `RequestEvent`](https://kit.svelte.dev/docs/types#public-types-requestevent). This provides dependency injection and access to important information for each eventful trigger.
+`@apie/pipe` provides a way to create a pipe-function that has an event input. An event is considered a stateful object, that is passed through all functions, inspired by [SvelteKits `RequestEvent`](https://kit.svelte.dev/docs/types#public-types-requestevent). This provides dependency injection and access to important information for each eventful trigger.
 
 That means, this is useful for any serverless-functions, such as AWS lambdas etc.
 
@@ -45,9 +45,9 @@ The pipeline (result of using a pipe), will return early if the function returns
 ### Example
 
 ```ts
-import { createEventPipe } from '@api/pipe'
-import { OK } from '@api/responses'
-import { getBody, isResponse } from '@api/responses'
+import { createEventPipe } from '@apie/pipe'
+import { OK } from '@apie/responses'
+import { getBody, isResponse } from '@apie/responses'
 
 import { authGuard } from '$pipeline'
 

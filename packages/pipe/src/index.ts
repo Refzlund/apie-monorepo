@@ -1,6 +1,6 @@
-import type { MaybePromise, MaybeArray, UnknownRecord, Writable } from '@api/utility/types'
-import { type APIResponse } from '@api/responses/types'
-import { InternalServerError } from '@api/responses'
+import type { MaybePromise, MaybeArray, UnknownRecord, Writable } from '@apie/utility/types'
+import { type APIResponse } from '@apie/responses/types'
+import { InternalServerError } from '@apie/responses'
 
 type NonFunction =
 	| string | number | bigint | boolean | symbol
@@ -87,7 +87,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 				options?.finally?.forEach(fn => fn(event, result, undefined))
 			else
 				options?.finally?.(event, result, undefined)
-			
+
 		} catch (error) {
 			return errored(event, error)
 		}
@@ -544,7 +544,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 					previousResult = pm
 					continue
 				}
-				
+
 				try {
 					previousResult = await pm(event, previousResult)
 				} catch (error) {

@@ -2,7 +2,7 @@
 // * -- 2xx Success
 // *
 
-import type { Writable } from '@api/utility/types'
+import type { Writable } from '@apie/utility/types'
 import type * as T from './types'
 import { APIResponseOptions, createAPIResponse } from './api-response'
 

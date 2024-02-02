@@ -5,8 +5,8 @@
 		"baseUrl": ".",
 		"paths": {
 			// Library
-			"@api/pipe": ["./dist"],
-			"@api/pipe/*": ["./dist/*"],
+			"@apie/pipe": ["./dist"],
+			"@apie/pipe/*": ["./dist/*"],
 
 			// ...
 			"$": ["./src"],

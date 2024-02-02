@@ -1,6 +1,6 @@
 {
-	"name": "@api/pipe",
-	"version": "0.0.0",
+	"name": "@apie/pipe",
+	"version": "1.0.0",
 	"description": "A stateful pipe that pipes functions that has an object and the output from previous function",
 	"keywords": [
 		"pipe",
@@ -11,12 +11,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/refzlund/api-monorepo",
-		"directory": "packages/@api-pipe"
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/pipe"
 	},
-	"homepage": "https://github.com/refzlund/api-monorepo/packages/@api-pipe",
+	"homepage": "https://github.com/refzlund/apie-monorepo/packages/@api-pipe",
 	"bugs": {
-		"url": "https://github.com/refzlund/api-monorepo/labels/bug"
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -38,13 +38,13 @@
 		"package": "bun run ./package"
 	},
 	"dependencies": {
-		"@api/utility": "^1.0.0"
+		"@apie/utility": "^1.0.0"
 	},
 	"devDependencies": {
-		"@api/utility": "workspace:*",
-		"@api/responses": "workspace:*"
+		"@apie/utility": "workspace:*",
+		"@apie/responses": "workspace:*"
 	},
 	"peerDependencies": {
-		"@api/responses": "*"
+		"@apie/responses": "*"
 	}
 }
