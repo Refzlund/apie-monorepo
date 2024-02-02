@@ -1,8 +1,9 @@
 <h1 align='center' vertical-align='baseline' >
 @apie/pipe
 <small>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAQAAACR313BAAAAEUlEQVR42mNkwAsYR6WHmDQAEFkAEMvRoosAAAAASUVORK5CYII=" />
 <a href='https://www.npmjs.com/package/@apie/pipe' vertical-align='bottom' >
-	<img src='https://img.shields.io/github/v/release/refzlund/apie-monorepo?style=social&label=RELEASE&labelColor=8a0000&color=FF0000' alt='NPM Package'/>
+	<img src='https://img.shields.io/npm/v/%40apie%2Fpipe?style=for-the-badge&logo=npm&label=%20' alt='NPM Package'/>
 </a>
 </small>
 </h1>
