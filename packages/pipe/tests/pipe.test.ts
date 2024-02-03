@@ -2,8 +2,44 @@ import { expect, test } from 'bun:test'
 import { createEventPipe } from '$'
 import { OK } from '@apie/responses'
 import { getBody, isResponse } from '@apie/responses'
+import * as R from '@apie/responses/types'
 
 const pipe = createEventPipe<{ yas: 'true' | 'false' }>()
+
+
+
+test('Pipe types are correct', () => {
+	const pipeline = pipe(
+		(e, i?: boolean) => {
+			if (i)
+				return OK('message')
+			return { some: 123 }
+		},
+		(e, v) => {
+			// TODO: v.some should be a literal
+			// expect({ some: 123 } as const).toEqual(v)
+			expect({ some: 123 }).toEqual(v)
+			return { more: 'abc' }
+		},
+		(e, v) => {
+			// TODO: v.more should be a literal
+			// expect({ more: 'abc' } as const).toEqual(v)
+			expect({ more: 'abc' }).toEqual(v)
+			return v
+		}
+	)
+
+	type Pipeline = (event: {
+		yas: 'true' | 'false'
+	}, input?: boolean | void) => Promise<
+		| { more: string } // TODO const: { more: 'abc' }
+		| R.OK<'message'>
+	>
+
+	expect(pipeline).toEqual(pipeline as Pipeline)
+	const _result1 = pipeline({ yas: 'true' }, true)
+})
+
 
 const date = new Date()
 

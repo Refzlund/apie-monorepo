@@ -1,22 +1,27 @@
 import type { MaybePromise, MaybeArray, UnknownRecord, Writable } from '@apie/utility/types'
 import { type APIResponse } from '@apie/responses/types'
-import { InternalServerError } from '@apie/responses'
+import { InternalServerError, isResponse } from '@apie/responses'
 
-type NonFunction =
+declare const NilSymbol: unique symbol
+type Nil = { [NilSymbol]: null }
+type NonFn =
 	| string | number | bigint | boolean | symbol
 	| null | undefined | void
-	| APIResponse | UnknownRecord
+	| APIResponse | UnknownRecord | Nil
 
 type PipeFn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	Event extends UnknownRecord = any, Input = any, Result extends NonFunction = any
-> =
-	| ((event: Event, input: Input) => MaybePromise<Result>)
+	Event extends UnknownRecord = any, Input = any, Result = any
+	> = (event: Event, input: Input) => MaybePromise<Result>
 
 /** Returns the APIResponse from a Pipe Parameter Function */
 type ParamReturnResponse<P extends PipeFn> =
 	P extends PipeFn<infer _, infer _, infer R>
-	? R extends APIResponse ? R : never : never
+	? (R extends APIResponse ? R : never)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	: P extends PipeFn<any, any, infer R>
+	? (R extends APIResponse ? R : never)
+	: never
 
 /** Returns the value as a non-constant */
 type WritableInput<T> =
@@ -24,9 +29,15 @@ type WritableInput<T> =
 	T extends UnknownRecord | any[] ? Writable<T> : T
 
 /** Returns the (non-APIResponse) content of the Pipe Parameter Function */
-type GetPipeContent<I> =
-	I extends PipeFn<infer _, infer _, infer R>
-	? WritableInput<Exclude<R, APIResponse>> : WritableInput<Exclude<I, APIResponse>>
+type PipeOrValue<P = never, R = unknown> =
+	[Nil] extends [R]
+	? P extends PipeFn<infer _, infer _, infer TReturn>
+	? WritableInput<Exclude<TReturn, APIResponse>>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	: P extends PipeFn<any, any, infer TReturn>
+	? WritableInput<Exclude<TReturn, APIResponse>>
+	: never
+	: WritableInput<Exclude<R, APIResponse>>
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
@@ -44,8 +55,8 @@ interface Options<T extends UnknownRecord> {
 export function createEventPipe<T extends UnknownRecord = {}>(
 	options: Options<T> = {}
 ) {
-	type Fn<PreviousResult, Result extends NonFunction> =
-		| PipeFn<T, GetPipeContent<PreviousResult>, Result>
+	type Fn<PreviousResult, Result> =
+		| PipeFn<T, PreviousResult, Result>
 
 	function errored(event: T, error: unknown) {
 		try {
@@ -93,55 +104,60 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		}
 	}
 
+	type IsUnknown<T> = unknown extends T ? (T extends unknown ? true : false) : false;
 
 	//#region Pipe implementation
-	type Pipe<Pn extends PipeFn, Input, Pall extends PipeFn> =
-		[void & number] | [void] extends [Input] ? (
-			(event: T) => Promise<GetPipeContent<Pn> | ParamReturnResponse<Pall>>
-		) : (
-			(event: T, input: Input) => Promise<GetPipeContent<Pn> | ParamReturnResponse<Pall>>
+	type Pipe<Pn extends PipeFn, Rn, Input, Pall extends PipeFn> =
+		IsUnknown<Input> extends true ? (
+			(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+		) : (undefined extends Input ? (
+			(event: T, input?: Input | void) =>
+				Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+		) : 
+			(event: T, input: Input) =>
+				Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
 		)
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
+		P0 extends PipeFn<T, Input, F0>, const F0, const R0 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0
-	): Pipe<P0, Input, P0>
+	): Pipe<P0, R0, Input, P0>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		Input
+		const P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		const P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn, 
+		Input,
 	>(
 		p0: P0 | R0, p1: P1 | R1
-	): Pipe<P1, Input, P0 | P1>
+	): Pipe<P1, R1, Input, P0 | P1>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn, 
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2
-	): Pipe<P2, Input, P0 | P1 | P2>
+	): Pipe<P2, R2, Input, P0 | P1 | P2>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3
-	): Pipe<P3, Input, P0 | P1 | P2 | P3>
+	): Pipe<P3, R3, Input, P0 | P1 | P2 | P3>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4
@@ -150,12 +166,12 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5
@@ -164,13 +180,13 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -180,14 +196,14 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -197,15 +213,15 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -215,16 +231,16 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -234,17 +250,17 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -254,18 +270,18 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -276,19 +292,19 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -300,20 +316,20 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -325,21 +341,21 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -351,22 +367,22 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -378,23 +394,23 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
-		P16 extends Fn<GetPipeContent<P15>, R16>, const R16 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -406,24 +422,24 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
-		P16 extends Fn<GetPipeContent<P15>, R16>, const R16 extends NonFunction,
-		P17 extends Fn<GetPipeContent<P16>, R17>, const R17 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -436,25 +452,25 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
-		P16 extends Fn<GetPipeContent<P15>, R16>, const R16 extends NonFunction,
-		P17 extends Fn<GetPipeContent<P16>, R17>, const R17 extends NonFunction,
-		P18 extends Fn<GetPipeContent<P17>, R18>, const R18 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -467,26 +483,26 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
-		P16 extends Fn<GetPipeContent<P15>, R16>, const R16 extends NonFunction,
-		P17 extends Fn<GetPipeContent<P16>, R17>, const R17 extends NonFunction,
-		P18 extends Fn<GetPipeContent<P17>, R18>, const R18 extends NonFunction,
-		P19 extends Fn<GetPipeContent<P18>, R19>, const R19 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
+		P19 extends Fn<PipeOrValue<P18>, R19>, const R19 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -499,27 +515,27 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFunction,
-		P1 extends Fn<GetPipeContent<P0>, R1>, const R1 extends NonFunction,
-		P2 extends Fn<GetPipeContent<P1>, R2>, const R2 extends NonFunction,
-		P3 extends Fn<GetPipeContent<P2>, R3>, const R3 extends NonFunction,
-		P4 extends Fn<GetPipeContent<P3>, R4>, const R4 extends NonFunction,
-		P5 extends Fn<GetPipeContent<P4>, R5>, const R5 extends NonFunction,
-		P6 extends Fn<GetPipeContent<P5>, R6>, const R6 extends NonFunction,
-		P7 extends Fn<GetPipeContent<P6>, R7>, const R7 extends NonFunction,
-		P8 extends Fn<GetPipeContent<P7>, R8>, const R8 extends NonFunction,
-		P9 extends Fn<GetPipeContent<P8>, R9>, const R9 extends NonFunction,
-		P10 extends Fn<GetPipeContent<P9>, R10>, const R10 extends NonFunction,
-		P11 extends Fn<GetPipeContent<P10>, R11>, const R11 extends NonFunction,
-		P12 extends Fn<GetPipeContent<P11>, R12>, const R12 extends NonFunction,
-		P13 extends Fn<GetPipeContent<P12>, R13>, const R13 extends NonFunction,
-		P14 extends Fn<GetPipeContent<P13>, R14>, const R14 extends NonFunction,
-		P15 extends Fn<GetPipeContent<P14>, R15>, const R15 extends NonFunction,
-		P16 extends Fn<GetPipeContent<P15>, R16>, const R16 extends NonFunction,
-		P17 extends Fn<GetPipeContent<P16>, R17>, const R17 extends NonFunction,
-		P18 extends Fn<GetPipeContent<P17>, R18>, const R18 extends NonFunction,
-		P19 extends Fn<GetPipeContent<P18>, R19>, const R19 extends NonFunction,
-		P20 extends Fn<GetPipeContent<P19>, R20>, const R20 extends NonFunction,
+		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
+		P19 extends Fn<PipeOrValue<P18>, R19>, const R19 extends NonFn,
+		P20 extends Fn<PipeOrValue<P19>, R20>, const R20 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
@@ -532,7 +548,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>
 	//#endregion
 
-	function pipe(...params: Array<NonFunction | PipeFn<T, unknown, NonFunction>>) {
+	function pipe(...params: Array<NonFn | PipeFn<T, unknown, NonFn>>) {
 		return async function pipedFunction(event: T, input: unknown = undefined) {
 			let previousResult = input
 
@@ -543,6 +559,11 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 				if (typeof pm !== 'function') {
 					previousResult = pm
 					continue
+				}
+
+				if (isResponse(pm)) {
+					previousResult = pm
+					break
 				}
 
 				try {
