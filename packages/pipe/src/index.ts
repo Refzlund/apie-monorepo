@@ -1,4 +1,4 @@
-import type { MaybePromise, MaybeArray, UnknownRecord, Writable } from '@apie/utility/types'
+import type { MaybePromise, MaybeArray, UnknownRecord, Writable, IsUnknown } from '@apie/utility/types'
 import { type APIResponse } from '@apie/responses/types'
 import { InternalServerError, isResponse } from '@apie/responses'
 
@@ -104,7 +104,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		}
 	}
 
-	type IsUnknown<T> = unknown extends T ? (T extends unknown ? true : false) : false;
+	
 
 	//#region Pipe implementation
 	type Pipe<Pn extends PipeFn, Rn, Input, Pall extends PipeFn> =
