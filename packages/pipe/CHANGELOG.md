@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 1.0.1
+
+### Patch Changes
+
+- fix: pipe functions do not pass through correct input type ([#14](https://github.com/Refzlund/apie-monorepo/pull/14))
+
+- Updated dependencies [[`97b030ccafb78606eea0e26fcb19177d3d025e80`](https://github.com/Refzlund/apie-monorepo/commit/97b030ccafb78606eea0e26fcb19177d3d025e80)]:
+  - @apie/utility@1.0.1
+  - @apie/responses@1.0.0
+
 ## 1.0.0
 
 ### Major Changes
