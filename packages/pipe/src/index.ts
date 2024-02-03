@@ -143,406 +143,406 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	): Pipe<P2, R2, Input, P0 | P1 | P2>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3
 	): Pipe<P3, R3, Input, P0 | P1 | P2 | P3>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4
-	): Pipe<P4, Input,
+	): Pipe<P4, R4, Input,
 		P0 | P1 | P2 | P3 | P4
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5
-	): Pipe<P5, Input,
+	): Pipe<P5, R5, Input,
 		P0 | P1 | P2 | P3 | P4 | P5
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6
-	): Pipe<P6, Input,
+	): Pipe<P6, R6, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7
-	): Pipe<P7, Input,
+	): Pipe<P7, R7, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8
-	): Pipe<P8, Input,
+	): Pipe<P8, R8, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9
-	): Pipe<P9, Input,
+	): Pipe<P9, R9, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10
-	): Pipe<P10, Input,
+	): Pipe<P10, R10, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
-	): Pipe<P11, Input,
+	): Pipe<P11, R11, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12
-	): Pipe<P12, Input,
+	): Pipe<P12, R12, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13
-	): Pipe<P13, Input,
+	): Pipe<P13, R13, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14
-	): Pipe<P14, Input,
+	): Pipe<P14, R14, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15
-	): Pipe<P15, Input,
+	): Pipe<P15, R15, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
-		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15, R15>, F16>, const F16, const R16 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16
-	): Pipe<P16, Input,
+	): Pipe<P16, R16, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
-		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
-		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15, R15>, F16>, const F16, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16, R16>, F17>, const F17, const R17 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17
-	): Pipe<P17, Input,
+	): Pipe<P17, R17, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16 | P17
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
-		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
-		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
-		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15, R15>, F16>, const F16, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16, R16>, F17>, const F17, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17, R17>, F18>, const F18, const R18 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18
-	): Pipe<P18, Input,
+	): Pipe<P18, R18, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
-		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
-		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
-		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
-		P19 extends Fn<PipeOrValue<P18>, R19>, const R19 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15, R15>, F16>, const F16, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16, R16>, F17>, const F17, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17, R17>, F18>, const F18, const R18 extends NonFn,
+		P19 extends Fn<PipeOrValue<P18, R18>, F19>, const F19, const R19 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18, p19: P19 | R19
-	): Pipe<P19, Input,
+	): Pipe<P19, R19, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18 | P19
 	>
 
 	function pipe<
-		P0 extends PipeFn<T, Input, R0>, const R0 extends NonFn,
-		P1 extends Fn<PipeOrValue<P0>, R1>, const R1 extends NonFn,
-		P2 extends Fn<PipeOrValue<P1>, R2>, const R2 extends NonFn,
-		P3 extends Fn<PipeOrValue<P2>, R3>, const R3 extends NonFn,
-		P4 extends Fn<PipeOrValue<P3>, R4>, const R4 extends NonFn,
-		P5 extends Fn<PipeOrValue<P4>, R5>, const R5 extends NonFn,
-		P6 extends Fn<PipeOrValue<P5>, R6>, const R6 extends NonFn,
-		P7 extends Fn<PipeOrValue<P6>, R7>, const R7 extends NonFn,
-		P8 extends Fn<PipeOrValue<P7>, R8>, const R8 extends NonFn,
-		P9 extends Fn<PipeOrValue<P8>, R9>, const R9 extends NonFn,
-		P10 extends Fn<PipeOrValue<P9>, R10>, const R10 extends NonFn,
-		P11 extends Fn<PipeOrValue<P10>, R11>, const R11 extends NonFn,
-		P12 extends Fn<PipeOrValue<P11>, R12>, const R12 extends NonFn,
-		P13 extends Fn<PipeOrValue<P12>, R13>, const R13 extends NonFn,
-		P14 extends Fn<PipeOrValue<P13>, R14>, const R14 extends NonFn,
-		P15 extends Fn<PipeOrValue<P14>, R15>, const R15 extends NonFn,
-		P16 extends Fn<PipeOrValue<P15>, R16>, const R16 extends NonFn,
-		P17 extends Fn<PipeOrValue<P16>, R17>, const R17 extends NonFn,
-		P18 extends Fn<PipeOrValue<P17>, R18>, const R18 extends NonFn,
-		P19 extends Fn<PipeOrValue<P18>, R19>, const R19 extends NonFn,
-		P20 extends Fn<PipeOrValue<P19>, R20>, const R20 extends NonFn,
+		P0 extends Fn<Input, F0>, const F0, const R0 extends NonFn,
+		P1 extends Fn<PipeOrValue<P0, R0>, F1>, const F1, const R1 extends NonFn,
+		P2 extends Fn<PipeOrValue<P1, R1>, F2>, const F2, const R2 extends NonFn,
+		P3 extends Fn<PipeOrValue<P2, R2>, F3>, const F3, const R3 extends NonFn,
+		P4 extends Fn<PipeOrValue<P3, R3>, F4>, const F4, const R4 extends NonFn,
+		P5 extends Fn<PipeOrValue<P4, R4>, F5>, const F5, const R5 extends NonFn,
+		P6 extends Fn<PipeOrValue<P5, R5>, F6>, const F6, const R6 extends NonFn,
+		P7 extends Fn<PipeOrValue<P6, R6>, F7>, const F7, const R7 extends NonFn,
+		P8 extends Fn<PipeOrValue<P7, R7>, F8>, const F8, const R8 extends NonFn,
+		P9 extends Fn<PipeOrValue<P8, R8>, F9>, const F9, const R9 extends NonFn,
+		P10 extends Fn<PipeOrValue<P9, R9>, F10>, const F10, const R10 extends NonFn,
+		P11 extends Fn<PipeOrValue<P10, R10>, F11>, const F11, const R11 extends NonFn,
+		P12 extends Fn<PipeOrValue<P11, R11>, F12>, const F12, const R12 extends NonFn,
+		P13 extends Fn<PipeOrValue<P12, R12>, F13>, const F13, const R13 extends NonFn,
+		P14 extends Fn<PipeOrValue<P13, R13>, F14>, const F14, const R14 extends NonFn,
+		P15 extends Fn<PipeOrValue<P14, R14>, F15>, const F15, const R15 extends NonFn,
+		P16 extends Fn<PipeOrValue<P15, R15>, F16>, const F16, const R16 extends NonFn,
+		P17 extends Fn<PipeOrValue<P16, R16>, F17>, const F17, const R17 extends NonFn,
+		P18 extends Fn<PipeOrValue<P17, R17>, F18>, const F18, const R18 extends NonFn,
+		P19 extends Fn<PipeOrValue<P18, R18>, F19>, const F19, const R19 extends NonFn,
+		P20 extends Fn<PipeOrValue<P19, R19>, F20>, const F20, const R20 extends NonFn,
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18, p19: P19 | R19, p20: P20 | R20
-	): Pipe<P20, Input,
+	): Pipe<P20, R20, Input,
 		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
 		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18 | P19 | P20
 	>
