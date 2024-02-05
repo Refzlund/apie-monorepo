@@ -4,7 +4,7 @@ import { expect, test } from 'bun:test'
 const pipe = createEventPipe<{ value: number }>()
 const fn = pipe(() => 123 as const)
 
-test.only('pipe: saveResult', async () => {
+test('pipe: saveResult', async () => {
 
 	const [$fn, get$fn] = saveResult(fn)
 
