@@ -35,6 +35,7 @@
 	"scripts": {
 		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
 		"test": "bun test",
+		"only": "bun test --only",
 		"package": "bun run ./package"
 	},
 	"dependencies": {
