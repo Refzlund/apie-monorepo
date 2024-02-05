@@ -33,6 +33,9 @@ An eco-system for infrastructure around REST API. It's worth noting that it is d
 
 That means, this is useful for any serverless-functions, such as AWS lambdas etc.
 
+<br/>
+<br/>
+
 ### `createEventPipe<T>` options
 | Option | Description | Type |
 | ---- | ---- | ---- |
@@ -41,49 +44,119 @@ That means, this is useful for any serverless-functions, such as AWS lambdas etc
 | finally? | Functions that will be run before the pipeline | MaybeArray<(event: T, result?: unknown, error?: unknown) => unknown> |
 | catch? | A function that returns a response in relation to an error being thrown<br>(default: ` InternalServerError()`) | catch?(event: T, error: unknown): APIResponse |
 
-## Pipelines
-The pipeline (result of using a pipe), will return early if the function returns an `APIResponse`.
-### Example
+<br/>
+<br/>
+
+
+## Pipes and pipelines
+
+A pipe a function that accepts an array functions. These functions may look like
+
+`(state: T, input: any) => any`
+
+The state/event defines requirements. An example of such a state/event is SvelteKit's [RequestEvent](https://kit.svelte.dev/docs/types#public-types-requestevent)
+We define the state upon creating the pipe:
 
 ```ts
 import { createEventPipe } from '@apie/pipe'
-import { OK } from '@apie/responses'
-import { getBody, isResponse } from '@apie/responses'
 
-import { authGuard } from '$pipeline'
-
-interface State {
-    value: number
+type State = {
+	value: number
 }
 
-const valuePipe = createEventPipe<State>({ /* options */ })
+const pipe = createEventPipe<State>()
+```
 
-const isValueAboveStateValue = valuePipe((event, input: number) => {
-    if(event.value > input)
-        return OK('Above 200')
-	
-    return 'Less than or equal to 200'
-})
+Now each function inside the pipe will have access to `State`:
 
-const pipeline200 = valuePipe(
-	(event) => {
-		console.log(`Inline function. Event: ${event}`)
+```ts
+const pipeline = pipe(
+	(state) => {
+		console.log(state.value)
+		return state.value * 2
+	},
+	(state, input) => {
+		console.log(input)
+		return input * 2
 	}
-    200,
-    isValueAboveStateValue
 )
 
-const result1 = pipeline200({ value: 345 }) // => APIResponse: OK('Above 200')
-const result2 = pipeline200({ value: 123 }) // => string: 'Less than or equal to 200'
+const result = pipeline({ value: 2 })
+// result: 2 * 2 * 2 = 6
+```
 
-if(isResponse(result1)) {
-	/*
-		Note: `getBody` gets the raw body of the response.
-		This only works on the backend, as a RAW value of the body
-		is stored as `response._body`, which means you don't need
-		to retrieve the body using something like `await response.json()`
-	*/
-    const body = getBody(result1) // 'Above 200'
-}
+
+<br/>
+<br/>
+
+
+### A pipeline requiring an input
+
+For consistency, you can create functions by using your pipe with just one function
+
+```ts
+const double = pipe((state) => state.value * 2)
+double({ value: 2 }) // 4
+```
+
+If we want to multiple it by an arbitrary number, we can define the input:
+
+```ts
+const multiply = pipe((state, input: number) => state.value * input)
+multiply({ value: 5 }, 2) // 10
+```
+
+<br/>
+<br/>
+
+### Returning Early
+
+Our pipelines are designed around HTTP Responses. That means, if you **EVER** return an HTTP Response using `@apie/responses`, then the pipeline will exit early, resulting in that response.
+
+```ts
+import { OK } from '@apie/responses'
+
+const fn = pipe(
+	() => {
+		return OK('Hi mom')
+	},
+	() => {
+		// This will never run
+		while(true) {}
+	}
+)
+
+const result = fn({ value: 2 }) // OK<'Hi mom'>
+```
+
+<br/>
+<br/>
+
+### Re-using a result of a function
+
+Okay, let's say you want to re-use a result, but … we can't really declare variables here, can we?
+
+Introducing… `saveResult`
+
+```ts
+import { saveResult } from '@apie/pipe'
+
+const multiply = pipe((state, input: number) => state.value * input)
+
+const [$multiply, get$multiply] = saveResult(multiply)
+
+const pipeline = pipe(
+	2,
+	$multiply,
+	(state, input: number) => {
+		// ...
+	},
+	// ... Functions later
+	(state) => OK(get$multiply(state))
+)
+
+const result = pipeline({ value: 3 }) // OK<number> -> body: 6
 
 ```
+
+The result is saved within the `state`, so by referencing the state later, we can get access to the value.
