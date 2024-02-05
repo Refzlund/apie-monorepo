@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 1.1.0
+
+### Minor Changes
+
+- feat: saveResult - save results to reuse later in a pipeline ([#18](https://github.com/Refzlund/apie-monorepo/pull/18))
+
+### Patch Changes
+
+- fix: input value not working if the previous pipe param is a function defined somewhere else ([#16](https://github.com/Refzlund/apie-monorepo/pull/16))
+
 ## 1.0.1
 
 ### Patch Changes
