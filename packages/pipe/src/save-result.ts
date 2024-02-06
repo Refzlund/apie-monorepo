@@ -1,3 +1,4 @@
+import { APIResponse } from '@apie/responses'
 import { PipeFn } from './pipe'
 
 const pipeResults = Symbol('pipeResults')
@@ -21,7 +22,7 @@ export function saveResult<T extends PipeFn>(fn: T) {
 	const get$fn = (state: P['state']) => {
 		state[pipeResults] ??= new Map()
 		const map: Map<symbol, unknown> = state[pipeResults]
-		return map.get(unique) as P['result']
+		return map.get(unique) as Exclude<P['result'], APIResponse>
 	}
 
 	return [$fn as T, get$fn] as const
