@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 1.1.1
+
+### Patch Changes
+
+- fix: pipeline Promises `any` if the pipeline has a non-function parameter ([#19](https://github.com/Refzlund/apie-monorepo/pull/19))
+
 ## 1.1.0
 
 ### Minor Changes
