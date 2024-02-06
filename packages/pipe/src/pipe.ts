@@ -4,6 +4,7 @@ import { InternalServerError, isResponse } from '@apie/responses'
 
 declare const NilSymbol: unique symbol
 type Nil = { [NilSymbol]: null }
+
 type NonFn =
 	| string | number | bigint | boolean | symbol
 	| null | undefined | void
@@ -14,8 +15,10 @@ export type PipeFn<
 	Event extends UnknownRecord = any, Input = any, Result = any
 > = (event: Event, input: Input) => MaybePromise<Result>
 
+/** Filters Nil from PipeFn */
+type N<P extends PipeFn | Nil> = [Nil] extends [P] ? never : P
 /** Returns the APIResponse from a Pipe Parameter Function */
-type ParamReturnResponse<P extends PipeFn> =
+type ParamReturnResponse<P extends PipeFn | Nil> =
 	P extends PipeFn<infer _, infer _, infer R>
 	? (R extends APIResponse ? R : never)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,7 +58,7 @@ interface Options<T extends UnknownRecord> {
 export function createEventPipe<T extends UnknownRecord = {}>(
 	options: Options<T> = {}
 ) {
-	type Fn<Input, Result> = PipeFn<T, Input, Result>
+	type Fn<Input, Result> = PipeFn<T, Input, Result> | Nil
 
 	function errored(event: T, error: unknown) {
 		try {
@@ -106,7 +109,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 
 
 	//#region Pipe implementation
-	type Pipe<Pn extends PipeFn, Rn, Input, Pall extends PipeFn> =
+	type Pipeline<Pn extends PipeFn | Nil, Rn, Input, Pall extends PipeFn | Nil> =
 		IsUnknown<Input> extends true ? (
 			(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
 		) : (undefined extends Input ? (
@@ -123,7 +126,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input
 	>(
 		p0: P0 | R0
-	): Pipe<P0, R0, Input, P0>
+	): Pipeline<P0, R0, Input,
+		| N<P0>
+	>
 
 	function pipe<
 		const P0 extends Fn<Input, any>, const R0 extends NonFn,
@@ -131,7 +136,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input,
 	>(
 		p0: P0 | R0, p1: P1 | R1
-	): Pipe<P1, R1, Input, P0 | P1>
+	): Pipeline<P1, R1, Input,
+		| N<P0> | N<P1>
+	>
 
 	function pipe<
 		P0 extends Fn<Input, any>, const R0 extends NonFn,
@@ -140,7 +147,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2
-	): Pipe<P2, R2, Input, P0 | P1 | P2>
+	): Pipeline<P2, R2, Input,
+		| N<P0> | N<P1> | N<P2>
+	>
 
 	function pipe<
 		P0 extends Fn<Input, any>, const R0 extends NonFn,
@@ -150,7 +159,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3
-	): Pipe<P3, R3, Input, P0 | P1 | P2 | P3>
+	): Pipeline<P3, R3, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3>
+	>
 
 	function pipe<
 		P0 extends Fn<Input, any>, const R0 extends NonFn,
@@ -161,8 +172,8 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4
-	): Pipe<P4, R4, Input,
-		P0 | P1 | P2 | P3 | P4
+	): Pipeline<P4, R4, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4>
 	>
 
 	function pipe<
@@ -175,8 +186,8 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Input
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5
-	): Pipe<P5, R5, Input,
-		P0 | P1 | P2 | P3 | P4 | P5
+	): Pipeline<P5, R5, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
 	>
 
 	function pipe<
@@ -191,8 +202,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6
-	): Pipe<P6, R6, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6
+	): Pipeline<P6, R6, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6>
 	>
 
 	function pipe<
@@ -208,8 +220,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7
-	): Pipe<P7, R7, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7
+	): Pipeline<P7, R7, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7>
 	>
 
 	function pipe<
@@ -226,8 +239,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8
-	): Pipe<P8, R8, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8
+	): Pipeline<P8, R8, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8>
 	>
 
 	function pipe<
@@ -245,8 +259,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9
-	): Pipe<P9, R9, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9
+	): Pipeline<P9, R9, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9>
 	>
 
 	function pipe<
@@ -265,8 +280,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10
-	): Pipe<P10, R10, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10
+	): Pipeline<P10, R10, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10>
 	>
 
 	function pipe<
@@ -286,9 +302,9 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
-	): Pipe<P11, R11, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11
+	): Pipeline<P11, R11, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
 	>
 
 	function pipe<
@@ -310,9 +326,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12
-	): Pipe<P12, R12, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12
+	): Pipeline<P12, R12, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12>
 	>
 
 	function pipe<
@@ -335,9 +352,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13
-	): Pipe<P13, R13, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13
+	): Pipeline<P13, R13, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13>
 	>
 
 	function pipe<
@@ -361,9 +379,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14
-	): Pipe<P14, R14, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14
+	): Pipeline<P14, R14, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14>
 	>
 
 	function pipe<
@@ -388,9 +407,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15
-	): Pipe<P15, R15, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15
+	): Pipeline<P15, R15, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15>
 	>
 
 	function pipe<
@@ -416,9 +436,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4, p5: P5 | R5,
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16
-	): Pipe<P16, R16, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15 | P16
+	): Pipeline<P16, R16, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15> | N<P16>
 	>
 
 	function pipe<
@@ -446,9 +467,10 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17
-	): Pipe<P17, R17, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15 | P16 | P17
+	): Pipeline<P17, R17, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15> | N<P16> | N<P17>
 	>
 
 	function pipe<
@@ -477,9 +499,11 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18
-	): Pipe<P18, R18, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18
+	): Pipeline<P18, R18, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15> | N<P16> | N<P17>
+		| N<P18>
 	>
 
 	function pipe<
@@ -509,9 +533,11 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18, p19: P19 | R19
-	): Pipe<P19, R19, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18 | P19
+	): Pipeline<P19, R19, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15> | N<P16> | N<P17>
+		| N<P18> | N<P19>
 	>
 
 	function pipe<
@@ -542,9 +568,11 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9, p10: P10 | R10, p11: P11 | R11,
 		p12: P12 | R12, p13: P13 | R13, p14: P14 | R14, p15: P15 | R15, p16: P16 | R16,
 		p17: P17 | R17, p18: P18 | R18, p19: P19 | R19, p20: P20 | R20
-	): Pipe<P20, R20, Input,
-		P0 | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | P9 | P10 |
-		P11 | P12 | P13 | P14 | P15 | P16 | P17 | P18 | P19 | P20
+	): Pipeline<P20, R20, Input,
+		| N<P0> | N<P1> | N<P2> | N<P3> | N<P4> | N<P5>
+		| N<P6> | N<P7> | N<P8> | N<P9> | N<P10> | N<P11>
+		| N<P12> | N<P13> | N<P14> | N<P15> | N<P16> | N<P17>
+		| N<P18> | N<P19> | N<P20>
 	>
 
 	/* eslint-enable @typescript-eslint/no-explicit-any */
