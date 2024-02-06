@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 1.1.2
+
+### Patch Changes
+
+- fix: saveResult returns APIResponses ([#21](https://github.com/Refzlund/apie-monorepo/pull/21))
+
 ## 1.1.1
 
 ### Patch Changes
