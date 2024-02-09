@@ -1,4 +1,4 @@
-import type { MaybePromise, MaybeArray, UnknownRecord, Writable, IsUnknown } from '@apie/utility/types'
+import type { MaybePromise, MaybeArray, UnknownRecord, IsUnknown } from '@apie/utility/types'
 import { type APIResponse } from '@apie/responses/types'
 import { InternalServerError, isResponse } from '@apie/responses'
 
@@ -30,12 +30,12 @@ type ParamReturnResponse<P extends PipeFn | Nil> =
 type PipeOrValue<P = never, R = unknown> =
 	[Nil] extends [R]
 	? P extends PipeFn<infer _, infer _, infer TReturn>
-	? Writable<Exclude<TReturn, APIResponse>>
+	? Exclude<TReturn, APIResponse>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	: P extends PipeFn<any, any, infer TReturn>
-	? Writable<Exclude<TReturn, APIResponse>>
+	? Exclude<TReturn, APIResponse>
 	: never
-	: Writable<Exclude<R, APIResponse>>
+	: Exclude<R, APIResponse>
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
