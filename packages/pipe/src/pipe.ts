@@ -26,21 +26,16 @@ type ParamReturnResponse<P extends PipeFn | Nil> =
 	? (R extends APIResponse ? R : never)
 	: never
 
-/** Returns the value as a non-constant */
-type WritableInput<T> =
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	T extends UnknownRecord | any[] ? Writable<T> : T
-
 /** Returns the (non-APIResponse) content of the Pipe Parameter Function */
 type PipeOrValue<P = never, R = unknown> =
 	[Nil] extends [R]
 	? P extends PipeFn<infer _, infer _, infer TReturn>
-	? WritableInput<Exclude<TReturn, APIResponse>>
+	? Writable<Exclude<TReturn, APIResponse>>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	: P extends PipeFn<any, any, infer TReturn>
-	? WritableInput<Exclude<TReturn, APIResponse>>
+	? Writable<Exclude<TReturn, APIResponse>>
 	: never
-	: WritableInput<Exclude<R, APIResponse>>
+	: Writable<Exclude<R, APIResponse>>
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
