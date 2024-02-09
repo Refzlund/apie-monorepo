@@ -1,1 +1,2 @@
-export type UnknownRecord = Record<string | number | symbol, unknown>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type UnknownRecord = Record<PropertyKey, any>
