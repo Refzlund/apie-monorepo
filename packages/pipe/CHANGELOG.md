@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 1.1.3
+
+### Patch Changes
+
+- fix: do not simplify return values ([#24](https://github.com/Refzlund/apie-monorepo/pull/24))
+
 ## 1.1.2
 
 ### Patch Changes
