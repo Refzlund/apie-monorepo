@@ -1,5 +1,11 @@
 # @apie/utility
 
+## 1.0.2
+
+### Patch Changes
+
+- fix: interfaces not treated as UnknownRecord's ([#26](https://github.com/Refzlund/apie-monorepo/pull/26))
+
 ## 1.0.1
 
 ### Patch Changes

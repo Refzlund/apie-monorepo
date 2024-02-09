@@ -1,6 +1,6 @@
 {
 	"name": "@apie/utility",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A utility package used within the @apie eco-system.",
 	"keywords": [
 		"utility types",
