@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 1.1.4
+
+### Patch Changes
+
+- fix: simplifies return value in pipe ([#26](https://github.com/Refzlund/apie-monorepo/pull/26))
+
+- Updated dependencies [[`c241c70a3ac22c9975acb7c8bc3f60bef3e4f47d`](https://github.com/Refzlund/apie-monorepo/commit/c241c70a3ac22c9975acb7c8bc3f60bef3e4f47d)]:
+  - @apie/utility@1.0.2
+  - @apie/responses@1.0.0
+
 ## 1.1.3
 
 ### Patch Changes
