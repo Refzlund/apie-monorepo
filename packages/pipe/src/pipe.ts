@@ -28,14 +28,14 @@ type ParamReturnResponse<P extends PipeFn | Nil> =
 
 /** Returns the (non-APIResponse) content of the Pipe Parameter Function */
 type PipeOrValue<P = never, R = unknown> =
-	[Nil] extends [R]
-	? P extends PipeFn<infer _, infer _, infer TReturn>
+	[Nil] extends [P]
+	? Exclude<R, APIResponse>
+	: P extends PipeFn<infer _, infer _, infer TReturn>
 	? Exclude<TReturn, APIResponse>
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	: P extends PipeFn<any, any, infer TReturn>
 	? Exclude<TReturn, APIResponse>
 	: never
-	: Exclude<R, APIResponse>
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
