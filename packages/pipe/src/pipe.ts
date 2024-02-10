@@ -32,8 +32,8 @@ export type PipeOrValue<P = never, R = unknown> =
 	? (
 		R extends PipeFn<infer _, infer _, infer TReturn>
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		? TReturn : R extends PipeFn<any, any, infer TReturn>
-		? TReturn : Exclude<R, APIResponse>
+		? Exclude<TReturn, APIResponse> : R extends PipeFn<any, any, infer TReturn>
+		? Exclude<TReturn, APIResponse> : Exclude<R, APIResponse>
 	)
 	: (
 		P extends PipeFn<infer _, infer _, infer TReturn>
