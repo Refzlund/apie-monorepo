@@ -7,7 +7,7 @@ type ArbitraryType =
 	| null | undefined | void
 	| APIResponse | UnknownRecord | Nil
 
-type PipeFn<
+export type PipeFn<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Event extends UnknownRecord = any, Input = any, Result = any
 > = (event: Event, input: Input) => MaybePromise<Result>
