@@ -19,7 +19,7 @@ test('fn as input', () => {
 			expect(123).toBe(v)
 		}
 	)
-	pipeline({ yas: 'false' }, false)
+	pipeline({ yas: 'false' }, true)
 })
 
 test('Pipe types are correct', () => {
