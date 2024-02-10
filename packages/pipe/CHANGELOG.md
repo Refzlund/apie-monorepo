@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 1.1.5
+
+### Patch Changes
+
+- fix: cannot use a function to define pipeline input ([#28](https://github.com/Refzlund/apie-monorepo/pull/28))
+
 ## 1.1.4
 
 ### Patch Changes
