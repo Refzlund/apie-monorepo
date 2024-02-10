@@ -1,5 +1,11 @@
 # @apie/utility
 
+## 1.0.3
+
+### Patch Changes
+
+- refactor: move `Nil` brand-type to `@apie/utility` ([#30](https://github.com/Refzlund/apie-monorepo/pull/30))
+
 ## 1.0.2
 
 ### Patch Changes

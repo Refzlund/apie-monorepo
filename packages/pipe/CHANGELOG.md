@@ -1,5 +1,17 @@
 # @apie/pipe
 
+## 1.1.6
+
+### Patch Changes
+
+- refactor: move `Nil` brand-type to `@apie/utility` ([#30](https://github.com/Refzlund/apie-monorepo/pull/30))
+
+- fix: exclude `APIResponse` from the return value in a pipe ([#30](https://github.com/Refzlund/apie-monorepo/pull/30))
+
+- Updated dependencies [[`397bb68f00e763371e6f8aefb5964d9ee75ae01e`](https://github.com/Refzlund/apie-monorepo/commit/397bb68f00e763371e6f8aefb5964d9ee75ae01e)]:
+  - @apie/utility@1.0.3
+  - @apie/responses@1.0.0
+
 ## 1.1.5
 
 ### Patch Changes
