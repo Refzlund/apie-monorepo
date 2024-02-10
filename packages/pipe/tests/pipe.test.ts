@@ -6,8 +6,6 @@ import * as R from '@apie/responses/types'
 
 const pipe = createEventPipe<{ yas: 'true' | 'false' }>()
 
-
-
 test('Pipe types are correct', () => {
 	const pipeline = pipe(
 		(e, i?: boolean) => {
