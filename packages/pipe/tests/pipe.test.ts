@@ -1,10 +1,26 @@
 import { expect, test } from 'bun:test'
 import { createEventPipe } from '$'
-import { OK } from '@apie/responses'
+import { BadRequest, OK } from '@apie/responses'
 import { getBody, isResponse } from '@apie/responses'
 import * as R from '@apie/responses/types'
 
 const pipe = createEventPipe<{ yas: 'true' | 'false' }>()
+
+test('fn as input', () => {
+	const fn = pipe((e, v: boolean) => {
+		if (!v)
+			return BadRequest('Oh noeee')
+		return 123
+	})
+
+	const pipeline = pipe(
+		fn,
+		(e, v) => {
+			expect(123).toBe(v)
+		}
+	)
+	pipeline({ yas: 'false' }, true)
+})
 
 test('Pipe types are correct', () => {
 	const pipeline = pipe(
