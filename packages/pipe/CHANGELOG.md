@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 1.1.7
+
+### Patch Changes
+
+- fix: input type is never for pipeline ([#32](https://github.com/Refzlund/apie-monorepo/pull/32))
+
+- Updated dependencies [[`6d3081a6576f10de883ad69710b12c1daab8f7ba`](https://github.com/Refzlund/apie-monorepo/commit/6d3081a6576f10de883ad69710b12c1daab8f7ba)]:
+  - @apie/utility@1.1.0
+  - @apie/responses@1.0.0
+
 ## 1.1.6
 
 ### Patch Changes
