@@ -1,5 +1,11 @@
 # @apie/utility
 
+## 1.1.0
+
+### Minor Changes
+
+- feat: added `IsUnknownOrNever` utility type ([#32](https://github.com/Refzlund/apie-monorepo/pull/32))
+
 ## 1.0.3
 
 ### Patch Changes
