@@ -1,4 +1,4 @@
-import type { MaybePromise, MaybeArray, UnknownRecord, IsUnknown, Nil } from '@apie/utility/types'
+import type { MaybePromise, MaybeArray, UnknownRecord, Nil, IsUnknownOrNever } from '@apie/utility/types'
 import { type APIResponse } from '@apie/responses/types'
 import { InternalServerError, isResponse } from '@apie/responses'
 
@@ -125,7 +125,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		Rn, Input,
 		Pall extends PipeFn | Nil
 	> = 
-		IsUnknown<Input> extends true ? (
+		IsUnknownOrNever<Input> extends true ? (
 			(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
 		) : (undefined extends Input ? (
 			(event: T, input?: Input | void) =>

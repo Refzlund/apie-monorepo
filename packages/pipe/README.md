@@ -82,7 +82,7 @@ const pipeline = pipe(
 )
 
 const result = pipeline({ value: 2 })
-// result: 2 * 2 * 2 = 6
+// result: 2 * 2 * 2 = 8
 ```
 
 
