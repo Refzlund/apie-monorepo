@@ -1,5 +1,17 @@
 # @apie/pipe
 
+## 1.2.0
+
+### Minor Changes
+
+- feat: NestedPipe - use nested pipes within pipes via `pipe.nested(...)` ([#35](https://github.com/Refzlund/apie-monorepo/pull/35))
+
+### Patch Changes
+
+- Updated dependencies [[`652eeba6d334838629809292552e1af7016c91ec`](https://github.com/Refzlund/apie-monorepo/commit/652eeba6d334838629809292552e1af7016c91ec)]:
+  - @apie/utility@1.2.0
+  - @apie/responses@1.0.0
+
 ## 1.1.7
 
 ### Patch Changes

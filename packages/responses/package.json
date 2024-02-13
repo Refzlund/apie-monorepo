@@ -44,7 +44,7 @@
 		"dist"
 	],
 	"dependencies": {
-		"@apie/utility": "^1.1.0"
+		"@apie/utility": "^1.2.0"
 	},
 	"devDependencies": {
 		"@apie/utility": "workspace:*"
