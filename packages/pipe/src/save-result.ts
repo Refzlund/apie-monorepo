@@ -1,5 +1,5 @@
 import { APIResponse } from '@apie/responses'
-import { PipeFn } from './pipe'
+import { PipeFn } from './types/pipe'
 
 const pipeResults = Symbol('pipeResults')
 
