@@ -1,5 +1,11 @@
 # @apie/utility
 
+## 1.2.0
+
+### Minor Changes
+
+- feat: FilterNil - remove types that has the Nil utility type ([#35](https://github.com/Refzlund/apie-monorepo/pull/35))
+
 ## 1.1.0
 
 ### Minor Changes
