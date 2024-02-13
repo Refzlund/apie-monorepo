@@ -132,6 +132,51 @@ const result = fn({ value: 2 }) // OK<'Hi mom'>
 <br/>
 <br/>
 
+### Nested Pipes
+
+Sometimes we might want to re-use variables across multiple operations within our pipe.
+
+In this example we use `(e,v) => pipe.nested(...)` to access the variable `v`, within our pipe function.
+
+```ts
+const Input = z.object({...})
+const $bulkWriter = createBulkWriter(...)
+
+const pipeline = pipe( 
+	zodValidator(Input), 
+	(e, v) => arrayChanges(
+		v.existingDocuments, 
+		v.updatedDocuments, 
+		t => t._id?.toString()
+	),
+	(e, v) => pipe.nested(
+		v.newEntries,
+		$bulkWriter.insertMultiple,
+		
+		v.removedEntries.map(v => v._id),
+		$bulkWriter.updateMany(
+			v => ({ 
+				filter: { _id: { $in: v } }, 
+				update: { _status: 'archived' } 
+			})
+		),
+		
+		v.persistedEntries,
+		$bulkWriter.updateMultiple(
+			v => ({ 
+				filter: { _id: v._id }, 
+				update: { name: v.name } 
+			})
+		)
+	),
+	$bulkWriter.execute()
+)
+
+```
+
+<br/>
+<br/>
+
 ### Re-using a result of a function
 
 Okay, let's say you want to re-use a result, but … we can't really declare variables here, can we?
