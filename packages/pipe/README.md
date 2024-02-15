@@ -42,7 +42,7 @@ That means, this is useful for any serverless-functions, such as AWS lambdas etc
 | before? | Functions that will be run before the pipeline | MaybeArray<(event: T) => unknown> |
 | after? | Functions that will be run before the pipeline<br>(does not run if an exception is thrown) | MaybeArray<(event: T, result: unknown) => unknown> |
 | finally? | Functions that will be run before the pipeline | MaybeArray<(event: T, result?: unknown, error?: unknown) => unknown> |
-| catch? | A function that returns a response in relation to an error being thrown<br>(default: ` InternalServerError()`) | catch?(event: T, error: unknown): APIResponse |
+| catch? | A function that returns a response in relation to an error being thrown<br>(default: `throw error`) | catch?(event: T, error: unknown): APIResponse |
 
 <br/>
 <br/>
@@ -132,11 +132,11 @@ const result = fn({ value: 2 }) // OK<'Hi mom'>
 <br/>
 <br/>
 
-### Nested Pipes
+### Nesting Pipes
 
 Sometimes we might want to re-use variables across multiple operations within our pipe.
 
-In this example we use `(e,v) => pipe.nested(...)` to access the variable `v`, within our pipe function.
+In this example we use `(e,v) => pipe(...)` to access the variable `v`, within our pipe function.
 
 ```ts
 const Input = z.object({...})
@@ -149,7 +149,7 @@ const pipeline = pipe(
 		v.updatedDocuments, 
 		t => t._id?.toString()
 	),
-	(e, v) => pipe.nested(
+	(e, v) => pipe(
 		v.newEntries,
 		$bulkWriter.insertMultiple,
 		
