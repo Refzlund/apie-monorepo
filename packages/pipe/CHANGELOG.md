@@ -1,5 +1,13 @@
 # @apie/pipe
 
+## 2.0.0
+
+### Major Changes
+
+- breaking: pipe will now throw errors, instead of catching them and returning `InternalServerError` - as that should be handled by the Backend framework ([#37](https://github.com/Refzlund/apie-monorepo/pull/37))
+
+- breaking: replaced `(e,v) => pipe.nested(...)` with just using `(e,v) => pipe(...)` ([#37](https://github.com/Refzlund/apie-monorepo/pull/37))
+
 ## 1.2.0
 
 ### Minor Changes
