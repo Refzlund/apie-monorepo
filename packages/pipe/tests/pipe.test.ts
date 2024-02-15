@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { createEventPipe } from '$'
+import { Pipeline, createEventPipe } from '$'
 import { BadRequest, OK } from '@apie/responses'
 import { getBody, isResponse } from '@apie/responses'
 import * as R from '@apie/responses/types'
@@ -43,14 +43,14 @@ test('Pipe types are correct', () => {
 		}
 	)
 
-	type Pipeline = (event: {
+	type PipelineType = Pipeline<(event: {
 		yas: 'true' | 'false'
 	}, input?: boolean | void) => Promise<
 		| { more: string } // TODO const: { more: 'abc' }
 		| R.OK<'message'>
-	>
+	>>
 
-	expect(pipeline).toEqual(pipeline as Pipeline)
+	expect(pipeline).toEqual(pipeline as PipelineType)
 	const _result1 = pipeline({ yas: 'true' }, true)
 })
 

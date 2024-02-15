@@ -69,7 +69,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		}
 	}
 
-	const pipeFactory = <Nested extends boolean>(nested: Nested) => {
+	const pipeFactory = () => {
 
 		const pipeFn = ((
 			...params: Array<ArbitraryType | PipeFn<T, unknown, ArbitraryType>>
@@ -114,18 +114,15 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 				return previousResult
 			}
 			
-			if (nested) {
-				pipedFunction[pipe] = true
-			}
+			pipedFunction[pipe] = true
 			
 			return pipedFunction
-		}) as Nested extends true ? Pipe<T, { [pipe]: true }> : Pipe<T>
+		}) as Pipe<T>
 
 		return pipeFn 
 	}
 
-	const pipeFn = pipeFactory(false)
-	pipeFn.nested = pipeFactory(true)
+	const pipeFn = pipeFactory()
 	
 
 	return pipeFn
