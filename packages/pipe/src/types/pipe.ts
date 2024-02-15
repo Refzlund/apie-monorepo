@@ -18,7 +18,12 @@ export type NestedPipeFn<
 		(event: Event, input: Input): MaybePromise<Result>
 	}
 
-type Pipeline<
+// @ts-expect-error We force a `Pipeline<T>` type
+export interface Pipeline<T extends PipeFn> extends T {
+	[pipe]: true
+}
+
+type PipeResult<
 	T extends UnknownRecord,
 	Pn extends PipeFn | Nil,
 	Rn extends PipeFn | ArbitraryType | Nil,
@@ -27,14 +32,17 @@ type Pipeline<
 > =
 	(
 		IsUnknownOrNever<Input> extends true ? (
-			(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+			Pipeline<(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>>
 		) : (
 			undefined extends Input ? (
-				(event: T, input?: Input | void) =>
+				Pipeline<
+					(event: T, input?: Input | void) =>
+						Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+				>
+			) : Pipeline<
+				(event: T, input: Input) => 
 					Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
-			) :
-			(event: T, input: Input) =>
-				Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+			>
 		)
 	)
 
@@ -42,14 +50,12 @@ type Pipeline<
 /* eslint-disable max-len */
 
 export interface Pipe<T extends UnknownRecord, Add = {}> {
-	nested: Pipe<T, { [pipe]: true }>
-
 	<
 		Input,
 		P0 extends Nil | PipeFn<T, Input, any>, const R0 extends ArbitraryType
 	>(
 		p0: P0 | R0
-	): Pipeline<T, P0, R0, PipeInput<P0, R0>,
+	): PipeResult<T, P0, R0, PipeInput<P0, R0>,
 		| FilterNil<P0>
 	> & Add
 
@@ -59,7 +65,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		const P1 extends Nil | PipeFn<T, PipeOrValue<P0, R0>, any>, const R1 extends ArbitraryType
 	>(
 		p0: P0 | R0, p1: P1 | R1
-	): Pipeline<T, P1, R1, PipeInput<P0, R0>,
+	): PipeResult<T, P1, R1, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1>
 	> & Add
 
@@ -70,7 +76,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		P2 extends Nil | PipeFn<T, PipeOrValue<P1, R1>, any>, const R2 extends ArbitraryType
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2
-	): Pipeline<T, P2, R2, PipeInput<P0, R0>,
+	): PipeResult<T, P2, R2, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2>
 	> & Add
 
@@ -82,7 +88,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		P3 extends Nil | PipeFn<T, PipeOrValue<P2, R2>, any>, const R3 extends ArbitraryType
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3,
-	): Pipeline<T, P3, R3, PipeInput<P0, R0>,
+	): PipeResult<T, P3, R3, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3>
 	> & Add
 	
@@ -95,7 +101,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		P4 extends Nil | PipeFn<T, PipeOrValue<P3, R3>, any>, const R4 extends ArbitraryType
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4
-	): Pipeline<T, P4, R4, PipeInput<P0, R0>,
+	): PipeResult<T, P4, R4, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 	> & Add
 
@@ -110,7 +116,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5
-	): Pipeline<T, P5, R5, PipeInput<P0, R0>,
+	): PipeResult<T, P5, R5, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5>
 	> & Add
@@ -127,7 +133,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6
-	): Pipeline<T, P6, R6, PipeInput<P0, R0>,
+	): PipeResult<T, P6, R6, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6>
 	> & Add
@@ -145,7 +151,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7
-	): Pipeline<T, P7, R7, PipeInput<P0, R0>,
+	): PipeResult<T, P7, R7, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7>
 	> & Add
@@ -164,7 +170,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8
-	): Pipeline<T, P8, R8, PipeInput<P0, R0>,
+	): PipeResult<T, P8, R8, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8>
 	> & Add
@@ -184,7 +190,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 	>(
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9
-	): Pipeline<T, P9, R9, PipeInput<P0, R0>,
+	): PipeResult<T, P9, R9, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 	> & Add
@@ -206,7 +212,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10
-	): Pipeline<T, P10, R10, PipeInput<P0, R0>,
+	): PipeResult<T, P10, R10, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10>
@@ -230,7 +236,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11
-	): Pipeline<T, P11, R11, PipeInput<P0, R0>,
+	): PipeResult<T, P11, R11, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11>
@@ -255,7 +261,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12
-	): Pipeline<T, P12, R12, PipeInput<P0, R0>,
+	): PipeResult<T, P12, R12, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12>
@@ -281,7 +287,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13
-	): Pipeline<T, P13, R13, PipeInput<P0, R0>,
+	): PipeResult<T, P13, R13, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13>
@@ -308,7 +314,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p0: P0 | R0, p1: P1 | R1, p2: P2 | R2, p3: P3 | R3, p4: P4 | R4,
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14
-	): Pipeline<T, P14, R14, PipeInput<P0, R0>,
+	): PipeResult<T, P14, R14, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -337,7 +343,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15
-	): Pipeline<T, P15, R15, PipeInput<P0, R0>,
+	): PipeResult<T, P15, R15, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -368,7 +374,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15, p16: P16 | R16
-	): Pipeline<T, P16, R16, PipeInput<P0, R0>,
+	): PipeResult<T, P16, R16, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -400,7 +406,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15, p16: P16 | R16, p17: P17 | R17
-	): Pipeline<T, P17, R17, PipeInput<P0, R0>,
+	): PipeResult<T, P17, R17, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -433,7 +439,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15, p16: P16 | R16, p17: P17 | R17, p18: P18 | R18
-	): Pipeline<T, P18, R18, PipeInput<P0, R0>,
+	): PipeResult<T, P18, R18, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -467,7 +473,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p5: P5 | R5, p6: P6 | R6, p7: P7 | R7, p8: P8 | R8, p9: P9 | R9,
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15, p16: P16 | R16, p17: P17 | R17, p18: P18 | R18, p19: P19 | R19,
-	): Pipeline<T, P19, R19, PipeInput<P0, R0>,
+	): PipeResult<T, P19, R19, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>
@@ -503,7 +509,7 @@ export interface Pipe<T extends UnknownRecord, Add = {}> {
 		p10: P10 | R10, p11: P11 | R11, p12: P12 | R12, p13: P13 | R13, p14: P14 | R14,
 		p15: P15 | R15, p16: P16 | R16, p17: P17 | R17, p18: P18 | R18, p19: P19 | R19,
 		p20: P20 | R20,
-	): Pipeline<T, P20, R20, PipeInput<P0, R0>,
+	): PipeResult<T, P20, R20, PipeInput<P0, R0>,
 		| FilterNil<P0> | FilterNil<P1> | FilterNil<P2> | FilterNil<P3> | FilterNil<P4>
 		| FilterNil<P5> | FilterNil<P6> | FilterNil<P7> | FilterNil<P8> | FilterNil<P9>
 		| FilterNil<P10> | FilterNil<P11> | FilterNil<P12> | FilterNil<P13> | FilterNil<P14>

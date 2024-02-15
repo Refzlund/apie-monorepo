@@ -1,6 +1,6 @@
 import type { MaybeArray, UnknownRecord } from '@apie/utility/types'
 import { type APIResponse } from '@apie/responses/types'
-import { InternalServerError, isResponse } from '@apie/responses'
+import { isResponse } from '@apie/responses'
 import { ArbitraryType } from './types/helper'
 import { Pipe, PipeFn } from './types/pipe'
 
@@ -33,12 +33,14 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 			error = err
 		}
 		try {
-			return options?.catch?.(event, error) || InternalServerError()
+			if (options?.catch)
+				options?.catch?.(event, error)
+			else
+				throw error
 		} catch (error) {
-			console.error(error)
-			return InternalServerError({ message: 'Pipeline: "catch"-stage has thrown an error.' })
+			console.error('Critical Error during pipe error handling', error)
+			throw error
 		}
-
 	}
 
 	function before(event: T) {
@@ -69,7 +71,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 		}
 	}
 
-	const pipeFactory = <Nested extends boolean>(nested: Nested) => {
+	const pipeFactory = () => {
 
 		const pipeFn = ((
 			...params: Array<ArbitraryType | PipeFn<T, unknown, ArbitraryType>>
@@ -114,18 +116,15 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 				return previousResult
 			}
 			
-			if (nested) {
-				pipedFunction[pipe] = true
-			}
+			pipedFunction[pipe] = true
 			
 			return pipedFunction
-		}) as Nested extends true ? Pipe<T, { [pipe]: true }> : Pipe<T>
+		}) as Pipe<T>
 
 		return pipeFn 
 	}
 
-	const pipeFn = pipeFactory(false)
-	pipeFn.nested = pipeFactory(true)
+	const pipeFn = pipeFactory()
 	
 
 	return pipeFn

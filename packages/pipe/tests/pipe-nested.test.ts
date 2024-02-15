@@ -6,7 +6,7 @@ const pipe = createEventPipe<{}>()
 
 describe('Nested Pipe', () => {
 	test('Symbol', async () => {
-		const nested = pipe.nested(
+		const nested = pipe(
 			(e, v: number) => v,
 			(e, v) => {
 				return v
@@ -19,34 +19,39 @@ describe('Nested Pipe', () => {
 		expect(result).toBe(123)
 	})
 
-	test('Functionality', async () => {
+	test('passing functions and nested pipes', async () => {
 		const pipeline = pipe(
-			(e) => 123,
+			(e) => () => { return 'some function' },
 			(e, v) => {
-				return pipe.nested(
-					v.toString()
-				)
+				expect(v).toBeFunction()
+				expect(v()).toBe('some function')
+				return 123
 			},
+			(e, v) => pipe(
+				v.toString() as '123'
+			),
 			(e, v) => {
-				expect(v).toBe('123')
+				expect('123' as const).toBe(v)
 				return v
-			}
-		)
-
-		const pipeline2 = pipe(
-			(e, v) => 123,
-			(e, v) => {
-				return pipe.nested(
-					() => v.toString() as '123'
-				)
 			}
 		)
 
 		const result1 = await pipeline({})
 		expect(result1).toBe('123')
+	})
 
-		const result2 = await pipeline2({})
-		expect('123' as const).toBe(result2)
+	test('returning neted pipe', async () => {
+		const pipeline = pipe(
+			(e, v) => 123,
+			(e, v) => {
+				return pipe(
+					() => v.toString() as '123'
+				)
+			}
+		)
+
+		const result = await pipeline({})
+		expect('123' as const).toBe(result)
 	})
 })
 
