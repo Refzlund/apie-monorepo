@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.0.1
+
+### Patch Changes
+
+- fix: `saveResult` overrides existing value ([#40](https://github.com/Refzlund/apie-monorepo/pull/40))
+
 ## 2.0.0
 
 ### Major Changes
