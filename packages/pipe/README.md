@@ -205,3 +205,5 @@ const result = pipeline({ value: 3 }) // OK<number> -> body: 6
 ```
 
 The result is saved within the `state`, so by referencing the state later, we can get access to the value.
+
+If you use `$multiply` again, then it returns the past result it resolved, rather than re-initializing.
