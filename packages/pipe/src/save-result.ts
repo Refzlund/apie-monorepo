@@ -14,6 +14,9 @@ export function saveResult<T extends PipeFn>(fn: T) {
 	const $fn = async (state: P['state'], input: P['input']) => {
 		state[pipeResults] ??= new Map()
 		const map: Map<symbol, unknown> = state[pipeResults]
+		const existing = map.get(unique)
+		if (existing)
+			return existing
 		const result = await fn(state, input)
 		map.set(unique, result)
 		return result
