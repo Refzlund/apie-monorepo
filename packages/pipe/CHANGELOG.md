@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.0.3
+
+### Patch Changes
+
+- fix: pipe try-catch recursive erroring ([#44](https://github.com/Refzlund/apie-monorepo/pull/44))
+
 ## 2.0.2
 
 ### Patch Changes
