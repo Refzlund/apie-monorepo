@@ -1,5 +1,14 @@
 # @apie/pipe
 
+## 2.0.2
+
+### Patch Changes
+
+- fix: only test for `@apie/responses` with isResponse function ([#42](https://github.com/Refzlund/apie-monorepo/pull/42))
+
+- Updated dependencies [[`38b9139ec922f61c0186cd94fb650405759b2214`](https://github.com/Refzlund/apie-monorepo/commit/38b9139ec922f61c0186cd94fb650405759b2214)]:
+  - @apie/responses@1.0.1
+
 ## 2.0.1
 
 ### Patch Changes
