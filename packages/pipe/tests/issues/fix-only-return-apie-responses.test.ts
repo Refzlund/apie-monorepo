@@ -5,7 +5,7 @@ const pipe = createEventPipe<{
 	value: number
 }>()
 
-test.only('fix-only-return-apie-responses', async () => {
+test('fix-only-return-apie-responses', async () => {
 
 	const pipeline = pipe(
 		(e) => {

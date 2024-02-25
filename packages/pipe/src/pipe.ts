@@ -23,7 +23,6 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	options: Options<T> = {}
 ) {
 	function errored(event: T, error: unknown) {
-		console.error(error)
 		try {
 			if (Array.isArray(options?.finally))
 				options?.finally?.forEach(fn => fn(event, undefined, error))
@@ -33,12 +32,15 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 			error = err
 		}
 		try {
-			if (options?.catch)
+			if (options?.catch) {
 				options?.catch?.(event, error)
+			}
 			else
 				throw error
-		} catch (error) {
-			console.error('Critical Error during pipe error handling', error)
+		} catch (e) {
+			if (e === error)
+				throw e
+			console.error('Critical Err*or during pipe error handling', error)
 			throw error
 		}
 	}
