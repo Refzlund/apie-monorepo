@@ -47,7 +47,7 @@ export interface APIResponseOptions {
 }
 
 export function isResponse(res: unknown): res is APIResponse {
-	return res instanceof Response
+	return typeof res?.[apiBrand] === 'string'
 }
 
 /** Returns the raw body of a response (ergo not a stringified body) */

@@ -104,7 +104,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 						return errored(event, error)
 					}
 
-					if (previousResult instanceof Response) {
+					if (isResponse(previousResult)) {
 						const result = after(event, previousResult)
 						if (result !== undefined) return result
 						return previousResult
