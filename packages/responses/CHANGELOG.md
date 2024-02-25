@@ -1,5 +1,11 @@
 # @apie/responses
 
+## 1.0.1
+
+### Patch Changes
+
+- fix: only test for `@apie/responses` with isResponse function ([#42](https://github.com/Refzlund/apie-monorepo/pull/42))
+
 ## 1.0.0
 
 ### Major Changes
