@@ -20,6 +20,10 @@ test('fn as input', () => {
 		}
 	)
 	pipeline({ yas: 'false' }, true)
+
+	type T = typeof pipeline._ extends boolean ? true : false
+	type IsTrue<T extends true> = T
+	type _InputTest = IsTrue<T>
 })
 
 test('Pipe types are correct', () => {
