@@ -1,6 +1,7 @@
 import type { MaybePromise, UnknownRecord, Nil, IsUnknownOrNever, FilterNil } from '@apie/utility/types'
 import { ArbitraryType, ParamReturnResponse, PipeInput, PipeOrValue } from './helper'
 import { pipe } from '$/pipe'
+import { Input } from './utility'
 
 
 export type PipeFn<
@@ -21,6 +22,7 @@ export type NestedPipeFn<
 // @ts-expect-error We force a `Pipeline<T>` type
 export interface Pipeline<T extends PipeFn> extends T {
 	[pipe]: true
+	_: Input<T>
 }
 
 type PipeResult<
