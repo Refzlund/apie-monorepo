@@ -1,6 +1,6 @@
 {
 	"name": "@apie/utility",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "A utility package used within the @apie eco-system.",
 	"keywords": [
 		"utility types",
@@ -31,7 +31,9 @@
 	],
 	"typesVersions": {
 		"*": {
-			"./types": ["./dist/types.d.ts"]
+			"./types": [
+				"./dist/types.d.ts"
+			]
 		}
 	},
 	"exports": {

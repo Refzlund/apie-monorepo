@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 2.1.1
+
+### Patch Changes
+
+- fix: package missing main/types ([#48](https://github.com/Refzlund/apie-monorepo/pull/48))
+
+- Updated dependencies [[`0049b206c7adf8c6f353307ae25514154570d4d5`](https://github.com/Refzlund/apie-monorepo/commit/0049b206c7adf8c6f353307ae25514154570d4d5)]:
+  - @apie/responses@1.0.2
+  - @apie/utility@1.2.1
+
 ## 2.1.0
 
 ### Minor Changes

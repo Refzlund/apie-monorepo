@@ -1,5 +1,11 @@
 # @apie/utility
 
+## 1.2.1
+
+### Patch Changes
+
+- fix: package missing main/types ([#48](https://github.com/Refzlund/apie-monorepo/pull/48))
+
 ## 1.2.0
 
 ### Minor Changes
