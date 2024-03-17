@@ -1,6 +1,6 @@
 {
 	"name": "@apie/responses",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Typed HTTP responses",
 	"keywords": [
 		"typescript",
@@ -31,8 +31,12 @@
 	"types": "./dist/index.d.ts",
 	"typesVersions": {
 		"*": {
-			"*": ["./dist/index.d.ts"],
-			"./types": ["./dist/types.d.ts"]
+			"*": [
+				"./dist/index.d.ts"
+			],
+			"./types": [
+				"./dist/types.d.ts"
+			]
 		}
 	},
 	"exports": {
@@ -51,7 +55,7 @@
 		"dist"
 	],
 	"dependencies": {
-		"@apie/utility": "^1.2.0"
+		"@apie/utility": "^1.2.1"
 	},
 	"devDependencies": {
 		"@apie/utility": "workspace:*"

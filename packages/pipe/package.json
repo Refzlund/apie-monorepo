@@ -1,6 +1,6 @@
 {
 	"name": "@apie/pipe",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "A stateful pipe that pipes functions that has an object and the output from previous function",
 	"keywords": [
 		"pipe",
@@ -48,7 +48,7 @@
 		"package": "bun run ./package"
 	},
 	"dependencies": {
-		"@apie/utility": "^1.2.0"
+		"@apie/utility": "^1.2.1"
 	},
 	"devDependencies": {
 		"@apie/utility": "workspace:*",
