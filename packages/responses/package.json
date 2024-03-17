@@ -28,6 +28,13 @@
 		"package": "bun run ./package"
 	},
 	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"*": ["./dist/index.d.ts"],
+			"./types": ["./dist/types.d.ts"]
+		}
+	},
 	"exports": {
 		".": {
 			"default": "./dist/index.js",
