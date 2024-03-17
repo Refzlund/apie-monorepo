@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.1.0
+
+### Minor Changes
+
+- feat: pipe type helpers (`Input`, `Output`, `pipeline._`) which gives you the type for the Input/Result of a pipeline, where `._` is a shortcut for the Pipeline Input ([#46](https://github.com/Refzlund/apie-monorepo/pull/46))
+
 ## 2.0.3
 
 ### Patch Changes
