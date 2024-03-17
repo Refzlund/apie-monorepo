@@ -29,6 +29,11 @@
 	"files": [
 		"dist"
 	],
+	"typesVersions": {
+		"*": {
+			"./types": ["./dist/types.d.ts"]
+		}
+	},
 	"exports": {
 		"./types": {
 			"default": "./dist/types/index.mjs",
