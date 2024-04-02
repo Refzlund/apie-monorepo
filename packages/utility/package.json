@@ -1,0 +1,46 @@
+{
+	"name": "@apie/utility",
+	"version": "1.2.1",
+	"description": "A utility package used within the @apie eco-system.",
+	"keywords": [
+		"utility types",
+		"utiltiy",
+		"typescript"
+	],
+	"author": "Arthur @Refzlund",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/utility"
+	},
+	"homepage": "https://github.com/refzlund/apie-monorepo",
+	"bugs": {
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
+	},
+	"files": [
+		"dist"
+	],
+	"typesVersions": {
+		"*": {
+			"./types": [
+				"./dist/types.d.ts"
+			]
+		}
+	},
+	"exports": {
+		"./types": {
+			"default": "./dist/types/index.mjs",
+			"require": "./dist/types/index.umd.js",
+			"types": "./dist/types/index.d.ts"
+		}
+	}
+}

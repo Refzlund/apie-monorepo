@@ -1,0 +1,19 @@
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+		/* Paths */
+		"baseUrl": ".",
+		"paths": {
+			// Library
+			"@apie/pipe": ["./dist"],
+			"@apie/pipe/*": ["./dist/*"],
+
+			// ...
+			"$": ["./src"],
+			"$/*": ["./src/*"],
+
+			"$types": ["src/types"],
+			"$types/*": ["src/types/*"]
+		}
+	}
+}

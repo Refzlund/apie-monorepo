@@ -36,7 +36,8 @@ function mergeObjects(source, ...overrides) {
 			const overrideItem = override[key]
 			
 			if (Array.isArray(overrideItem)) {
-				if (!source.hasOwnProperty(key))
+				// `Object.getOwnPropertyDescriptor` instead `source.hasOwnProperty(key)`
+				if (!Object.getOwnPropertyDescriptor(source, key))
 					source[key] = []
 				
 				for (const item of overrideItem) {
@@ -49,7 +50,7 @@ function mergeObjects(source, ...overrides) {
 			}
 
 			if (isObject(overrideItem)) {
-				if (!source.hasOwnProperty(key))
+				if (!Object.getOwnPropertyDescriptor(source, key))
 					source[key] = {}
 				mergeObjects(source[key], overrideItem)
 

@@ -1,0 +1,7 @@
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+		/* Paths */
+		"baseUrl": "."
+	}
+}

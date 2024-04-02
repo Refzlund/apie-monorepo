@@ -2,6 +2,7 @@ import path from 'path'
 import { type UserConfig, mergeConfig, build as viteBuild } from 'vite'
 import dts from 'vite-plugin-dts'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { parse as json5 } from 'json5'
 
 interface BuildOptions {
 	tsconfigPath: string
@@ -15,6 +16,7 @@ interface BuildOptions {
 
 export default async function build(options: BuildOptions, ...entries: string[]) {
 	const root = options.rootDir || './src'
+	const outDir = options.outDir || './dist'
 	const array: UserConfig[] = []
 
 	const plugins = [
@@ -34,7 +36,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 			{
 				build: {
 					emptyOutDir: init,
-					outDir: options.outDir || './dist',
+					outDir,
 					lib: {
 						entry: filePath,
 						name: file.name,
@@ -43,12 +45,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 				},
 				plugins: init ? [...plugins, dts({
 					include: ['src']
-				})] : plugins,
-				test: {
-					typecheck: {
-						include: ['**/*.test.ts', './tests']
-					}
-				}
+				})] : plugins
 			} satisfies UserConfig,
 			options.vite || {}
 		))
@@ -63,9 +60,11 @@ export default async function build(options: BuildOptions, ...entries: string[])
 		// * We modify the tsconfig to have the 'rootDir' of the rootDir provided.
 		// * Ex. instead of `./dist/src/index.d.ts` we get `./dist/index.d.ts`
 
-		const tsconfig = JSON.parse(text.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, ''))
+		const tsconfig = json5(text)
 		tsconfig.compilerOptions ??= {}
 		tsconfig.compilerOptions.rootDir = root
+		tsconfig.exclude ??= []
+		tsconfig.exclude.push(outDir, '**/*.test.ts', '**/*.spec.ts')
 
 		await Bun.write(file, JSON.stringify(tsconfig))
 
@@ -82,7 +81,17 @@ export default async function build(options: BuildOptions, ...entries: string[])
 
 	} finally {
 
-		Bun.write(file, text)
-
+		let written = false
+		while (!written) {
+			try {
+				await Bun.write(file, text)
+			} catch (error) {
+				console.error('An error occurred trying to restore tsconfig. Trying again...')
+				await new Promise(r => setTimeout(r, 250))
+				continue
+			}
+			written = true
+		}
+		
 	}
 }

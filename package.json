@@ -1,39 +1,35 @@
 {
-  "name": "api-kit-monorepo",
-  "version": "0.0.0",
-  "description": "A monorepo for api-kit.",
-  "private": true,
-  "type": "module",
-  "workspaces": [
-    "configs/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
-    "typecheck": "pnpm -r typecheck",
-    "precommit": "pnpm -r precommit",
-    "build": "pnpm -r build",
-    "publish": "pnpm build && changeset publish"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@svitejs/changesets-changelog-github-compact": "^1.1.0",
-    "@types/node": "20.4.2",
-	"bun-types": "^1.0.21",
-    "eslint": "^8.44.0",
-    "eslint-configs": "workspace:*",
-    "prettier": "^3.0.0",
-    "ts-configs": "workspace:*",
-    "typescript": "^5.2.2",
-    "vite": "^4.3.9",
-    "vite-configs": "workspace:*",
-    "vite-plugin-dts": "^3.1.0",
-    "vite-tsconfig-paths": "^4.2.0",
-    "vitest": "^0.33.0"
-  },
-  "packageManager": "pnpm@8.6.7",
-  "engines": {
-    "pnpm": "^8.0.0"
-  }
+	"name": "apie-monorepo",
+	"version": "0.0.0",
+	"description": "A monorepo for @apie.",
+	"private": true,
+	"type": "module",
+	"workspaces": [
+		"configs/*",
+		"packages/*"
+	],
+	"scripts": {
+		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",
+		"precommit": "bun *:package && bun lint && bun *:typecheck && bun *:test",
+		"*:typecheck": "pnpm --stream -r typecheck",
+		"*:test": "pnpm --stream -r test",
+		"*:package": "pnpm -r package",
+		"publish": "bun *:package && changeset publish"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.27.1",
+		"@svitejs/changesets-changelog-github-compact": "^1.1.0",
+		"@types/node": "20.11.17",
+		"bun-types": "^1.0.21",
+		"eslint": "^8.44.0",
+		"eslint-configs": "workspace:*",
+		"prettier": "^3.0.0",
+		"ts-configs": "workspace:*",
+		"typescript": "^5.2.2",
+		"vite": "^5.0.0",
+		"vite-configs": "workspace:*",
+		"vite-plugin-dts": "^3.1.0",
+		"vite-tsconfig-paths": "^4.2.0",
+		"vitest": "^1.2.2"
+	}
 }
