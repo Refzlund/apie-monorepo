@@ -1,4 +1,4 @@
-import { RequestOptions } from '$/endpoint/callback'
+import { RequestOptions } from '$/endpoint/types/callback'
 import { apiHandler } from './api-handler'
 
 export interface ApiOptions {

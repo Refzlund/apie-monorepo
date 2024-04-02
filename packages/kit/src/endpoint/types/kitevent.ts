@@ -15,7 +15,7 @@ type GetQuery<I extends KitRequestInput> = I extends { query: infer Q } ? Q : {}
 
 /** KitEvent simplifies the _KitEvent by hiding the intenral type for intellisense */
 type _KitEvent<
-	Input extends KitRequestInput, 
+	Input extends KitRequestInput,
 > = Omit<RequestEvent, 'request'> & {
 	[brand]: Input
 	request: {
@@ -29,37 +29,32 @@ type _KitEvent<
 		}
 	}
 } & (
-	true extends
+		true extends
 		| IsUnknown<Input['body']>
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		| (Input['body'] extends Record<PropertyKey, any> ? true : false)
-	? {
-		/** Retrieve and validate request JSON or retrieve the cached JSON */
-		json: () => Promise<Input['body']>
-	} : {}
-) & (
-	true extends
+		? {
+			/** Retrieve and validate request JSON or retrieve the cached JSON */
+			json: () => Promise<Input['body']>
+		} : {}
+	) & (
+		true extends
 		| IsUnknown<Input['query']>
 		| (UnknownRecord extends Input['query'] ? true : false)
 		| (Input['query'] extends UnknownRecord ? true : false)
-	? [keyof NonNullable<Input['query']>] extends [never] ? {} : {
-		/** Retrieve and validate URLParams, or retrieve cached URLParams */
-		query: NonNullable<Input['query']>
-	} : {}
-)
+		? [keyof NonNullable<Input['query']>] extends [never] ? {} : {
+			/** Retrieve and validate URLParams, or retrieve cached URLParams */
+			query: NonNullable<Input['query']>
+		} : {}
+	)
 // 
 
 export type KitEvent<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Input extends KitRequestInput = any
 > = {
-	[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
-}
-
-export function asKitEvent<T>(value: T) {
-	return value as unknown as
-		(T extends KitEvent ? T : KitEvent) & { Type: InferKitEvent<T> }
-}
+		[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
+	}
 
 export type InferKitEvent<
 	T,

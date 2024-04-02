@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Testing some syntaxes.
 
-import { Endpoint, endpoint, kitPipe } from './endpoint'
+import { Endpoint, endpoint, kitPipe } from './endpoint/endpoint-fn'
 import { BadRequest, InternalServerError, OK, TemporaryRedirect } from '@apie/responses'
 import { APIEKit } from './api/types/apiekit'
 import z from 'zod'
@@ -59,7 +59,11 @@ const h = await v.$.OK(async res => {
 }).BadRequest(res => {
 	return 'Bad Request :(' as const
 }).any(res => {
+	// TODO   Hijack .json() etc. to return res.body, and perform
+	// TODO   `.json()` immediately so the user can access `body` immediately.
+	// TODO   And type `body` if application/json
 
+	res.body
 })
 
 if (h[0]) {
