@@ -1,3 +1,0 @@
-# @api/zod
-
-TODO

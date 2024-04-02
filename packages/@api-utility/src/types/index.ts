@@ -1,8 +1,0 @@
-export type { UnknownRecord } from './unknownrecord'
-export type { ToJSON } from './tojson'
-export type { Simplify } from './simplify'
-export type { Writable } from './writeable'
-export type { DeepReadonly } from './deep-readonly'
-export type { UnionToIntersection } from './union-to-intersection'
-export type { MaybePromise } from './maybe-promise'
-export type { MaybeArray } from './maybe-array'

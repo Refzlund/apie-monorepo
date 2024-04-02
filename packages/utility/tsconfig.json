@@ -1,0 +1,14 @@
+{
+	"extends": "ts-configs/tsconfig.def.json",
+	"compilerOptions": {
+		/* Paths */
+		"baseUrl": ".",
+		"paths": {
+			"$": ["./src"],
+			"$/*": ["./src/*"],
+
+			"$types": ["src/types"],
+			"$types/*": ["src/types/*"],
+		},
+	},
+}
