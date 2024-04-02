@@ -41,13 +41,14 @@ type _KitEvent<
 ) & (
 	true extends
 		| IsUnknown<Input['query']>
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		| (Record<PropertyKey, any> extends Input['query'] ? true : false)
-	? {
+		| (UnknownRecord extends Input['query'] ? true : false)
+		| (Input['query'] extends UnknownRecord ? true : false)
+	? [keyof NonNullable<Input['query']>] extends [never] ? {} : {
 		/** Retrieve and validate URLParams, or retrieve cached URLParams */
 		query: NonNullable<Input['query']>
 	} : {}
 )
+// 
 
 export type KitEvent<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

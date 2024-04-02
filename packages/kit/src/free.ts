@@ -13,7 +13,7 @@ const person = z.object({
 })
 
 const post = z.object({
-	name: z.string(),
+	message: z.string(),
 	user: person
 })
 
@@ -27,7 +27,7 @@ const test = kitPipe(
 		e.query
 	}
 )
-
+// 
 const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 	(e) => {
 		if(!e.query.order)
@@ -39,19 +39,18 @@ const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 	(e) => e.json()
 ))
 
-type T = typeof POST extends Endpoint<infer A, infer B> ? {A:A,B:B} : never
-
 const api = {} as {
 	test: {
 		POST: APIEKit<typeof POST>
 	}
 }
 
-const v = api.test.POST({ name: 'Helloo', user: { name: 'asd' } }).BadRequest(res => {
-	
-}).InternalServerError(res => {
+const v = api.test.POST({ message: 'Helloo', user: { name: 'asd', age: 21 } })
+	.BadRequest(res => {
+		
+	}).InternalServerError(res => {
 
-})
+	})
 
 const h = await v.$.OK(async res => {
 	return res.json()

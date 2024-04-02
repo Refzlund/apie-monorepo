@@ -1,4 +1,4 @@
-import { UnknownRecord } from '@apie/utility/types'
+import { IsUnknown, UnknownRecord } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './event'
 import { Pipeline, createEventPipe } from '@apie/pipe'
 import z from 'zod'
@@ -22,10 +22,17 @@ export const endpoint =
 	<T extends Validator, K extends Pipeline<any>>(
 		validator: T,
 		cb: (pipe: ReturnType<typeof createEventPipe<
-			KitEvent<{
-				body: z.output<NonNullable<T['body']>> 
-				query: z.output<NonNullable<T['query']>> 
-			}>
+			KitEvent<
+				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
+				: true extends IsUnknown<T['query']>
+				? { body: z.output<NonNullable<T['body']>> }
+				: true extends IsUnknown<T['body']>
+				? { query: z.output<NonNullable<T['query']>> }
+				: {
+					body: z.output<NonNullable<T['body']>> 
+					query: z.output<NonNullable<T['query']>> 
+				}
+			>
 		>>) => K
 	) => {
 		const wrap = createEventPipe()
