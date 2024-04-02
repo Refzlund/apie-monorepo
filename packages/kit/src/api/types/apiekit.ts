@@ -1,6 +1,6 @@
 import { GenericEndpoint } from '$/endpoint/generic'
 import { APIResponse } from '@apie/responses/types'
-import { EndpointRequestInput } from '../endpoint/callback'
+import { EndpointRequestInput } from '$/endpoint/callback'
 import { EndpointPromise } from './endpoint-promise'
 import { Endpoint } from '$/endpoint'
 

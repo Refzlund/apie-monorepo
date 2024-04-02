@@ -2,9 +2,8 @@
 // Testing some syntaxes.
 
 import { Endpoint, endpoint, kitPipe } from './endpoint'
-import { BadRequest, InternalServerError, OK } from '@apie/responses'
-import { APIEKit } from './apikit'
-import { pipe } from '@apie/pipe'
+import { BadRequest, InternalServerError, OK, TemporaryRedirect } from '@apie/responses'
+import { APIEKit } from './api/types/apiekit'
 import z from 'zod'
 
 const person = z.object({
@@ -27,7 +26,8 @@ const test = kitPipe(
 		e.query
 	}
 )
-// 
+
+
 const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 	(e) => {
 		if(!e.query.order)
@@ -35,6 +35,8 @@ const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 		if (e.query.order.length > 5)
 			return InternalServerError('Test')
 	},
+	// TODO    Nested pipes (e.g. `(e) => pipe(OK({...}))`) does not include APIResponse
+	// TODO    in ReturnType<POST>
 	async (e) => OK({ ...await e.json() }),
 	(e) => e.json()
 ))

@@ -1,49 +1,51 @@
 {
-  "name": "@apie/kit",
-  "version": "0.1.0",
-  "description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
-  "keywords": [],
-  "author": "Arthur Refslund @Refzlund",
-  "license": "MIT",
-  "repository": "github:refzlund/apie-monorepo",
-  "homepage": "https://github.com/refzlund/apie-monorepo",
-  "bugs": {
-    "url": "https://github.com/refzlund/apie-monorepo/labels/bug"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "lint": "eslint **/*.{js,ts,cjs}",
-    "typecheck": "vitest typecheck -t \".*\\.ts\"",
-    "test": "vitest",
-    "precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
-    "build": "vite build"
-  },
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/index.d.ts"
-      ]
-    }
-  },
-  "exports": {
-    ".": {
-      "default": "./dist/index.js",
-      "require": "./dist/index.umd.cjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": [
-    "dist"
-  ],
-  "devDependencies": {
-    "@apie/pipe": "workspace:*",
-    "@apie/utility": "workspace:*",
-    "@sveltejs/kit": "^1.22.3",
-    "zod": "^3.22.4"
-  }
+	"name": "@apie/kit",
+	"version": "0.1.0",
+	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
+	"keywords": [],
+	"author": "Arthur Refslund @Refzlund",
+	"license": "MIT",
+	"repository": "github:refzlund/apie-monorepo",
+	"homepage": "https://github.com/refzlund/apie-monorepo",
+	"bugs": {
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"lint": "eslint **/*.{js,ts,cjs}",
+		"typecheck": "vitest typecheck -t \".*\\.ts\"",
+		"test": "vitest",
+		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
+		"build": "vite build"
+	},
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"typesVersions": {
+		"*": {
+			"*": [
+				"./dist/index.d.ts"
+			]
+		}
+	},
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/index.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"devDependencies": {
+		"@apie/pipe": "workspace:*",
+		"@apie/utility": "workspace:*"
+	},
+	"peerDependencies": {
+		"@sveltejs/kit": "^2.5.5",
+		"zod": "^3.22.4"
+	}
 }

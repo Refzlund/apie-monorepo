@@ -2,6 +2,7 @@ import { IsUnknown, UnknownRecord } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './event'
 import { Pipeline, createEventPipe } from '@apie/pipe'
 import z from 'zod'
+import { BadRequest } from '../../../responses/dist/responses'
 
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
@@ -35,9 +36,22 @@ export const endpoint =
 			>
 		>>) => K
 	) => {
-		const wrap = createEventPipe()
-		const pipe = createEventPipe()
+		const wrap = createEventPipe<KitEvent>()
+		const pipe = createEventPipe<KitEvent>()
 		return wrap(
+			(e) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				let json = null as any
+
+				e.json = async () => {
+					try {
+						json = json || await e.request.json()
+					} catch (error) {
+						return BadRequest({ error: 'Invalid JSON' })
+					}
+					return json
+				}
+			},
 			// TODO validators
 			cb(pipe)
 		) as K

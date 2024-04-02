@@ -1,9 +1,9 @@
-import { ToJSON } from '$/types/json'
 import { RequiredKeys, Simplify, UnknownRecord } from '$/types/utility'
 import { KitRequestInput } from './event'
 
 export interface RequestOptions extends Omit<RequestInit, 'body' | 'method'> {
 	query?: UnknownRecord
+	fetch?: typeof fetch
 }
 
 type O<T extends KitRequestInput> = Omit<T, 'body' | 'query'>
@@ -23,7 +23,7 @@ export type EndpointRequestInput<
 		| ([RequiredKeys<I['query']>] extends [never] ? false : true)
 	?
 	[
-		body: Readonly<ToJSON<I['body']>>,
+		body: I['body'],
 		options: Simplify<O<I> & QueryRequired<I>> & RequestOptions
 	]
 	: true extends 
@@ -34,7 +34,7 @@ export type EndpointRequestInput<
 	?
 	[
 		body: I['body'] extends KitRequestInput['body']
-			? Readonly<ToJSON<I['body']>>
+			? I['body']
 			: null,	
 		options?: I extends RequestOptions
 			? Simplify<O<I> & QueryRequired<I>> & RequestOptions
@@ -42,7 +42,7 @@ export type EndpointRequestInput<
 	]
 	: [
 		body?: I['body'] extends KitRequestInput['body']
-			? Readonly<ToJSON<I['body']>>
+			? I['body']
 			: null,
 		options?: I extends RequestOptions
 			? Simplify<O<I> & QueryRequired<I>> & RequestOptions

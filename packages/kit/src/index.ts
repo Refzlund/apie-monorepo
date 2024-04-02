@@ -1,11 +1,3 @@
-const str = `Giraffe's are quite intruiging creatures.`
-export default function () {
-	return str
-}
-
-function endpoint() { }
-
-
-export const GET = endpoint(
-
-)
+export type { APIEKit } from './api/types/apiekit'
+export { endpoint, kitPipe } from './endpoint'
+export { createAPI } from './api/create-api'

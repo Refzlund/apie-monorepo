@@ -1,5 +1,5 @@
 import { APIResponse } from '@apie/responses'
-import { Intersect, Simplify } from '../types/utility'
+import { Intersect, Simplify } from '../../types/utility'
 
 type InferAPIResponseFn<R> =
 	R extends APIResponse<infer _, infer _, infer _, infer Fn>
@@ -20,11 +20,11 @@ type FilterResponse<R extends APIResponse, K extends string> =
 type _$Promise<K extends unknown[], R extends APIResponse> =
 	[R] extends [APIResponse] ? {
 		[Key in InferAPIResponseFn<R>]:
-			<const T>(
-				cb: (response: FilterResponse<R, Key>) => T
-			) =>
-				& Promise<[...K, Awaited<T> | undefined]>
-				& $Promise<[...K, Awaited<T> | undefined], R>
+		<const T>(
+			cb: (response: FilterResponse<R, Key>) => T
+		) =>
+			& Promise<[...K, Awaited<T> | undefined]>
+			& $Promise<[...K, Awaited<T> | undefined], R>
 	} : never
 
 type $Promise<K extends unknown[], R extends APIResponse> = {
@@ -37,7 +37,7 @@ type _EndpointPromise<
 	/** Returns the value of the given callback */
 	$: $Promise<[], R>
 } & {
-	[Key in InferAPIResponseFn<R>]:
+		[Key in InferAPIResponseFn<R>]:
 		(cb: (response: FilterResponse<R, Key>) => void) => EndpointPromise<R>
 	}>>) : never
 

@@ -9,7 +9,6 @@ export type Locals<L extends UnknownRecord = {}> = { locals: L }
 
 export interface KitRequestInput extends RequestOptions {
 	body?: unknown | undefined
-	query?: UnknownRecord | undefined
 }
 
 type GetQuery<I extends KitRequestInput> = I extends { query: infer Q } ? Q : {}
