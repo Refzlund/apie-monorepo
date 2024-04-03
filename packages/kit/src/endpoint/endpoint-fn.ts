@@ -7,10 +7,12 @@ import { BadRequest } from '@apie/responses'
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
 
-export const kitPipe = createEventPipe<KitEvent<{
-	body?: unknown
-	query?: UnknownRecord
-}>>()
+export const kitPipe: ReturnType<
+	typeof createEventPipe<KitEvent<{
+		body?: unknown
+		query?: UnknownRecord
+	}>
+>> = createEventPipe()
 
 type Validator = {
 	body?: z.ZodTypeAny

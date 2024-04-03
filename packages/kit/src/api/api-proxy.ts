@@ -40,8 +40,8 @@ export function apiProxy(response: Promise<Response>) {
 		}, 0)
 	})
 
-	const proxy = new Proxy(callbacks, {
-		get(target, prop: string) {
+	const proxy = new Proxy({}, {
+		get(_, prop: string) {
 			if (prop === 'then')
 				return promise.then.bind(promise)
 			if (prop === 'catch')

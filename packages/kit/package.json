@@ -14,11 +14,9 @@
 		"access": "public"
 	},
 	"scripts": {
-		"lint": "eslint **/*.{js,ts,cjs}",
-		"typecheck": "vitest typecheck -t \".*\\.ts\"",
-		"test": "vitest",
-		"precommit": "pnpm run lint && pnpm run typecheck && pnpm run test",
-		"build": "vite build"
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
 	},
 	"type": "module",
 	"main": "./dist/index.js",
@@ -41,10 +39,12 @@
 		"dist"
 	],
 	"devDependencies": {
-		"@apie/pipe": "workspace:*",
-		"@apie/utility": "workspace:*"
+		
 	},
 	"peerDependencies": {
+		"@apie/pipe": "workspace:*",
+		"@apie/utility": "workspace:*",
+		"@apie/responses": "workspace:*",
 		"@sveltejs/kit": "^2.5.5",
 		"zod": "^3.22.4"
 	}

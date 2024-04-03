@@ -6,7 +6,8 @@
 	"type": "module",
 	"workspaces": [
 		"configs/*",
-		"packages/*"
+		"packages/*",
+		"apps/*"
 	],
 	"scripts": {
 		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",

@@ -1,5 +1,4 @@
-import { ToJSON } from '$/types/json'
-import { Simplify, UnknownRecord } from '@apie/utility/types'
+import { UnknownRecord } from '@apie/utility/types'
 import { RequestEvent } from '@sveltejs/kit'
 import { RequestOptions } from './callback'
 import { IsUnknown } from '@apie/utility/types'
@@ -53,15 +52,5 @@ export type KitEvent<
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	Input extends KitRequestInput = any
 > = {
-		[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
-	}
-
-export type InferKitEvent<
-	T,
-	JSON extends boolean = true,
-	Local extends boolean = true
-> = T extends KitEvent<infer K> ?
-	(JSON extends true
-		? ToJSON<NonNullable<K>>
-		: NonNullable<K>
-	) & (Local extends true ? { locals: Simplify<T['locals']> } : {}) : never
+	[Key in keyof _KitEvent<Input>]: _KitEvent<Input>[Key]
+}

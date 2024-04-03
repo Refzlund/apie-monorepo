@@ -44,6 +44,9 @@ const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 const api = {} as {
 	test: {
 		POST: APIEKit<typeof POST>
+		slug$: (slug: string) => {
+			POST: APIEKit<typeof POST>
+		}
 	}
 }
 
