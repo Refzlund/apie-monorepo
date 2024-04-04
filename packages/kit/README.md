@@ -98,6 +98,7 @@ export const GET = endpoint({ /* body, */ query }, pipe => pipe(
 `src/routes/+page.svelte`
 ```svelte
 <script>
+	import api from '$api'
 
 	const result = api.users.GET({ query: { limit: 5 } })
 		.any(res => console.log(res))
