@@ -1,7 +1,6 @@
 import { Dirent } from 'fs'
 import { variablize } from './variablize'
 import { readdir } from 'fs/promises'
-import { getEndpointMethods } from './get-endpoint-methods'
 
 interface Typer {
 	name?: string
@@ -40,13 +39,10 @@ export async function createGeneratedType(rootDir: string) {
 			}
 		}
 		if (endpoint) {
-			const methods = await getEndpointMethods(endpoint.path)
-			if (methods.length === 0)
-				return
 			const i = `i${imports.length}` as const
 			imports.push(`import * as ${i} from '${endpoint.path.replace(/\.ts$/, '')}'`)
 			type.toString = function (this: Typer) {
-				return methods.map(m => `\n${indent}'${m}': A<typeof ${i}['${m}'], '${m}'>`).join(', ')
+				return `\n${indent}} & A<typeof ${i}> & {`
 			}
 		}
 	}
@@ -79,7 +75,7 @@ export async function createGeneratedType(rootDir: string) {
 
 // * This file is generative. Edits will be overwritten.
 
-import type { APIEKit as A } from '@apie/kit/api' 
+import type { ServerAPIEKit as A } from '@apie/kit/api'
 ${imports.join(';\n')}
 
 export type GeneratedAPI = ${generated.toString()}`

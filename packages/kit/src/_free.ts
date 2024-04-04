@@ -3,8 +3,9 @@
 
 import { Endpoint, endpoint, kitPipe } from './endpoint/endpoint-fn'
 import { BadRequest, InternalServerError, OK, TemporaryRedirect } from '@apie/responses'
-import { APIEKit } from './api/types/apiekit'
+import { APIEKit, ServerAPIEKit } from './api/types/apiekit'
 import z from 'zod'
+import { Method } from './api/methods'
 
 const person = z.object({
 	name: z.string(),
@@ -41,9 +42,10 @@ const POST = endpoint({ body: post, query: postQuery }, pipe => pipe(
 	(e) => e.json()
 ))
 
+
+
 const api = {} as {
-	test: {
-		POST: APIEKit<typeof POST>
+	test: ServerAPIEKit<{ POST: typeof POST }> & {
 		slug$: (slug: string) => {
 			POST: APIEKit<typeof POST>
 		}

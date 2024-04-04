@@ -1,3 +1,13 @@
 import { endpoint } from '$'
+import { OK } from '@apie/responses'
+import { z } from 'zod'
 
-export const GET = endpoint({}, pipe => pipe(1))
+const query = z.object({
+
+	order: z.string().array()
+
+})
+
+export const GET = endpoint({ query }, pipe => pipe(
+	(e) => OK({ yourQuery: e.query })
+))

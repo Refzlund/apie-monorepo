@@ -32,4 +32,18 @@ test.skip('API types', async () => {
 	api.pages.GET(null, {})
 
 	api.pages.POST()
+
+	// @ts-expect-error order should be a string array
+	api.pages.pagination$('25').GET({ query: { order: 123 } })
+
+	// @ts-expect-error requires a query
+	api.pages.pagination$('25').GET()
+
+	const [qok] = await api.pages.pagination$('25').GET({ query: { order: ['name ASC', 'publishedAt DESC'] } })
+		.$.OK(async e => await e.json())
+	
+	if(qok) {
+		// @ts-expect-error order is a string array
+		qok.yourQuery.order = [123]
+	}
 })
