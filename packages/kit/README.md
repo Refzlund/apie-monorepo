@@ -1,4 +1,12 @@
-<h1 align="center">API Kit</h1>
+<h1 align='center' vertical-align='baseline' >
+@apie/kit
+<small>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAQAAACR313BAAAAEUlEQVR42mNkwAsYR6WHmDQAEFkAEMvRoosAAAAASUVORK5CYII=" />
+<a href='https://www.npmjs.com/package/@apie/kit' vertical-align='bottom' >
+	<img src='https://img.shields.io/npm/v/%40apie%2Fkit?style=for-the-badge&logo=npm&label=%20' alt='NPM Package'/>
+</a>
+</small>
+</h1>
 <h3 align="center">
 
 ![Linting & Tests](https://github.com/refzlund/api-kit/actions/workflows/main.yml/badge.svg)
@@ -7,115 +15,92 @@
 
 </h3>
 
-<div align="center">
+### What is @apie and @apie/kit?
 
-[![Release Version](https://img.shields.io/github/v/release/refzlund/api-kit?style=for-the-badge&label=PRE-RELEASE&labelColor=8a0000&color=FF0000)](https://www.npmjs.com/package/giraffe)
+An eco-system for infrastructure around REST API. `@apie/kit` is made for  <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Svelte_Logo.svg/1200px-Svelte_Logo.svg.png' width=14> [SvelteKit](https://github.com/sveltejs/kit)  as a ***typed bridge*** between the frontend and your backend REST API.
 
-</div>
+- Endpoints that validate JSON and URLSearchParams (query) via Zod
+- Easy to read Responses
+- Accessible frontend API with generated types
 
-<blockquote align="center">
+<br>
+<br>
 
-[!WARNING]<br>
-This is a pre-release version. Any update may be breaking.<br>
-See [CHANGELOG](./CHANGELOG.md) if your house is on fire.
+### Get started
 
-</blockquote>
+> [!NOTE]  
+> Documentation incomplete.
 
+#### Add the plugin that generates your API type:
 
-
+`vite.config.ts`
 ```ts
+import { defineConfig } from 'vite'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { watchAPI } from '@apie/kit'
 
-// * Server
-import { sequence } from '...'
-import { kitApi } from 'kitapi'
-
-export const hooks = sequence(
-	kitApi(
-		defaults: {
-			404: () => NotFound({ 
-				error: { 
-					type: 'not-found', 
-					message: 'Resource not found.'
-				}
-			}),
-			500: () => InternalServerError({
-				error: { 
-					type: 'internal-error',
-					message: 'Unexpected error on the server.'
-				}
-			})
-		}
-	),
-	(event) => {
-		...
-	}
-)
-
-
-
-
-// T extends (event: ...) ? ReturnType<T>
-
-const pipeFn = (event: KitEvent<{ }> & In<{  }>) => {
-
-	if(...) {
-		return BadRequest({
-			error: {
-				type: 'some-error',
-				message: 'My message',
-				/** @example 123 */
-				arbitaryValue: someVal
-			}
-		})
-	}
-	
-	// Returning a response
-	return Ok({
-		/** @example 'This is an example message' */
-		message: someStr
-	})
-
-	// Forwarding locals
-	return {
-		someLocalValue: 123
-	}
-}
-
-
-const nestedPipeline = (event: ...) => {
-	return pipeline(
-		...
-	)
-}
-
-// Using Typia
-interface Post {
-	body: {
-		/** @min 3 */
-		name: string
-	},
-	query: {...}
-}
-
-export const POST = endpoint<Post>(
-	...
-)
-
-
-// * Browser
-
-// Response
-const response = await api.some.route.POST({ body: { ... } })
-	 
-// Return value
-const [error, success, ...] = await api.some.route.POST({ body: { ... } }).$
-	.Error(({ body }) => body.error)
-	.Success(({ body }) => body.documents)
-	...
-
-// Stream example
-await api.some.route.POST({ eventSource: true, query: { ... } })
-
-
+export default defineConfig({
+	plugins: [sveltekit(), watchAPI()]
+})
 ```
 
+#### Add a shortcut to the api:
+
+`svelte.config.js`
+```ts
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
+	kit: {
+		alias: {
+			api: './src/api.ts',
+```
+
+#### Define your endpoint:
+
+`src/routes/api/users`
+```ts
+import z from 'zod'
+import { OK, BadRequest } from '@apie/responses'
+import { endpoint } from '@apie/kit'
+
+import getUsers from '...'
+
+const query = z.object({
+	limit: z.number()
+})
+
+export const GET = endpoint({ /* body, */ query }, pipe => pipe(
+	async e => {
+		const users = await getUsers({ limit: e.query.limit })
+		if(!users) {
+			return BadRequest({
+				error: 'Too many users!... :D'
+			})
+		}
+		
+		return OK({ users })
+	}
+))
+```
+
+#### Use your API in your svelte file!
+
+`src/routes/+page.svelte`
+```svelte
+<script>
+
+	const result = api.users.GET({ query: { limit: 5 } })
+		.any(res => console.log(res))
+		.$ // return the output of the following functions in order:
+		.OK(res => res.json()) // result = [this, ...]
+		.BadRequest(async res => (await res.json()).error) // result = [..., this]
+
+</script>
+
+{#await result}
+	loading users...
+{:then [userList, error]}
+	...
+{/await}
+
+```
