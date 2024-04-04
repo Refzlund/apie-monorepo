@@ -1,0 +1,67 @@
+{
+	"name": "@apie/kit",
+	"version": "0.1.0",
+	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
+	"keywords": [],
+	"author": "Arthur Refslund @Refzlund",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/kit"
+	},
+	"homepage": "https://github.com/Refzlund/apie-monorepo/tree/main/packages/kit",
+	"bugs": {
+		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"typecheck": "tsc --project ./tsconfig.json --noEmit --checkJs false",
+		"test": "bun test",
+		"package": "bun run ./package"
+	},
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"typesVersions": {
+		"*": {
+			".": [
+				"./dist/index.d.ts"
+			],
+			"./api": [
+				"./dist/api.d.ts"
+			]
+		}
+	},
+	"exports": {
+		".": {
+			"default": "./dist/index.js",
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/index.d.ts"
+		},
+		"./api": {
+			"default": "./dist/api.js",
+			"require": "./dist/api.umd.cjs",
+			"types": "./dist/api.d.ts"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"devDependencies": {
+		"@apie/pipe": "workspace:*",
+		"@apie/utility": "workspace:*",
+		"@apie/responses": "workspace:*"
+	},
+	"dependencies": {
+		"@apie/pipe": "^2.1.1",
+		"@apie/utility": "^1.2.1"
+	},
+	"peerDependencies": {
+		"@apie/responses": "^1.0.2",
+		"@sveltejs/kit": "^2.5.5",
+		"zod": "^3.22.4"
+	}
+}

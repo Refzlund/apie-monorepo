@@ -14,7 +14,7 @@
 		"url": "https://github.com/refzlund/apie-monorepo",
 		"directory": "packages/utility"
 	},
-	"homepage": "https://github.com/refzlund/apie-monorepo",
+	"homepage": "https://github.com/Refzlund/apie-monorepo/tree/main/packages/utility",
 	"bugs": {
 		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},

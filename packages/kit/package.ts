@@ -3,5 +3,5 @@ import build from 'vite-configs/build'
 
 build({
 	tsconfigPath: path.resolve('./tsconfig.json'),
-	external: ['@apie/responses']
-}, 'index.ts')
+	external: ['zod', '@apie/pipe', '@apie/responses', '@apie/utility', '@sveltejs/kit']
+}, 'index.ts', 'api.ts')

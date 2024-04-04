@@ -12,6 +12,7 @@ interface BuildOptions {
 	/** @default ./dist */
 	outDir?: string
 	vite?: UserConfig
+	external?: string[]
 }
 
 export default async function build(options: BuildOptions, ...entries: string[]) {
@@ -37,6 +38,9 @@ export default async function build(options: BuildOptions, ...entries: string[])
 				build: {
 					emptyOutDir: init,
 					outDir,
+					rollupOptions: {
+						external: ['fs/promises', 'process', 'path', ...options.external || []]
+					},
 					lib: {
 						entry: filePath,
 						name: file.name,

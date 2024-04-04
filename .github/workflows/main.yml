@@ -37,11 +37,11 @@ jobs:
       - name: Packaging
         run: bun run *:package
 
+      - name: Unit Testing
+        run: bun run *:test
+
       - name: Linting
         run: bun run lint
         
       - name: Typechecking
         run: bun run *:typecheck
-
-      - name: Unit Testing
-        run: bun run *:test
