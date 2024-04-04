@@ -1,4 +1,4 @@
-import { createAPI } from '$'
+import { createAPI } from '$/api'
 import { test } from 'bun:test'
 
 // * Note: will be generated on `packages/kit#   bun test`
@@ -20,4 +20,8 @@ test.skip('API types', async () => {
 	// @ts-expect-error number not assignable to string
 	ok!.name = 123
 
+	// @ts-expect-error GET should not have a body
+	api.pages.GET(null, {})
+
+	api.pages.POST()
 })

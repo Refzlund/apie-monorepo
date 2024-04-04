@@ -25,6 +25,20 @@ export function apiProxy(response: Promise<Response>) {
 	let $ = false
 
 	response.then(res => {
+		const jsonfn = res.json
+		let json: unknown
+		res.json = async () => {
+			if (json) return json
+			return json =  await jsonfn.call(res)
+		}
+
+		const textfn = res.text
+		let text: string
+		res.text = async () => {
+			if (text) return text
+			return text = await textfn.call(res)
+		}
+
 		setTimeout(async () => {
 			for (const item of callbacks) {
 				await callback(res, item)

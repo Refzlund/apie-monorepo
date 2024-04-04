@@ -23,9 +23,8 @@
 	"types": "./dist/index.d.ts",
 	"typesVersions": {
 		"*": {
-			"*": [
-				"./dist/index.d.ts"
-			]
+			".": ["./dist/index.d.ts"],
+			"./api": ["./dist/api.d.ts"]
 		}
 	},
 	"exports": {
@@ -33,6 +32,11 @@
 			"default": "./dist/index.js",
 			"require": "./dist/index.umd.cjs",
 			"types": "./dist/index.d.ts"
+		},
+		"./api": {
+			"default": "./dist/api.js",
+			"require": "./dist/api.umd.cjs",
+			"types": "./dist/api.d.ts"
 		}
 	},
 	"files": [

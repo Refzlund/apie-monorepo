@@ -1,5 +1,6 @@
 import { RequestOptions } from '$/endpoint/types/callback'
 import { apiHandler } from './api-handler'
+import { Method, NobodyMethod, methods, nobodyMethods } from './methods'
 
 export interface ApiOptions {
 	/** Base options that are on every API request */
@@ -10,10 +11,8 @@ export interface ApiOptions {
 }
 
 type Directory = {
-	path: string
+	___path: string
 }
-
-const endpoints = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] as const
 
 const emptyProxy = new Proxy(() => emptyProxy, {
 	get: () => emptyProxy
@@ -29,21 +28,26 @@ export function createAPI<T>(opts: ApiOptions = {}): T {
 			const isSlug = route.match(/\$$/g)
 			if (isSlug) {
 				return function sluggedRoute(slug: string) {
-					return createDirectory({ path: directory.path + '/' + slug })
+					return createDirectory({ ___path: directory.___path + '/' + slug })
 				}
 			}
-			directory[route] = createDirectory({ path: directory.path + '/' + route })
+			directory[route] = createDirectory({ ___path: directory.___path + '/' + route })
 			return directory[route]
 		}
 
 		/** api.users.post({ body: {...} }) */
 		function handleEndpoint() {
 			const method = route.toUpperCase()
-			const path = directory.path as string
+			const path = directory.___path as string
 
 			directory[route] = (body: BodyInit | null, options: RequestOptions = {}) => {
 				if (options?.fetch == null && typeof document === 'undefined')
 					return emptyProxy /* SSR: Do nothing. */
+
+				if (nobodyMethods.includes(method as NobodyMethod)) {
+					options = body as RequestOptions || {}
+					body = null
+				}
 
 				const _fetch = options.fetch || fetch
 				delete options.fetch
@@ -72,13 +76,13 @@ export function createAPI<T>(opts: ApiOptions = {}): T {
 
 				if (route in directory)
 					return directory[route]
-				if (endpoints.includes(route as typeof endpoints[number]))
+				if (methods.includes(route as Method))
 					return handleEndpoint()
 				return handleDirectory()
 			}
 		}) as T
 	}
 
-	return createDirectory({ path: '' })
+	return createDirectory({ ___path: '' })
 
 }

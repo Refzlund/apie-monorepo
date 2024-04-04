@@ -1,3 +1,2 @@
-export type { APIEKit } from './api/types/apiekit'
 export { endpoint, kitPipe } from './endpoint'
-export { createAPI } from './api/create-api'
+export { watchAPI } from './api-typegeneration/vite-plugin'

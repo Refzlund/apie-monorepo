@@ -18,7 +18,11 @@ type _KitEvent<
 > = Omit<RequestEvent, 'request'> & {
 	[brand]: Input
 	request: {
-		json: () => Promise<Input['body']>
+		json: () => Promise<
+			IsUnknown<Input['body']> extends true
+			? UnknownRecord | unknown[]
+			: Input['body']
+		>
 	} & Omit<RequestEvent['request'], 'json'>
 	url: {
 		searchParams: {
@@ -34,7 +38,11 @@ type _KitEvent<
 		| (Input['body'] extends Record<PropertyKey, any> ? true : false)
 		? {
 			/** Retrieve and validate request JSON or retrieve the cached JSON */
-			json: () => Promise<Input['body']>
+			json: () => Promise<
+				IsUnknown<Input['body']> extends true
+				? UnknownRecord | unknown[]
+				: Input['body']
+			>
 		} : {}
 	) & (
 		true extends

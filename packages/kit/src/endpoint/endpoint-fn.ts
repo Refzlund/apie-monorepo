@@ -1,63 +1,59 @@
 import { IsUnknown, UnknownRecord } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './types/kitevent'
-import { Pipeline, createEventPipe } from '@apie/pipe'
+import { Pipe, Pipeline, createEventPipe } from '@apie/pipe'
 import z from 'zod'
-import { BadRequest } from '@apie/responses'
+import { validateQuery } from './pipes/validate-query'
+import { validateJSON } from './pipes/validate-json'
+import { eJSON } from './pipes/e-json'
 
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
 
-export const kitPipe: ReturnType<
-	typeof createEventPipe<KitEvent<{
-		body?: unknown
-		query?: UnknownRecord
-	}>
->> = createEventPipe()
+export const kitPipe: Pipe<KitEvent<{
+	body?: unknown
+	query?: UnknownRecord
+}>> = createEventPipe()
 
-type Validator = {
-	body?: z.ZodTypeAny
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	query?: z.ZodObject<any>
+export type Validator = {
+	/** Access the parsed body via `await e.json()` */
+	body?: z.AnyZodObject
+	/** Access the parsed query via `e.query` */
+	query?: z.AnyZodObject
 }
 
 export const endpoint =
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	<T extends Validator, K extends Pipeline<any>>(
 		validator: T,
-		cb: (pipe: ReturnType<typeof createEventPipe<
-			KitEvent<
-				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
-				: true extends IsUnknown<T['query']>
-				? { body: z.output<NonNullable<T['body']>> }
-				: true extends IsUnknown<T['body']>
-				? { query: z.output<NonNullable<T['query']>> }
-				: {
-					body: z.output<NonNullable<T['body']>>
-					query: z.output<NonNullable<T['query']>>
-				}
-			>
-		>>) => K
+		cb: (pipe: Pipe<KitEvent<
+			true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
+			: true extends IsUnknown<T['query']>
+			? { body: z.output<NonNullable<T['body']>> }
+			: true extends IsUnknown<T['body']>
+			? { query: z.output<NonNullable<T['query']>> }
+			: {
+				body: z.output<NonNullable<T['body']>>
+				query: z.output<NonNullable<T['query']>>
+		}>>) => K
 	) => {
-		const wrap = createEventPipe<KitEvent>()
-		const pipe = createEventPipe<KitEvent>()
-		return wrap(
-			(e) => {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				let json = null as any
-
-				e.json = async () => {
-					try {
-						json = json || await e.request.json()
-					} catch (error) {
-						return BadRequest({ error: 'Invalid JSON' })
-					}
-					return json
-				}
-			},
-			// TODO validators
-			cb(pipe)
-		) as K
+		const wrapper = kitPipe as Parameters<typeof cb>[0]
+		return wrapper(
+			eJSON,
+			validateJSON(validator),
+			validateQuery(validator),
+			cb(kitPipe as Pipe<KitEvent>)
+		)
 	}
+	
+	
+/* TODO
+		as MergePipelines<,
+			IsUnknown<T['body']> extends true ? ... : ReturnType<typeof validateJSON>,
+			IsUnknown<T['query']> extends true ? ... : ReturnType<typeof validateQuery>,
+			K
+		>
+	*/
+
 
 
 // export type Endpoint<

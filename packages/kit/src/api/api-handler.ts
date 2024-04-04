@@ -1,6 +1,7 @@
 import { UnknownRecord } from '@apie/utility/types'
 import { ApiOptions } from './create-api'
 import { apiProxy } from './api-proxy'
+import { NobodyMethod, nobodyMethods } from './methods'
 
 interface HandlerContent {
 	request: RequestInit
@@ -24,7 +25,6 @@ export function apiHandler({
 	routePath,
 	fetch,
 }: HandlerContent) {
-
 	request.headers ??= {}
 	
 	// * cache-control
@@ -37,20 +37,20 @@ export function apiHandler({
 			request.body instanceof FormData ? 'multipart/form-data' : 'application/json'
 	}
 
-	const url = new URL(routePath, apiOptions.baseURL || '')
-	
+	const searchParams = new URLSearchParams()
+
 	// * Query
 	for (const key in query) {
 		const value = query[key]
 		if (value === undefined) continue
 		if (typeof value === 'object' && !(value instanceof Date)) {
-			url.searchParams.set(key, JSON.stringify(value))
+			searchParams.set(key, JSON.stringify(value))
 			continue
 		}
-		url.searchParams.set(key, value)
+		searchParams.set(key, value)
 	}
 
-	if (request.method === 'GET' || request.method === 'HEAD')
+	if (nobodyMethods.includes(request.method as NobodyMethod))
 		delete request.body
 	else {
 		if (request.body instanceof FormData) { /* ignore */ }
@@ -59,6 +59,10 @@ export function apiHandler({
 		}
 	}
 
-	const response = fetch(url, { ...apiOptions.baseRequestOptions, ...request })
+	const response = fetch(
+		routePath + searchParams.toString(),
+		{ ...apiOptions.baseRequestOptions, ...request }
+	)
+	
 	return apiProxy(response)
 }

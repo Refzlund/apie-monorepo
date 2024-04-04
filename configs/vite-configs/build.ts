@@ -37,6 +37,9 @@ export default async function build(options: BuildOptions, ...entries: string[])
 				build: {
 					emptyOutDir: init,
 					outDir,
+					rollupOptions: {
+						external: ['fs/promises', 'process', 'path']
+					},
 					lib: {
 						entry: filePath,
 						name: file.name,
