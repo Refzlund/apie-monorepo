@@ -14,7 +14,7 @@
 		"url": "https://github.com/refzlund/apie-monorepo",
 		"directory": "packages/responses"
 	},
-	"homepage": "https://github.com/refzlund/apie-monorepo/packages/@api-responses",
+	"homepage": "https://github.com/Refzlund/apie-monorepo/tree/main/packages/responses",
 	"bugs": {
 		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},

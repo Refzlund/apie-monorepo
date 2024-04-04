@@ -5,8 +5,12 @@
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
 	"license": "MIT",
-	"repository": "github:refzlund/apie-monorepo",
-	"homepage": "https://github.com/refzlund/apie-monorepo",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/refzlund/apie-monorepo",
+		"directory": "packages/kit"
+	},
+	"homepage": "https://github.com/Refzlund/apie-monorepo/tree/main/packages/kit",
 	"bugs": {
 		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},

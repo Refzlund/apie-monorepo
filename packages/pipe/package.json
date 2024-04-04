@@ -14,7 +14,7 @@
 		"url": "https://github.com/refzlund/apie-monorepo",
 		"directory": "packages/pipe"
 	},
-	"homepage": "https://github.com/refzlund/apie-monorepo/packages/@api-pipe",
+	"homepage": "https://github.com/Refzlund/apie-monorepo/tree/main/packages/pipe",
 	"bugs": {
 		"url": "https://github.com/refzlund/apie-monorepo/labels/bug"
 	},
