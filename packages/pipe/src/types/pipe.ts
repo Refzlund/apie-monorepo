@@ -2,6 +2,19 @@ import type { MaybePromise, UnknownRecord, Nil, IsUnknownOrNever, FilterNil } fr
 import { ArbitraryType, ParamReturnResponse, PipeInput, PipeOrValue } from './helper'
 import { pipe } from '$/pipe'
 import { Input } from './utility'
+import { APIResponse } from '@apie/responses'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PipeType<T extends Pipe<any>> = T extends Pipe<infer I> ? I : never
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PipelineResult<T extends Pipeline<any>> = T extends Pipeline<
+	() => Promise<infer I>
+> ? I : never
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type PipelineResponse<T extends Pipeline<any>> =
+	Extract<PipelineResult<T>, APIResponse>
 
 
 export type PipeFn<

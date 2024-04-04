@@ -16,7 +16,7 @@ export const validateJSON = (validator: Validator) => kitPipe(async e => {
 			e['setJSON'](body.parse(content))
 		} catch (error) {
 			if (error instanceof z.ZodError)
-				return BadRequest({ error: 'Invalid JSON', details: error })
+				return BadRequest({ error: 'Invalid JSON', details: error.issues })
 			throw error
 		}
 	}

@@ -12,6 +12,14 @@ test.skip('API types', async () => {
 	api.users.POST({ name: 'shiba' })
 
 	const [ok] = await api.users.POST({ name: 'giraffe', age: 5 })
+		.BadRequest(async res => {
+			const json = await res.json()
+			json.error = 'Invalid JSON format'
+			json.error = 'Invalid JSON'
+
+			// @ts-expect-error There are no queries on this POST
+			json.error = 'Invalid query'
+		})
 		.$.OK(async e => await e.json())
 
 	// @ts-expect-error ok is possibly undefined

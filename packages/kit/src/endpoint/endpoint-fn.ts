@@ -1,10 +1,11 @@
 import { IsUnknown, UnknownRecord } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './types/kitevent'
-import { Pipe, Pipeline, createEventPipe } from '@apie/pipe'
+import { Pipe, PipeType, Pipeline, PipelineResponse, PipelineResult, createEventPipe } from '@apie/pipe'
 import z from 'zod'
 import { validateQuery } from './pipes/validate-query'
 import { validateJSON } from './pipes/validate-json'
 import { eJSON } from './pipes/e-json'
+import { APIResponse } from '@apie/responses'
 
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
@@ -13,6 +14,8 @@ export const kitPipe: Pipe<KitEvent<{
 	body?: unknown
 	query?: UnknownRecord
 }>> = createEventPipe()
+
+const pipe = createEventPipe<KitEvent>()
 
 export type Validator = {
 	/** Access the parsed body via `await e.json()` */
@@ -36,13 +39,29 @@ export const endpoint =
 				query: z.output<NonNullable<T['query']>>
 		}>>) => K
 	) => {
-		const wrapper = kitPipe as Parameters<typeof cb>[0]
-		return wrapper(
+		const pipeline = kitPipe(
 			eJSON,
 			validateJSON(validator),
 			validateQuery(validator),
+
 			cb(kitPipe as Pipe<KitEvent>)
 		)
+
+		return pipeline as unknown as Pipeline<
+			(event: PipeType<typeof cb>) => Promise<
+				| (
+					IsUnknown<T['body']> extends false
+					? PipelineResponse<ReturnType<typeof validateJSON>>
+					: never
+				)
+				| (
+					IsUnknown<T['query']> extends false
+					? PipelineResponse<ReturnType<typeof validateQuery>>
+					: never
+				)
+				| PipelineResult<K>
+			>
+		>
 	}
 	
 	

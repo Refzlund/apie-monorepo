@@ -30,7 +30,7 @@ export const validateQuery = (validator: Validator) => kitPipe(e => {
 
 			} catch (error) {
 				if (error instanceof z.ZodError)
-					return BadRequest({ error: 'Invalid query', details: error })
+					return BadRequest({ error: 'Invalid query', details: error.issues })
 				throw error
 
 			} finally {
