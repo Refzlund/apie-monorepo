@@ -118,4 +118,16 @@ export const GET = endpoint({ /* body, */ query }, pipe => pipe(
 <br>
 <br>
 
-### SvelteKit REST API made ez
+### `@apie/pipe`
+
+Make your life easier, and learn how to utilize [`@apie/pipe`](https://www.npmjs.com/package/@apie/pipe). 
+This enables code-splitting patterns, inspired by the functional programming paradigm.
+
+This is optional, but a powerful one at that.
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
