@@ -1,7 +1,8 @@
 import z from 'zod'
 import { BadRequest, isResponse } from '@apie/responses'
-import { kitPipe, Validator } from '../endpoint-fn'
+import { Validator } from '../endpoint-fn'
 import { invalidJSONFormat } from './e-json'
+import { kitPipe } from '..'
 
 export const validateJSON = (validator: Validator) => kitPipe(async e => {
 	const { body } = validator

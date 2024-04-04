@@ -55,6 +55,6 @@
 		"@apie/responses": "workspace:*"
 	},
 	"peerDependencies": {
-		"@apie/responses": "*"
+		"@apie/responses": "^1.0.2"
 	}
 }

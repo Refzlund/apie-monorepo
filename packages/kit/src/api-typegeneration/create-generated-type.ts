@@ -64,7 +64,7 @@ export async function createGeneratedType(rootDir: string) {
 			}
 			if (!file.name.startsWith('+server'))
 				continue
-			const t = { toString() { return undefined } } as Typer
+			const t = { toString() { } } as Typer
 			type.content!.push(t)
 			await handleType(t, [null, file], indent)
 		}

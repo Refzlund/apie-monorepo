@@ -59,8 +59,9 @@ export function apiHandler({
 		}
 	}
 
+	const q = searchParams.toString()
 	const response = fetch(
-		routePath + searchParams.toString(),
+		routePath + (q ? '?' + q : ''),
 		{ ...apiOptions.baseRequestOptions, ...request }
 	)
 	

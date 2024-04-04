@@ -1,5 +1,5 @@
 import { UnknownRecord } from '@apie/utility/types'
-import { kitPipe } from '../endpoint-fn'
+import { kitPipe } from '..'
 import { BadRequest } from '@apie/responses'
 
 export const invalidJSONFormat = BadRequest({ error: 'Invalid JSON format' })

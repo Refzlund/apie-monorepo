@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Testing some syntaxes.
 
-import { Endpoint, endpoint, kitPipe } from './endpoint/endpoint-fn'
+import { endpoint, kitPipe } from './endpoint'
 import { BadRequest, InternalServerError, OK, TemporaryRedirect } from '@apie/responses'
 import { APIEKit, ServerAPIEKit } from './api/types/apiekit'
 import z from 'zod'

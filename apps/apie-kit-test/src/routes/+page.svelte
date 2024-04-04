@@ -2,8 +2,11 @@
 
 	import api from 'api'
 
-	const result = api.GET()
+	const result = api.GET({ query: { number: [123] } })
 		.OK(async res => {
+			console.log(await res.json())
+		})
+		.BadRequest(async res => {
 			console.log(await res.json())
 		})
 		.$.OK(async res => res.json())

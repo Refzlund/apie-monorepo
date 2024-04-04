@@ -4,7 +4,7 @@ import { z } from 'zod'
 
 const query = z.object({
 
-	number: z.number()
+	number: z.number().array()
 
 })
 

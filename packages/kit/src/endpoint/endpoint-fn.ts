@@ -1,18 +1,14 @@
-import { IsUnknown, UnknownRecord } from '@apie/utility/types'
+import { IsUnknown } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './types/kitevent'
-import { Pipe, PipeType, Pipeline, PipelineResponse, PipelineResult, createEventPipe } from '@apie/pipe'
+import { Pipe, PipeType, Pipeline, PipelineResponse, PipelineResult } from '@apie/pipe'
 import z from 'zod'
 import { validateQuery } from './pipes/validate-query'
 import { validateJSON } from './pipes/validate-json'
 import { eJSON } from './pipes/e-json'
+import { kitPipe } from '.'
 
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
-
-export const kitPipe: Pipe<KitEvent<{
-	body?: unknown
-	query?: UnknownRecord
-}>> = createEventPipe()
 
 export type Validator = {
 	/** Access the parsed body via `await e.json()` */
