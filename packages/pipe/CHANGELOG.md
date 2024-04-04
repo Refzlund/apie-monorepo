@@ -1,5 +1,15 @@
 # @apie/pipe
 
+## 2.2.0
+
+### Minor Changes
+
+- feat: helper types; PipeType and PipelineResult ([#50](https://github.com/Refzlund/apie-monorepo/pull/50))
+
+### Patch Changes
+
+- fix: doesnt externalize @apie/responses ([#50](https://github.com/Refzlund/apie-monorepo/pull/50))
+
 ## 2.1.1
 
 ### Patch Changes
