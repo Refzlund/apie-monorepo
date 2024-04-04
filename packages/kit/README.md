@@ -31,7 +31,11 @@ An eco-system for infrastructure around REST API. `@apie/kit` is made for  <im
 > [!NOTE]  
 > Documentation incomplete.
 
-#### Add the plugin that generates your API type:
+`bun add -D @apie/responses @apie/kit`
+
+<br>
+
+#### Add the plugin that generates your API type
 
 `vite.config.ts`
 ```ts
@@ -44,7 +48,9 @@ export default defineConfig({
 })
 ```
 
-#### Add a shortcut to the api:
+<br>
+
+#### Add a shortcut to the api
 
 `svelte.config.js`
 ```ts
@@ -55,7 +61,9 @@ const config = {
 			api: './src/api.ts',
 ```
 
-#### Define your endpoint:
+<br>
+
+#### Define your endpoint
 
 `src/routes/api/users`
 ```ts
@@ -83,6 +91,8 @@ export const GET = endpoint({ /* body, */ query }, pipe => pipe(
 ))
 ```
 
+<br>
+
 #### Use your API in your svelte file!
 
 `src/routes/+page.svelte`
@@ -104,3 +114,8 @@ export const GET = endpoint({ /* body, */ query }, pipe => pipe(
 {/await}
 
 ```
+
+<br>
+<br>
+
+### SvelteKit REST API made ez
