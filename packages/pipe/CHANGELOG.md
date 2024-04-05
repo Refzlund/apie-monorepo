@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.3.0
+
+### Minor Changes
+
+- feat: exit early in a pipe with `return exit(value?)` ([#52](https://github.com/Refzlund/apie-monorepo/pull/52))
+
 ## 2.2.0
 
 ### Minor Changes
