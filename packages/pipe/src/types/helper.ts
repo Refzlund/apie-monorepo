@@ -3,6 +3,7 @@
 import { Nil, UnknownRecord } from '@apie/utility/types'
 import { NestedPipeFn, PipeFn } from './pipe'
 import { APIResponse } from '@apie/responses'
+import { Exit } from '$/exit'
 
 export type ArbitraryType =
 	| string | number | bigint | boolean | symbol
@@ -47,15 +48,23 @@ export type PipeOrValue<
 	[Nil] extends [P]
 	? (
 		R extends PipeFn<infer _, infer _, infer TReturn>
-		? Exclude<NestedPipeInference<TReturn>, APIResponse>
+		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
 		: R extends PipeFn<any, any, infer TReturn>
-		? Exclude<NestedPipeInference<TReturn>, APIResponse>
-		: Exclude<R, APIResponse>
+		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
+		: Exclude<R, APIResponse | Exit>
 	)
 	: (
 		P extends PipeFn<infer _, infer _, infer TReturn>
-		? Exclude<NestedPipeInference<TReturn>, APIResponse>
+		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
 		: P extends PipeFn<any, any, infer TReturn>
-		? Exclude<NestedPipeInference<TReturn>, APIResponse>
+		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
 		: never
 	)
+
+export type ExitValue<P extends PipeFn | Nil> =
+	P extends PipeFn<infer _, infer _, infer R>
+	? (R extends Exit<infer K> ? K : never)
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	: P extends PipeFn<any, any, infer R>
+	? (R extends Exit<infer K> ? K : never)
+	: never

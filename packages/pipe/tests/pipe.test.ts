@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test'
-import { Pipeline, createEventPipe } from '$'
+import { Pipeline, createEventPipe, exit } from '$'
 import { BadRequest, OK } from '@apie/responses'
 import { getBody, isResponse } from '@apie/responses'
 import * as R from '@apie/responses/types'
@@ -99,4 +99,31 @@ test('Pipe and correct no response', async () => {
 
 	expect(result).not.toBeInstanceOf(Response)
 	expect(result).toEqual({ v: 123, d: { c: date } })
+})
+
+test('Pipe exits early with exit()', async () => {
+	const pipeline = pipe(
+		() => {
+			return 1234 as const
+		},
+		(_, v) => {
+			return exit(v)
+		},
+		() => {
+			return OK()
+		},
+		(e, v) => {
+			return 'Mhm.' as const
+		},
+	)
+
+	let result = await pipeline({ yas: 'true' })
+	expect(result).toBe(1234)
+
+	result = 1234
+	result = OK()
+	result = 'Mhm.'
+
+	// @ts-expect-error 0 is not assignable
+	result = 0
 })

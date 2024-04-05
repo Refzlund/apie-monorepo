@@ -3,6 +3,7 @@ import { type APIResponse } from '@apie/responses/types'
 import { isResponse } from '@apie/responses'
 import { ArbitraryType } from './types/helper'
 import { Pipe, PipeFn } from './types/pipe'
+import { isExit } from './exit'
 
 interface Options<T extends UnknownRecord> {
 	/** Functions to run before every pipeline */
@@ -90,7 +91,7 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 						continue
 					}
 
-					if (isResponse(param)) {
+					if (isResponse(param) || isExit(param)) {
 						previousResult = param
 						break
 					}
@@ -104,6 +105,13 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 						}
 					} catch (error) {
 						return errored(event, error)
+					}
+
+					if (isExit(previousResult)) {
+						previousResult = previousResult.value
+						const result = after(event, previousResult)
+						if (result !== undefined) return result
+						return previousResult
 					}
 
 					if (isResponse(previousResult)) {
