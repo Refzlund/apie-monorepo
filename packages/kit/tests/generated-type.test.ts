@@ -7,7 +7,7 @@ test('Generated Type', async () => {
 		resolve(import.meta.path, '../~routes')
 	)
 	await Bun.write(
-		resolve(import.meta.path, '../~routes', 'generated-type.ts'),
+		resolve(import.meta.path, '../~routes', '~generated-type.ts'),
 		type.replace('@apie/kit', '$')
 	)
 })
