@@ -1,6 +1,7 @@
 import { createEventPipe } from './pipe'
 
 export { createEventPipe } from './pipe'
+export { exit } from './exit'
 export { saveResult } from './save-result'
 export type {
 	Pipeline,

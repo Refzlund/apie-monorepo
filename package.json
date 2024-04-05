@@ -10,7 +10,7 @@
 		"apps/*"
 	],
 	"scripts": {
-		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*'",
+		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*' --ignore-pattern '~generated-type.ts'",
 		"precommit": "bun *:package && bun lint && bun *:typecheck && bun *:test",
 		"*:typecheck": "pnpm --stream -r typecheck",
 		"*:test": "pnpm --stream -r test",

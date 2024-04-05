@@ -2,7 +2,7 @@ import { createAPI } from '$/api'
 import { test } from 'bun:test'
 
 // * Note: will be generated on `packages/kit#   bun test`
-import { GeneratedAPI } from './~routes/generated-type'
+import { GeneratedAPI } from './~routes/~generated-type'
 
 test.skip('API types', async () => {
 

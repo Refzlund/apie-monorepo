@@ -1,5 +1,5 @@
 import type { MaybePromise, UnknownRecord, Nil, IsUnknownOrNever, FilterNil } from '@apie/utility/types'
-import { ArbitraryType, ParamReturnResponse, PipeInput, PipeOrValue } from './helper'
+import { ArbitraryType, ExitValue, ParamReturnResponse, PipeInput, PipeOrValue } from './helper'
 import { pipe } from '$/pipe'
 import { Input } from './utility'
 import { APIResponse } from '@apie/responses'
@@ -47,16 +47,20 @@ type PipeResult<
 > =
 	(
 		IsUnknownOrNever<Input> extends true ? (
-			Pipeline<(event: T) => Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>>
+			Pipeline<(event: T) => Promise<
+				| PipeOrValue<Pn, Rn>
+				| ParamReturnResponse<Pall>
+				| ExitValue<Pall>
+			>>
 		) : (
 			undefined extends Input ? (
 				Pipeline<
 					(event: T, input?: Input | void) =>
-						Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+						Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall | ExitValue<Pall>>>
 				>
 			) : Pipeline<
 				(event: T, input: Input) => 
-					Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall>>
+					Promise<PipeOrValue<Pn, Rn> | ParamReturnResponse<Pall> | ExitValue<Pall>>
 			>
 		)
 	)

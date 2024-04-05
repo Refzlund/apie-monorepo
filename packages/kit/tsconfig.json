@@ -14,5 +14,6 @@
 			"$types": ["./src/types"],
 			"$types/*": ["./src/types/*"]
 		}
-	}
+	},
+	"exclude": ["./tests/~routes/~generated-type.ts"]
 }

@@ -6,8 +6,8 @@ test('Generated Type', async () => {
 	const type = await createGeneratedType(
 		resolve(import.meta.path, '../~routes')
 	)
-	Bun.write(
-		resolve(import.meta.path, '../~routes', 'generated-type.ts'),
+	await Bun.write(
+		resolve(import.meta.path, '../~routes', '~generated-type.ts'),
 		type.replace('@apie/kit', '$')
 	)
 })
