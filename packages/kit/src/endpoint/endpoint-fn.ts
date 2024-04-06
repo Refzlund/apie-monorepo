@@ -1,6 +1,6 @@
 import { IsUnknown } from '@apie/utility/types'
 import { KitEvent, KitRequestInput } from './types/kitevent'
-import { Pipe, PipeType, Pipeline, PipelineResponse, PipelineResult } from '@apie/pipe'
+import { Pipe, Pipeline, PipelineResponse, PipelineResult, anyPipe } from '@apie/pipe'
 import z from 'zod'
 import { validateQuery } from './pipes/validate-query'
 import { validateJSON } from './pipes/validate-json'
@@ -21,27 +21,41 @@ export const endpoint =
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	<T extends Validator, K extends Pipeline<any>>(
 		validator: T,
-		cb: (pipe: Pipe<KitEvent<
-			true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
-			: true extends IsUnknown<T['query']>
-			? { body: z.output<NonNullable<T['body']>> }
-			: true extends IsUnknown<T['body']>
-			? { query: z.output<NonNullable<T['query']>> }
-			: {
-				body: z.output<NonNullable<T['body']>>
-				query: z.output<NonNullable<T['query']>>
-		}>>) => K
+		cb: (
+			pipe: Pipe<KitEvent<
+				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
+				: true extends IsUnknown<T['query']>
+				? { body: z.output<NonNullable<T['body']>> }
+				: true extends IsUnknown<T['body']>
+				? { query: z.output<NonNullable<T['query']>> }
+				: {
+					body: z.output<NonNullable<T['body']>>
+					query: z.output<NonNullable<T['query']>>
+				}
+			>>,
+			event: KitEvent<
+				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
+				: true extends IsUnknown<T['query']>
+				? { body: z.output<NonNullable<T['body']>> }
+				: true extends IsUnknown<T['body']>
+				? { query: z.output<NonNullable<T['query']>> }
+				: {
+					body: z.output<NonNullable<T['body']>>
+					query: z.output<NonNullable<T['query']>>
+				}
+			>
+		) => K
 	) => {
-		const pipeline = kitPipe(
+		const pipeline = anyPipe(
 			eJSON,
 			validateJSON(validator),
 			validateQuery(validator),
 
-			cb(kitPipe as Pipe<KitEvent>)
+			e => cb(kitPipe as Pipe<KitEvent>, e)
 		)
 
-		return pipeline as unknown as Pipeline<
-			(event: PipeType<typeof cb>) => Promise<
+		return pipeline as Pipeline<
+			(event: Parameters<typeof cb>[1]) => Promise<
 				| (
 					IsUnknown<T['body']> extends false
 					? PipelineResponse<ReturnType<typeof validateJSON>>
