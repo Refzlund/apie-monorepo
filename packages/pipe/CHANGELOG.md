@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.4.0
+
+### Minor Changes
+
+- feat: `anyPipe` export that accepts any event-type sub-pipelines ([#55](https://github.com/Refzlund/apie-monorepo/pull/55))
+
 ## 2.3.0
 
 ### Minor Changes
