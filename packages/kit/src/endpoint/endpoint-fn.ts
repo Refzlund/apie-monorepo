@@ -12,7 +12,7 @@ export type Endpoint<I extends KitRequestInput, R> =
 
 export type Validator = {
 	/** Access the parsed body via `await e.json()` */
-	body?: z.AnyZodObject
+	body?: z.AnyZodObject | z.ZodArray<z.ZodTypeAny>
 	/** Access the parsed query via `e.query` */
 	query?: z.AnyZodObject
 }

@@ -8,6 +8,9 @@ test.skip('API types', async () => {
 
 	const { api } = createAPI<GeneratedAPI>()
 
+	api.content.POST([{ name: 'Giraffe' }, { name: 'Shiba' }])
+		.OK(async e => console.log(await e.json()))
+
 	// @ts-expect-error Age is missing
 	api.users.POST({ name: 'shiba' })
 
