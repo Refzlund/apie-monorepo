@@ -1,5 +1,20 @@
 # @apie/kit
 
+## 0.3.0
+
+### Minor Changes
+
+- feat: add event to endpoint cb (`(pipe, e) => pipe(...)`) ([#55](https://github.com/Refzlund/apie-monorepo/pull/55))
+
+- fix: use `anyPipe` to accept any shape of children ([#55](https://github.com/Refzlund/apie-monorepo/pull/55))
+
+### Patch Changes
+
+- fix: (grouped) routes for generated API ([#55](https://github.com/Refzlund/apie-monorepo/pull/55))
+
+- Updated dependencies [[`fabf353c41f08712f94bd7c92a76f183c3904858`](https://github.com/Refzlund/apie-monorepo/commit/fabf353c41f08712f94bd7c92a76f183c3904858)]:
+  - @apie/pipe@2.4.0
+
 ## 0.2.0
 
 ### Minor Changes
