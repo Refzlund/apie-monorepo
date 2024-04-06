@@ -1,5 +1,13 @@
 # @apie/kit
 
+## 0.3.1
+
+### Patch Changes
+
+- fix: allow arrays to be body inputs in an endpoint ([#57](https://github.com/Refzlund/apie-monorepo/pull/57))
+
+- fix: treat e.json() as a pipeline ([#57](https://github.com/Refzlund/apie-monorepo/pull/57))
+
 ## 0.3.0
 
 ### Minor Changes
