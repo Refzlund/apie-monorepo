@@ -13,3 +13,6 @@ export type {
 export type * from './types/utility'
 
 export const pipe = createEventPipe()
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const anyPipe = createEventPipe<any>()

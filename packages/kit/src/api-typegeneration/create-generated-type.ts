@@ -4,6 +4,7 @@ import { readdir } from 'fs/promises'
 
 interface Typer {
 	name?: string
+	file?: Typer
 	content?: Typer[]
 	toString(): string | undefined
 }
@@ -14,7 +15,7 @@ const defaultDirectory = (name?: string, indent: string = '') => ({
 	toString() {
 		let str = ''
 		if (this.name) str += `\n${indent}'${this.name}': `
-		str += `{ ${stringContent(this)} \n${indent}}`
+		str += `${this.file ? this.file.toString() : ''}{ ${stringContent(this)} \n${indent}}`
 		return str
 	}
 } as Typer)
@@ -35,14 +36,14 @@ export async function createGeneratedType(rootDir: string) {
 			const [name] = dir.replaceAll(/\[|\]/g, '').split('=') as [string]
 			const slug = variablize(name)
 			type.toString = function (this: Typer) {
-				return `\n${indent}'${slug}$': ((${slug}: string) => { ${stringContent(this)} \n${indent}})`
+				return `\n${indent}'${slug}$': ((${slug}: string) => ${this.file ? this.file.toString() : ''}{ ${stringContent(this)} \n${indent}})`
 			}
 		}
 		if (endpoint) {
 			const i = `i${imports.length}` as const
 			imports.push(`import * as ${i} from '${endpoint.path.replace(/\.ts$/, '')}'`)
 			type.toString = function (this: Typer) {
-				return `\n${indent}} & A<typeof ${i}> & {`
+				return `A<typeof ${i}> & `
 			}
 		}
 	}
@@ -56,6 +57,11 @@ export async function createGeneratedType(rootDir: string) {
 		for (const file of files) {
 			file.path = dir + '/' + file.name
 			if (file.isDirectory()) {
+				if (file.name.startsWith('(') && file.name.endsWith(')')) {
+					await readFiles(file.path, type, indent.replace('\t', ''))
+					continue
+				}
+					
 				const t = defaultDirectory(file.name, indent)
 				type.content!.push(t)
 				await handleType(t, [file, null], indent)
@@ -65,7 +71,7 @@ export async function createGeneratedType(rootDir: string) {
 			if (!file.name.startsWith('+server'))
 				continue
 			const t = { toString() { } } as Typer
-			type.content!.push(t)
+			type.file = t
 			await handleType(t, [null, file], indent)
 		}
 	}
@@ -76,7 +82,7 @@ export async function createGeneratedType(rootDir: string) {
 // * This file is generative. Edits will be overwritten.
 
 import type { ServerAPIEKit as A } from '@apie/kit/api'
-${imports.join(';\n')}
+${imports.join('\n')}
 
 export type GeneratedAPI = ${generated.toString()}`
 }
