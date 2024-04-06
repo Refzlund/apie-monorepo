@@ -31,7 +31,7 @@ An eco-system for infrastructure around REST API. `@apie/kit` is made for  <im
 > [!NOTE]  
 > Documentation incomplete.
 
-`bun add -D @apie/responses @apie/kit`
+`bun add -D @apie/kit @apie/responses @apie/pipe`
 
 <br>
 

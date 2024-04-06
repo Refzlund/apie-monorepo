@@ -77,7 +77,8 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 	const pipeFactory = () => {
 
 		const pipeFn = ((
-			...params: Array<ArbitraryType | PipeFn<T, unknown, ArbitraryType>>
+			...params:
+				(Promise<ArbitraryType> | ArbitraryType | PipeFn<T, unknown, ArbitraryType>)[]
 		) => {
 			async function pipedFunction(event: T, input: unknown = undefined) {
 				let previousResult = input
@@ -87,12 +88,12 @@ export function createEventPipe<T extends UnknownRecord = {}>(
 
 				for (const param of params) {
 					if (typeof param !== 'function') {
-						previousResult = param
+						previousResult = await param
 						continue
 					}
 
 					if (isResponse(param) || isExit(param)) {
-						previousResult = param
+						previousResult = await param
 						break
 					}
 

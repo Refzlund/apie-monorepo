@@ -60,6 +60,7 @@
 		"@apie/utility": "^1.2.1"
 	},
 	"peerDependencies": {
+		"@apie/pipe": "^2.4.0",
 		"@apie/responses": "^1.0.2",
 		"@sveltejs/kit": "^2.5.5",
 		"zod": "^3.22.4"

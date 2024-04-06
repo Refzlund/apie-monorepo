@@ -15,8 +15,13 @@ export const GET = endpoint({ query }, (pipe, e) => pipe(
 	() => OK({ yourQuery: e.query, bob: e.locals.Bob })
 ))
 
-export const PUT = endpoint({}, (pipe, e) => pipe(
-	customPipe(
+const body = z.object({
+	name: z.string()
+})
+
+export const PUT = endpoint({ body }, (pipe, e) => pipe(
+	e.json(),
+	(e,v) => customPipe(
 		() => OK()
 	)
 ))

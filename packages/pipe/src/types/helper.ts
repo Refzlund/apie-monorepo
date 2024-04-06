@@ -45,7 +45,7 @@ export type PipeOrValue<
 	P extends Nil | PipeFn = Nil,
 	R extends Nil | PipeFn | ArbitraryType = Nil,
 > =
-	[Nil] extends [P]
+	Awaited<[Nil] extends [P]
 	? (
 		R extends PipeFn<infer _, infer _, infer TReturn>
 		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
@@ -59,12 +59,12 @@ export type PipeOrValue<
 		: P extends PipeFn<any, any, infer TReturn>
 		? Exclude<NestedPipeInference<TReturn>, APIResponse | Exit>
 		: never
-	)
+	)>
 
 export type ExitValue<P extends PipeFn | Nil> =
 	P extends PipeFn<infer _, infer _, infer R>
-	? (R extends Exit<infer K> ? K : never)
+	? (R extends Exit<infer K> ? K extends void ? undefined : K : never)
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	: P extends PipeFn<any, any, infer R>
-	? (R extends Exit<infer K> ? K : never)
+	? (R extends Exit<infer K> ? K extends void ? undefined : K : never)
 	: never
