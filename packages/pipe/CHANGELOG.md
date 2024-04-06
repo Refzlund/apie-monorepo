@@ -1,5 +1,11 @@
 # @apie/pipe
 
+## 2.4.1
+
+### Patch Changes
+
+- fix: await pipe params ([#59](https://github.com/Refzlund/apie-monorepo/pull/59))
+
 ## 2.4.0
 
 ### Minor Changes

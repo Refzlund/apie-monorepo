@@ -1,5 +1,16 @@
 # @apie/kit
 
+## 0.4.0
+
+### Minor Changes
+
+- feat: peerDependency on @apie/pipe ([#59](https://github.com/Refzlund/apie-monorepo/pull/59))
+
+### Patch Changes
+
+- Updated dependencies [[`279486d15898e4a861b5a776c6577adafbfe0fa2`](https://github.com/Refzlund/apie-monorepo/commit/279486d15898e4a861b5a776c6577adafbfe0fa2)]:
+  - @apie/pipe@2.4.1
+
 ## 0.3.1
 
 ### Patch Changes
