@@ -3,6 +3,7 @@ import { RequestEvent } from '@sveltejs/kit'
 import { RequestOptions } from './callback'
 import { IsUnknown } from '@apie/utility/types'
 import { brand } from '$/types/utility'
+import { Pipeline } from '@apie/pipe'
 
 export type Locals<L extends UnknownRecord = {}> = { locals: L }
 
@@ -38,11 +39,11 @@ type _KitEvent<
 		| (Input['body'] extends Record<PropertyKey, any> ? true : false)
 		? {
 			/** Retrieve and validate request JSON or retrieve the cached JSON */
-			json: () => Promise<
+			json: Pipeline<() => Promise<
 				IsUnknown<Input['body']> extends true
 				? UnknownRecord | unknown[]
 				: Input['body']
-			>
+			>>
 		} : {}
 	) & (
 		true extends
