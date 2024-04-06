@@ -10,4 +10,5 @@ test('Generated Type', async () => {
 		resolve(import.meta.path, '../~routes', '~generated-type.ts'),
 		type.replace('@apie/kit', '$').replace('/* eslint-disable */', `/* eslint-disable */\n// @ts-nocheck`)
 	)
+	await new Promise(resolve => setTimeout(resolve, 100))
 })

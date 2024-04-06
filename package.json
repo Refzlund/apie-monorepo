@@ -12,8 +12,8 @@
 	"scripts": {
 		"lint": "eslint ./**/*.{js,ts,cjs} --ignore-pattern 'dist/*' --ignore-pattern '~generated-type.ts'",
 		"precommit": "bun *:package && bun lint && bun *:typecheck && bun *:test",
-		"*:typecheck": "pnpm -r typecheck",
-		"*:test": "pnpm -r test",
+		"*:typecheck": "pnpm --stream -r typecheck",
+		"*:test": "pnpm --stream -r test",
 		"*:package": "pnpm -r package",
 		"publish": "bun *:package && changeset publish"
 	},
