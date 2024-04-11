@@ -45,3 +45,6 @@ jobs:
         
       - name: Typechecking
         run: bun run *:typecheck
+
+      - name: SvelteKit Build Test
+        run: bun run sveltekit:build
