@@ -1,5 +1,11 @@
 # @apie/kit
 
+## 0.4.1
+
+### Patch Changes
+
+- fix: use `fs` instead of `fs/promises` ([#61](https://github.com/Refzlund/apie-monorepo/pull/61))
+
 ## 0.4.0
 
 ### Minor Changes
