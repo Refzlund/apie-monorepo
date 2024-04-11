@@ -39,7 +39,7 @@ export default async function build(options: BuildOptions, ...entries: string[])
 					emptyOutDir: init,
 					outDir,
 					rollupOptions: {
-						external: ['fs/promises', 'process', 'path', ...options.external || []]
+						external: ['fs', 'process', 'path', ...options.external || []]
 					},
 					lib: {
 						entry: filePath,

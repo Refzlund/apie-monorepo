@@ -1,6 +1,6 @@
 import { Dirent } from 'fs'
 import { variablize } from './variablize'
-import { readdir } from 'fs/promises'
+import { readdirSync } from 'fs'
 
 interface Typer {
 	name?: string
@@ -53,7 +53,7 @@ export async function createGeneratedType(rootDir: string) {
 	async function readFiles(dir: string, type: Typer, indent = '') {
 		indent += '\t'
 
-		const files = await readdir(dir, { withFileTypes: true })
+		const files = readdirSync(dir, { withFileTypes: true })
 		for (const file of files) {
 			file.path = dir + '/' + file.name
 			if (file.isDirectory()) {

@@ -15,6 +15,7 @@
 		"*:typecheck": "pnpm --stream -r typecheck",
 		"*:test": "pnpm --stream -r test",
 		"*:package": "pnpm -r package",
+		"sveltekit:build": "cd apps/apie-kit-test && bun run build",
 		"publish": "bun *:package && changeset publish"
 	},
 	"devDependencies": {

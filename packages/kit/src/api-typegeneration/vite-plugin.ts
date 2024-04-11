@@ -1,4 +1,4 @@
-import { exists } from 'fs/promises'
+import { existsSync } from 'fs'
 import { resolve } from 'path'
 import { cwd } from 'process'
 import apiTemplate from './api-template'
@@ -44,7 +44,9 @@ export function watchAPI({ paths = {} }: APIEKitOptions = {}): Plugin {
 	}
 
 	const apiPath = resolve(root, apiFile)
-	exists(apiPath).then(v => !v && !Bun.write(apiPath, apiTemplate))
+	
+	if (!existsSync(apiPath))
+		Bun.write(apiPath, apiTemplate)
 
 	const routesPath = resolve(root, routes)
 	const generatedPath = resolve(root, generatedTypes)
