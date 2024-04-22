@@ -4,13 +4,13 @@
 
 	const result = api.GET({ query: { number: [123] } })
 		.OK(async res => {
-			console.log(await res.json())
+			console.log(res.body)
 		})
 		.BadRequest(async res => {
-			console.log(await res.json())
+			console.log(res.body)
 		})
-		.$.OK(async res => res.json())
-		
+		.$.OK(async res => res.body)
+	
 	result.then(console.log)
 	
 </script>

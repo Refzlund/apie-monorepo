@@ -60,7 +60,7 @@ const v = api.test.POST({ message: 'Helloo', user: { name: 'asd', age: 21 } })
 	})
 
 const h = await v.$.OK(async res => {
-	return res.json()
+	return res.body
 }).BadRequest(res => {
 	return 'Bad Request :(' as const
 }).any(res => {
