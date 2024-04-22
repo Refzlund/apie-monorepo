@@ -4,6 +4,7 @@ import { cwd } from 'process'
 import apiTemplate from './api-template'
 import { Plugin } from 'vite'
 import { createGeneratedType } from './create-generated-type'
+import { readFileSync, writeFileSync } from 'fs'
 
 interface APIEKitOptions {
 
@@ -16,6 +17,12 @@ interface APIEKitOptions {
 
 		/** @default 'src/routes' */
 		routes?: string
+
+		/** 
+		  * Whether to ignore the `generatedTypes` path by adding it to .gitignore
+		  * @default true
+		*/
+		gitIgnoreGeneratedTypes?: boolean
 	}
 
 }
@@ -30,29 +37,28 @@ export function watchAPI({ paths = {} }: APIEKitOptions = {}): Plugin {
 	const {
 		apiFile = 'src/api.ts',
 		routes = 'src/routes',
-		generatedTypes = defaultTypePath
+		generatedTypes = defaultTypePath,
+		gitIgnoreGeneratedTypes = true
 	} = paths
 
-
-	if (generatedTypes === defaultTypePath) {
+	if (gitIgnoreGeneratedTypes) {
 		const gitignore = resolve(root, '.gitignore')
-		Bun.file(gitignore).text().then(v => {
-			if (v.includes(defaultTypePath))
-				return
-			Bun.write(gitignore, v + '\n' + defaultTypePath)
-		})
+		const file = readFileSync(gitignore, 'utf-8')
+		if (!file.includes(generatedTypes)) {
+			writeFileSync(gitignore, file + '\n' + generatedTypes, 'utf-8')
+		}
 	}
 
 	const apiPath = resolve(root, apiFile)
 	
 	if (!existsSync(apiPath))
-		Bun.write(apiPath, apiTemplate)
+		writeFileSync(apiPath, apiTemplate, 'utf-8')
 
 	const routesPath = resolve(root, routes)
 	const generatedPath = resolve(root, generatedTypes)
 
 	const write =
-		async () => await Bun.write(generatedPath, await createGeneratedType(routesPath))
+		async () => writeFileSync(generatedPath, await createGeneratedType(routesPath), 'utf-8')
 
 	write()
 
