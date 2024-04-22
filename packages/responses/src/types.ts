@@ -1,11 +1,17 @@
 import { type APIResponse } from './api-response'
 export { type APIResponse } from './api-response'
 
+export type AnyResponse =
+	AnyInformational | AnySuccess | AnyRidirect | AnyClientError | AnyServerError
+
 // *
 // * -- 1xx Informational
 // *
 
 type Informational = 'informational' | 'any'
+export type InformationalStatus = 100 | 101 | 102 | 103
+export type AnyInformational<Body = undefined> =
+	APIResponse<InformationalStatus, true, Body, Informational>
 
 /** 
 	[100 Continue](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/100) 
@@ -45,6 +51,9 @@ export type EarlyHints<Body = undefined> = APIResponse<103, true, Body, Informat
 // *
 
 type Success = 'success' | 'any'
+export type SuccessStatus = 200 | 201 | 202 | 203 | 204 | 205 | 206 | 207 | 208 | 226
+export type AnySuccess<Body = undefined> =
+	APIResponse<SuccessStatus, true, Body, Success>
 
 /**
 	[200 OK](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200)
@@ -132,6 +141,9 @@ export type IMUsed<Body = undefined> = APIResponse<226, true, Body, Success | 'I
 // *
 
 type Redirect = 'redirect' | 'any'
+export type RedirectStatus = 300 | 301 | 302 | 303 | 304 | 307 | 308
+export type AnyRidirect<Body = undefined> =
+	APIResponse<RedirectStatus, true, Body, Redirect>
 
 /**
 	[300 Multiple Choices](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/300)
@@ -191,6 +203,13 @@ export type PermanentRedirect<Body = undefined> = APIResponse<308, true, Body, R
 // *
 
 type ClientError = 'clientError' | 'error' | 'any'
+export type ClientErrorStatus =
+	| 400 | 401 | 402 | 403 | 404 | 405 | 406 | 407
+	| 408 | 409 | 410 | 411 | 412 | 413 | 414 | 415
+	| 416 | 417 | 418 | 421 | 422 | 423 | 424 | 425
+	| 426 | 428 | 429 | 431 | 451
+export type AnyClientError<Body = undefined> =
+	APIResponse<ClientErrorStatus, false, Body, ClientError>
 
 /**
 	[400 Bad Request](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400)
@@ -415,6 +434,10 @@ export type UnavailableForLegalReasons<Body = undefined> = APIResponse<451, fals
 // *
 
 type ServerError = 'serverError' | 'error' | 'any'
+export type ServerErrorStatus =
+	500 | 501 | 502 | 503 | 504 | 505 | 506 | 507 | 508 | 510 | 511
+export type AnyServerError<Body = undefined> =
+	APIResponse<ServerErrorStatus, false, Body, ServerError>
 
 /**
 	[500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) 
