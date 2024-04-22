@@ -1,5 +1,11 @@
 # @apie/kit
 
+## 0.5.1
+
+### Patch Changes
+
+- fix: use `node:fs` instead of Bun ([#65](https://github.com/Refzlund/apie-monorepo/pull/65))
+
 ## 0.5.0
 
 ### Minor Changes
