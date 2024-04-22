@@ -110,6 +110,7 @@ test('Pipe exits early with exit()', async () => {
 			return exit(v)
 		},
 		() => {
+			throw new Error()
 			return OK()
 		},
 		(e, v) => {

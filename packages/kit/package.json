@@ -25,16 +25,6 @@
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"typesVersions": {
-		"*": {
-			".": [
-				"./dist/index.d.ts"
-			],
-			"./api": [
-				"./dist/api.d.ts"
-			]
-		}
-	},
 	"exports": {
 		".": {
 			"default": "./dist/index.js",
