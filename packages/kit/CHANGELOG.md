@@ -1,5 +1,11 @@
 # @apie/kit
 
+## 0.5.0
+
+### Minor Changes
+
+- feat: export KitEvent ([#63](https://github.com/Refzlund/apie-monorepo/pull/63))
+
 ## 0.4.1
 
 ### Patch Changes
