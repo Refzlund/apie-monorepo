@@ -9,21 +9,21 @@ test.skip('API types', async () => {
 	const { api } = createAPI<GeneratedAPI>()
 
 	api.content.POST([{ name: 'Giraffe' }, { name: 'Shiba' }])
-		.OK(async e => console.log(await e.json()))
+		.OK(async e => console.log(e.body))
 
 	// @ts-expect-error Age is missing
 	api.users.POST({ name: 'shiba' })
 
 	const [ok] = await api.users.POST({ name: 'giraffe', age: 5 })
 		.BadRequest(async res => {
-			const json = await res.json()
+			const json = res.body
 			json.error = 'Invalid JSON format'
 			json.error = 'Invalid JSON'
 
 			// @ts-expect-error There are no queries on this POST
 			json.error = 'Invalid query'
 		})
-		.$.OK(async e => await e.json())
+		.$.OK(async e => e.body)
 
 	// @ts-expect-error ok is possibly undefined
 	ok.name
@@ -43,7 +43,7 @@ test.skip('API types', async () => {
 	api.pages.pagination$('25').GET()
 
 	const [qok] = await api.pages.pagination$('25').GET({ query: { order: ['name ASC', 'publishedAt DESC'] } })
-		.$.OK(async e => await e.json())
+		.$.OK(async e => e.body)
 	
 	if(qok) {
 		// @ts-expect-error order is a string array
