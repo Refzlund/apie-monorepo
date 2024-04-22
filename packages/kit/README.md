@@ -31,9 +31,6 @@ An eco-system for infrastructure around REST API. `@apie/kit` is made for  <im
 > [!NOTE]  
 > Documentation incomplete.
 
-> [!IMPORTANT]  
-> Is [bun](https://bun.sh)-dependent. Use `bun --bun dev` for your project.
-
 `bun add -D @apie/kit @apie/responses @apie/pipe`
 
 <br>
