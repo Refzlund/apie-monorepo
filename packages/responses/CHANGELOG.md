@@ -1,5 +1,11 @@
 # @apie/responses
 
+## 1.1.0
+
+### Minor Changes
+
+- feat: export `any response`-types ([#67](https://github.com/Refzlund/apie-monorepo/pull/67))
+
 ## 1.0.2
 
 ### Patch Changes
