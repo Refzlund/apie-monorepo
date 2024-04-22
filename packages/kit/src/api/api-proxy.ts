@@ -40,6 +40,9 @@ export function apiProxy(response: Promise<Response>) {
 		}
 
 		setTimeout(async () => {
+			if (res.headers.get('content-type') === 'application/json')
+				Object.defineProperty(res, 'body', { value: await res.json() })
+
 			for (const item of callbacks) {
 				await callback(res, item)
 			}
