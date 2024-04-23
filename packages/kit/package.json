@@ -1,6 +1,6 @@
 {
 	"name": "@apie/kit",
-	"version": "0.5.1",
+	"version": "1.0.0",
 	"description": "Library template that uses Vite for building, Vitest for testing, Changesets for versioning, renovate for upgrading packages.",
 	"keywords": [],
 	"author": "Arthur Refslund @Refzlund",
@@ -46,12 +46,12 @@
 		"@apie/responses": "workspace:*"
 	},
 	"dependencies": {
-		"@apie/pipe": "^2.4.1",
+		"@apie/pipe": "^3.0.0",
 		"@apie/utility": "^1.2.1"
 	},
 	"peerDependencies": {
-		"@apie/pipe": "^2.4.1",
-		"@apie/responses": "^1.0.2",
+		"@apie/pipe": "^3.0.0",
+		"@apie/responses": "^1.1.0",
 		"@sveltejs/kit": "^2.5.5",
 		"zod": "^3.22.4"
 	}

@@ -1,5 +1,12 @@
 # @apie/pipe
 
+## 3.0.0
+
+### Patch Changes
+
+- Updated dependencies [[`62b57142dafabcdaecce2b10122af506e4bc2a12`](https://github.com/Refzlund/apie-monorepo/commit/62b57142dafabcdaecce2b10122af506e4bc2a12)]:
+  - @apie/responses@1.1.0
+
 ## 2.4.1
 
 ### Patch Changes

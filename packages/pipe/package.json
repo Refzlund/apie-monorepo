@@ -1,6 +1,6 @@
 {
 	"name": "@apie/pipe",
-	"version": "2.4.1",
+	"version": "3.0.0",
 	"description": "A stateful pipe that pipes functions that has an object and the output from previous function",
 	"keywords": [
 		"pipe",
@@ -55,6 +55,6 @@
 		"@apie/responses": "workspace:*"
 	},
 	"peerDependencies": {
-		"@apie/responses": "^1.0.2"
+		"@apie/responses": "^1.1.0"
 	}
 }
