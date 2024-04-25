@@ -1,5 +1,15 @@
 # @apie/kit
 
+## 0.6.1
+
+### Patch Changes
+
+- fix: query booleans coerces all strings as true ([#69](https://github.com/Refzlund/apie-monorepo/pull/69))
+
+- fix: ZodUnion and/or ZodEffects not being allowed as endpoint bodies ([#69](https://github.com/Refzlund/apie-monorepo/pull/69))
+
+- fix: invalid query responses lacks a path ([#69](https://github.com/Refzlund/apie-monorepo/pull/69))
+
 ## 1.0.0
 
 ### Minor Changes
