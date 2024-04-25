@@ -18,7 +18,7 @@ test.skip('API types', async () => {
 		.BadRequest(async res => {
 			const json = res.body
 			json.error = 'Invalid JSON format'
-			json.error = 'Invalid JSON'
+			json.error = 'Invalid JSON content'
 
 			// @ts-expect-error There are no queries on this POST
 			json.error = 'Invalid query'
@@ -34,8 +34,9 @@ test.skip('API types', async () => {
 	// @ts-expect-error GET should not have a body
 	api.pages.GET(null, {})
 
-	api.pages.POST()
-
+	api.pages.POST({ name: 'Shiba' })
+	api.pages.POST([{ name: 'Giraffe' }])
+	
 	// @ts-expect-error order should be a string array
 	api.pages.pagination$('25').GET({ query: { order: 123 } })
 

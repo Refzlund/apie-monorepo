@@ -16,29 +16,51 @@ export const validateQuery = (validator: Validator) => kitPipe(e => {
 	if (query) {
 		const { searchParams } = e.url
 		const q = {} as UnknownRecord
-		
+
+		const issues = [] as z.ZodIssue[]
+
 		for (const key of Object.keys(query.shape)) {
 			let value = searchParams.get(key) as string | null 
 
-			const coerce = query.shape[key]._def.coerce as boolean
+			const queryParam = query.shape[key] as
+				z.ZodType & { _def: { coerce?: boolean, typeName: string } }
+			
+			const coerce = queryParam._def.coerce as boolean
 
 			try {
 				if (isObject(value))
 					value = JSON.parse(value)
-				query.shape[key]._def.coerce = true
 
-				q[key] = query.shape[key].parse(value === null ? undefined : value)
+				const unwrapped = 'unwrap' in queryParam ? (<{ unwrap(): z.ZodType }>queryParam).unwrap() : queryParam
+				const isBoolean = unwrapped instanceof z.ZodBoolean
+				if (!isBoolean)
+					queryParam._def.coerce = true
+
+				q[key] = queryParam.parse(
+					isBoolean ? (value == 'true' ? true : value == 'false' ? false : value)
+						: value === null ? undefined : value			
+				)
 
 			} catch (error) {
-				if (error instanceof z.ZodError)
-					return BadRequest({ error: 'Invalid query', details: error.issues })
-				throw error
-
+				if (error instanceof z.ZodError) {
+					for(const issue of error.issues)
+						issue.path = [key]
+					issues.push(...error.issues)
+				}
+				else
+					throw error
 			} finally {
 				query.shape[key]._def.coerce = coerce
-
 			}
 		}
+
+		if (issues.length > 0)
+			return BadRequest({
+				code: 'invalid_query',
+				error: 'Invalid query',
+				details: issues
+			})
+
 		e.query = q
 	}
 })
