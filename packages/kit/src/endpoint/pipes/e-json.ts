@@ -3,7 +3,7 @@ import { kitPipe } from '..'
 import { BadRequest } from '@apie/responses'
 import { anyPipe } from '@apie/pipe'
 
-export const invalidJSONFormat = BadRequest({ error: 'Invalid JSON format' })
+export const invalidJSONFormat = BadRequest({ code: 'not_json', error: 'Invalid JSON format' })
 
 export const eJSON = kitPipe(e => {
 	type JSON = UnknownRecord | unknown[]

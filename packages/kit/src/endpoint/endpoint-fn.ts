@@ -10,9 +10,17 @@ import { kitPipe } from '.'
 export type Endpoint<I extends KitRequestInput, R> =
 	Pipeline<(event: KitEvent<I>) => Promise<R>>
 
+type Body =
+	| z.AnyZodObject
+	| z.ZodArray<z.ZodTypeAny>
+	| z.ZodUnion<[Body | EffectBody, ...(Body | EffectBody)[]]>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type EffectBody = z.ZodEffects<Body, any, any>
+
 export type Validator = {
 	/** Access the parsed body via `await e.json()` */
-	body?: z.AnyZodObject | z.ZodArray<z.ZodTypeAny>
+	body?: Body | EffectBody
 	/** Access the parsed query via `e.query` */
 	query?: z.AnyZodObject
 }
