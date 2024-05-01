@@ -10,10 +10,21 @@ export interface RequestOptions extends Omit<RequestInit, 'body' | 'method'> {
 
 type O<T extends KitRequestInput> = Omit<T, 'body' | 'query'>
 
-type QueryRequired<I extends { query?: UnknownRecord }> =
-	[RequiredKeys<I['query']>] extends [never]
-	? { query?: IsUnknown<I['query']> extends true ? UnknownRecord : I['query'] }
-	: { query: IsUnknown<I['query']> extends true ? UnknownRecord : I['query'] }
+type BodyBuffer<T> =
+	IsUnknown<T> extends true ? false : T extends typeof Buffer ? true : false
+type Body<T extends KitRequestInput['body']> =
+	BodyBuffer<T> extends true ? ReadableStream | Buffer | string : T
+
+type OptionRequirements<I extends { query?: UnknownRecord, body?: unknown }> =
+	(
+		[RequiredKeys<I['query']>] extends [never]
+		? { query?: IsUnknown<I['query']> extends true ? UnknownRecord : I['query'] }
+		: { query: IsUnknown<I['query']> extends true ? UnknownRecord : I['query'] }
+	) & (
+		BodyBuffer<I['body']> extends true ? {
+			headers: { 'content-type': string }
+		} : {}
+	)
 
 export type EndpointRequestInput<
 	I extends KitRequestInput,
@@ -24,8 +35,9 @@ export type EndpointRequestInput<
 		true extends
 		| ([RequiredKeys<O<I>>] extends [never] ? false : true)
 		| ([RequiredKeys<I['query']>] extends [never] ? false : true)
-		? [options: Simplify<O<I> & QueryRequired<I>> & RequestOptions]
-		: [options?: Simplify<O<I> & QueryRequired<I>> & RequestOptions]
+		| BodyBuffer<I['body']>
+		? [options: Simplify<O<I> & OptionRequirements<I>> & RequestOptions]
+		: [options?: Simplify<O<I> & OptionRequirements<I>> & RequestOptions]
 	)
 	:
 	(true extends
@@ -33,10 +45,11 @@ export type EndpointRequestInput<
 	| ([RequiredKeys<O<I>>] extends [never] ? false : true)
 	// or has query requirements
 	| ([RequiredKeys<I['query']>] extends [never] ? false : true)
+	| BodyBuffer<I['body']>	
 	?
 	[
-		body: IsUnknown<I['body']> extends true ? null : I['body'],
-		options: Simplify<O<I> & QueryRequired<I>> & RequestOptions
+		body: Body<I['body']>,
+		options: Simplify<O<I> & OptionRequirements<I>> & RequestOptions
 	]
 	: false extends
 	// if has body
@@ -45,14 +58,14 @@ export type EndpointRequestInput<
 	& ([Extract<I['body'], undefined>] extends [never] ? false : true)
 	?
 	[
-		body: IsUnknown<I['body']> extends true ? null : I['body'],
+		body: Body<I['body']>,
 		options?: I extends RequestOptions
-			? Simplify<O<I> & QueryRequired<I>> & RequestOptions
+			? Simplify<O<I> & OptionRequirements<I>> & RequestOptions
 			: RequestOptions
 	]
 	: [
-		body?: IsUnknown<I['body']> extends true ? null : I['body'],
+		body?: Body<I['body']>,
 		options?: I extends RequestOptions
-			? Simplify<O<I> & QueryRequired<I>> & RequestOptions
+			? Simplify<O<I> & OptionRequirements<I>> & RequestOptions
 			: RequestOptions
 	])

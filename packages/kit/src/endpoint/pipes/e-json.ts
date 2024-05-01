@@ -14,7 +14,9 @@ export const eJSON = kitPipe(e => {
 
 	e.json = anyPipe(async () => {
 		try {
-			json = json || await e.request.json()
+			if (json) return json
+			json = await e.request.json()
+			e.body = json!
 		} catch (error) {
 			return invalidJSONFormat
 		}

@@ -50,4 +50,9 @@ test.skip('API types', async () => {
 		// @ts-expect-error order is a string array
 		qok.yourQuery.order = [123]
 	}
+
+	// @ts-expect-error Should expect a headers['content-type'] in options.
+	api.image.POST(Buffer.from(new ArrayBuffer(0)))
+
+	api.image.POST(Buffer.from(new ArrayBuffer(0)), { headers: { 'content-type': 'image/png' } })
 })

@@ -23,6 +23,6 @@ const post = z.object({
 	.transform(v => v)
 
 export const POST = endpoint({ body: post }, (pipe, e) => pipe(
-	e.json(),
+	e.body,
 	(_, v) => OK(v)
 ))

@@ -18,9 +18,16 @@ type Body =
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EffectBody = z.ZodEffects<Body, any, any>
 
+type BufferOrBody<T extends z.ZodType | typeof Buffer | undefined> =
+	T extends typeof Buffer
+	? typeof Buffer
+		: T extends z.ZodType
+		? z.output<NonNullable<T>>
+			: never
+
 export type Validator = {
 	/** Access the parsed body via `await e.json()` */
-	body?: Body | EffectBody
+	body?: Body | EffectBody | typeof Buffer
 	/** Access the parsed query via `e.query` */
 	query?: z.AnyZodObject
 }
@@ -33,22 +40,22 @@ export const endpoint =
 			pipe: Pipe<KitEvent<
 				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
 				: true extends IsUnknown<T['query']>
-				? { body: z.output<NonNullable<T['body']>> }
+				? { body: BufferOrBody<T['body']> }
 				: true extends IsUnknown<T['body']>
 				? { query: z.output<NonNullable<T['query']>> }
 				: {
-					body: z.output<NonNullable<T['body']>>
+					body: BufferOrBody<T['body']>
 					query: z.output<NonNullable<T['query']>>
 				}
 			>>,
 			event: KitEvent<
 				true extends IsUnknown<T['query']> & IsUnknown<T['body']> ? {}
 				: true extends IsUnknown<T['query']>
-				? { body: z.output<NonNullable<T['body']>> }
+				? { body: BufferOrBody<T['body']> }
 				: true extends IsUnknown<T['body']>
 				? { query: z.output<NonNullable<T['query']>> }
 				: {
-					body: z.output<NonNullable<T['body']>>
+					body: BufferOrBody<T['body']>
 					query: z.output<NonNullable<T['query']>>
 				}
 			>
