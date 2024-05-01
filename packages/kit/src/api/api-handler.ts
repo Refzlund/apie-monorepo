@@ -54,7 +54,7 @@ export function apiHandler({
 		delete request.body
 	else {
 		if (request.body instanceof FormData) { /* ignore */ }
-		else if(typeof request.body === 'object') {
+		else if(typeof request.body === 'object' && request.headers['content-type'] === 'application/json') {
 			request.body = JSON.stringify(request.body)
 		}
 	}

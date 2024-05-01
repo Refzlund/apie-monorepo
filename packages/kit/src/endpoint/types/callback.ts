@@ -13,7 +13,7 @@ type O<T extends KitRequestInput> = Omit<T, 'body' | 'query'>
 type BodyBuffer<T> =
 	IsUnknown<T> extends true ? false : T extends typeof Buffer ? true : false
 type Body<T extends KitRequestInput['body']> =
-	BodyBuffer<T> extends true ? ReadableStream | Buffer | string : T
+	BodyBuffer<T> extends true ? BodyInit : T
 
 type OptionRequirements<I extends { query?: UnknownRecord, body?: unknown }> =
 	(
