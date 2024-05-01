@@ -18,13 +18,7 @@ type _KitEvent<
 	Input extends KitRequestInput,
 > = Omit<RequestEvent, 'request'> & {
 	[brand]: Input
-	request: {
-		json: () => Promise<
-			IsUnknown<Input['body']> extends true
-			? UnknownRecord | unknown[]
-			: Input['body']
-		>
-	} & Omit<RequestEvent['request'], 'json'>
+	request: RequestEvent['request']
 	url: {
 		searchParams: {
 			get: <T extends keyof GetQuery<Input>>(s: T) => string | null,
@@ -33,28 +27,31 @@ type _KitEvent<
 		}
 	}
 } & (
-		true extends
-		| IsUnknown<Input['body']>
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		| (Input['body'] extends Record<PropertyKey, any> ? true : false)
-		? {
-			/** Retrieve and validate request JSON or retrieve the cached JSON */
-			json: Pipeline<() => Promise<
-				IsUnknown<Input['body']> extends true
-				? UnknownRecord | unknown[]
-				: Input['body']
-			>>
-		} : {}
-	) & (
-		true extends
-		| IsUnknown<Input['query']>
-		| (UnknownRecord extends Input['query'] ? true : false)
-		| (Input['query'] extends UnknownRecord ? true : false)
-		? [keyof NonNullable<Input['query']>] extends [never] ? {} : {
-			/** Retrieve and validate URLParams, or retrieve cached URLParams */
-			query: NonNullable<Input['query']>
-		} : {}
-	)
+	true extends
+	| IsUnknown<Input['body']>
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	| (Input['body'] extends Record<PropertyKey, any> ? (Input['body'] extends Buffer ? false : true) : false)
+	? {
+		/** Retrieve and validate request JSON or retrieve the cached JSON */
+		json: Pipeline<() => Promise<
+			IsUnknown<Input['body']> extends true
+			? UnknownRecord | unknown[]
+			: Input['body']
+		>>
+		body: IsUnknown<Input['body']> extends true
+			? UnknownRecord | unknown[]
+			: Input['body']
+	} : {}
+) & (
+	true extends
+	| IsUnknown<Input['query']>
+	| (UnknownRecord extends Input['query'] ? true : false)
+	| (Input['query'] extends UnknownRecord ? true : false)
+	? [keyof NonNullable<Input['query']>] extends [never] ? {} : {
+		/** Retrieve and validate URLParams, or retrieve cached URLParams */
+		query: NonNullable<Input['query']>
+	} : {}
+)
 // 
 
 export type KitEvent<
