@@ -1,5 +1,13 @@
 # @apie/kit
 
+## 0.7.0
+
+### Minor Changes
+
+- feat: allow custom content-types by setting endpoint body to the Buffer constructor ([#71](https://github.com/Refzlund/apie-monorepo/pull/71))
+
+- feat: isntead of `await e.json()` access json using `e.body` in endpoints ([#71](https://github.com/Refzlund/apie-monorepo/pull/71))
+
 ## 0.6.1
 
 ### Patch Changes
