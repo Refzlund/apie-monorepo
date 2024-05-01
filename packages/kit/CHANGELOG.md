@@ -1,5 +1,11 @@
 # @apie/kit
 
+## 0.7.1
+
+### Patch Changes
+
+- fix: stringifying non-json upon request ([#73](https://github.com/Refzlund/apie-monorepo/pull/73))
+
 ## 0.7.0
 
 ### Minor Changes
