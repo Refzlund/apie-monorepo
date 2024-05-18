@@ -1,5 +1,11 @@
 # @apie/kit
 
+## 0.7.2
+
+### Patch Changes
+
+- fix: e.body not getting set by body validator ([#76](https://github.com/Refzlund/apie-monorepo/pull/76))
+
 ## 0.7.1
 
 ### Patch Changes
