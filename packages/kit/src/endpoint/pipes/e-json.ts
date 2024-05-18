@@ -10,7 +10,10 @@ export const eJSON = kitPipe(e => {
 	let json = null as JSON | null
 
 	// @ts-expect-error setJSON does not exist
-	e.setJSON = (v: UnknownRecord) => json = v
+	e.setJSON = (v: UnknownRecord) => {
+		json = v
+		e.body = v
+	}
 
 	e.json = anyPipe(async () => {
 		try {
